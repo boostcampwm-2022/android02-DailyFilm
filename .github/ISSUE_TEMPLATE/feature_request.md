@@ -2,7 +2,7 @@
 name: Feature request
 about: 구현해야 될 기능
 title: ''
-labels: ''
+labels: feature
 assignees: ''
 
 ---

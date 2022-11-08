@@ -2,7 +2,7 @@
 name: Bug report
 about: 고쳐야 할 기능
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
