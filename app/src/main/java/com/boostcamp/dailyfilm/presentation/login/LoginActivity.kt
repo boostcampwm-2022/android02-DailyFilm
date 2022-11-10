@@ -6,33 +6,47 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityLoginBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.main.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private val viewModel: LoginViewModel by viewModels()
-    private lateinit var client: GoogleSignInClient
-    private lateinit var auth: FirebaseAuth
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun initView() {
         setGoogleLogin()
+        getLoginResult()
+    }
+
+    private fun getLoginResult() {
+        viewModel.userInfo.onEach { userInfoResult ->
+            userInfoResult?.let { userInfo ->
+                Toast.makeText(
+                    this,
+                    "Success Google Login : ${userInfo.email} ",
+                    Toast.LENGTH_SHORT
+                ).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun setGoogleLogin() {
-        // 요청 정보 옵션
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail().build()
-        client = GoogleSignIn.getClient(this, options)
-        auth = FirebaseAuth.getInstance()
+        val client = GoogleSignIn.getClient(this, options)
 
         activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -41,29 +55,14 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
                     val account = task.getResult(ApiException::class.java)
-                    firebaseAuthWithGoogle(account!!.idToken)
+                    viewModel.requestLogin(account.idToken!!)
                 } catch (e: ApiException) {
                     Toast.makeText(this, "Failed Google Login", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
         binding.btnLoginGoogleAuth.setOnClickListener {
-            // 로그인 요청
             activityResultLauncher.launch(client.signInIntent)
         }
-    }
-
-
-    private fun firebaseAuthWithGoogle(idToken: String?) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this){ task ->
-                if (task.isSuccessful) {
-                    // 인증에 성공한 후, 현재 로그인된 유저의 정보를 가져올 수 있습니다.
-                    val email = auth.currentUser?.email
-                    Toast.makeText(this, "email = $email", Toast.LENGTH_SHORT).show()
-                }
-            }
     }
 }
