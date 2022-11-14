@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.data.repository.login
+package com.boostcamp.dailyfilm.data.login
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -8,10 +8,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor() {
+interface LoginRepository {
+    fun requestLogin(idToken: String): Flow<FirebaseUser?>
+}
+
+class LoginRepositoryImpl @Inject constructor() : LoginRepository {
     private val firebaseAuth = FirebaseAuth.getInstance()
 
-    fun requestLogin(idToken: String): Flow<FirebaseUser?> = callbackFlow {
+    override fun requestLogin(idToken: String): Flow<FirebaseUser?> = callbackFlow {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
