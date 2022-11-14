@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityLoginBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.main.MainActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                     "Success Google Login : ${userInfo.email} ",
                     Toast.LENGTH_SHORT
                 ).show()
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, CalendarActivity::class.java))
                 finish()
             }
         }.launchIn(lifecycleScope)
