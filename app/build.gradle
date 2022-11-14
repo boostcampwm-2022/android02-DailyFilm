@@ -45,6 +45,7 @@ dependencies {
     def hilt_version = "2.44"
     def room_version = "2.4.3"
     def lifecycle_version = "2.6.0-alpha03"
+    def pagingVersion = "3.0.0"
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -69,6 +70,13 @@ dependencies {
     // Firebase Google Auth
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.google.android.gms:play-services-auth:20.3.0'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Paging
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
