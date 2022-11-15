@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boostcamp.dailyfilm.databinding.ItemSelectVideoBinding
 import com.boostcamp.dailyfilm.data.model.VideoItem
 
-class SelectVideoViewHolder(val binding:ItemSelectVideoBinding):ViewHolder(binding.root) {
+class SelectVideoViewHolder(
+    private val binding:ItemSelectVideoBinding,
+    private val videoSelectListener: VideoSelectListener
+    ):ViewHolder(binding.root) {
 
     private var lifecycleOwner: LifecycleOwner? = null
 
@@ -27,6 +30,7 @@ class SelectVideoViewHolder(val binding:ItemSelectVideoBinding):ViewHolder(bindi
     fun bind(item:VideoItem){
         binding.item = item
         binding.lifecycleOwner = lifecycleOwner
+        binding.clickListener = videoSelectListener
         binding.executePendingBindings()
     }
 

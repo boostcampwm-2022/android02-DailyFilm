@@ -11,14 +11,32 @@ import com.boostcamp.dailyfilm.data.model.Result
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
-@BindingAdapter("updateAdapter")
-fun RecyclerView.updateAdapter(videosState: StateFlow<Result<*>>?) {
+@BindingAdapter("playVideo")
+fun StyledPlayerView.playVideo(videoItem: VideoItem?) {
+    if (player == null){
+        player = ExoPlayer.Builder(context).build()
+        useController = false
+    }
+
+    videoItem?.let {
+        val mediaItem = MediaItem.fromUri(it.uri)
+        player?.setMediaItem(mediaItem)
+        player?.prepare()
+        player?.play()
+    }
+}
+
+@BindingAdapter(value = ["setVideoChooseListener", "updateAdapter"], requireAll = true)
+fun RecyclerView.updateAdapter(videoClickListener: VideoSelectListener, videosState: StateFlow<Result<*>>?) {
     if (this.adapter == null) {
-        this.adapter = SelectVideoAdapter()
+        this.adapter = SelectVideoAdapter(videoClickListener)
     }
 
     if (videosState != null) {

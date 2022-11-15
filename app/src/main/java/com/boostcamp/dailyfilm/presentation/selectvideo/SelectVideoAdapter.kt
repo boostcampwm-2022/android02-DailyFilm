@@ -8,7 +8,9 @@ import androidx.paging.PagingDataAdapter
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.data.model.VideoItem
 
-class SelectVideoAdapter : PagingDataAdapter<VideoItem, SelectVideoViewHolder>(diffUtil) {
+class SelectVideoAdapter(
+    private val videoSelectListener: VideoSelectListener
+) : PagingDataAdapter<VideoItem, SelectVideoViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectVideoViewHolder {
         return SelectVideoViewHolder(
@@ -17,7 +19,8 @@ class SelectVideoAdapter : PagingDataAdapter<VideoItem, SelectVideoViewHolder>(d
                 R.layout.item_select_video,
                 parent,
                 false
-            )
+            ),
+            videoSelectListener
         )
     }
 
