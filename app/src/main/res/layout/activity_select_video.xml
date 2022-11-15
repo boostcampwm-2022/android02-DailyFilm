@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            app:setVideoChooseListener="@{viewModel}"
+            app:setVideoSelectListener="@{viewModel}"
             app:spanCount="3"
             app:updateAdapter="@{viewModel.videosState}"
             tools:listitem="@layout/item_select_video" />

@@ -33,7 +33,7 @@ fun StyledPlayerView.playVideo(videoItem: VideoItem?) {
     }
 }
 
-@BindingAdapter(value = ["setVideoChooseListener", "updateAdapter"], requireAll = true)
+@BindingAdapter(value = ["setVideoSelectListener", "updateAdapter"], requireAll = true)
 fun RecyclerView.updateAdapter(videoClickListener: VideoSelectListener, videosState: StateFlow<Result<*>>?) {
     if (this.adapter == null) {
         this.adapter = SelectVideoAdapter(videoClickListener)

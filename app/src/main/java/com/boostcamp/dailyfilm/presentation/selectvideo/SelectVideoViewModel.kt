@@ -31,9 +31,6 @@ class SelectVideoViewModel @Inject constructor(
     fun loadVideo(){
         viewModelScope.launch {
             selectVideoRepository.loadVideo().collect { videoItem ->
-                videoItem.map {
-                    Log.d("flowTest",it.toString())
-                }
                 _videosState.value = Result.Success(videoItem)
             }
         }
