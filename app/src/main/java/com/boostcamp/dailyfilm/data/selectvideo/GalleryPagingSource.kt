@@ -67,17 +67,9 @@ class GalleryPagingSource @Inject constructor(
             TimeUnit.MILLISECONDS.convert(0, TimeUnit.SECONDS).toString()
         )
 
-        val sortOrder = "${MediaStore.Video.Media.DISPLAY_NAME} ASC LIMIT $PAGING_SIZE OFFSET $start"
-        val selectionBundle = bundleOf(
-            ContentResolver.QUERY_ARG_OFFSET to start,
-            ContentResolver.QUERY_ARG_LIMIT to PAGING_SIZE,
-            ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(MediaStore.Files.FileColumns.DATE_MODIFIED),
-            ContentResolver.QUERY_ARG_SORT_DIRECTION to ContentResolver.QUERY_SORT_DIRECTION_DESCENDING,
-            ContentResolver.QUERY_ARG_SQL_SELECTION to selection,
-            ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to selectionArgs
-        )
-
         val query = if (Build.VERSION.SDK_INT<= Build.VERSION_CODES.Q){
+            val sortOrder = "${MediaStore.Video.Media.DISPLAY_NAME} ASC LIMIT $PAGING_SIZE OFFSET $start"
+
             contentResolver.query(
             collection,
             projection,
@@ -86,6 +78,15 @@ class GalleryPagingSource @Inject constructor(
             sortOrder
         )
         }else{
+            val selectionBundle = bundleOf(
+                ContentResolver.QUERY_ARG_OFFSET to start,
+                ContentResolver.QUERY_ARG_LIMIT to PAGING_SIZE,
+                ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(MediaStore.Files.FileColumns.DATE_MODIFIED),
+                ContentResolver.QUERY_ARG_SORT_DIRECTION to ContentResolver.QUERY_SORT_DIRECTION_DESCENDING,
+                ContentResolver.QUERY_ARG_SQL_SELECTION to selection,
+                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to selectionArgs
+            )
+
             contentResolver.query(
                 collection,
                 projection,
@@ -127,6 +128,6 @@ class GalleryPagingSource @Inject constructor(
 
     companion object {
         const val STARTING_PAGE_INDEX = 1
-        const val PAGING_SIZE = 20
+        const val PAGING_SIZE = 8
     }
 }
