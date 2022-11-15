@@ -124,6 +124,6 @@ class GalleryPagingSource @Inject constructor(
 
     companion object {
         const val STARTING_PAGE_INDEX = 1
-        const val PAGING_SIZE = 16
+        const val PAGING_SIZE = 9
     }
 }
