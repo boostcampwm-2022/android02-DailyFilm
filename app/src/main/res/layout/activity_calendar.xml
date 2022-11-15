@@ -4,12 +4,88 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="java.util.Calendar"/>
 
+        <variable
+            name="viewModel"
+            type="com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            tools:text="5월"
+            android:text="@{viewModel.calendarFlow}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_sun"
+            style="@style/weekTextViewStyle"
+            android:text="일"
+            android:textColor="@color/red"
+            android:layout_marginStart="20dp"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintEnd_toStartOf="@id/tv_mon"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_mon"
+            style="@style/weekTextViewStyle"
+            android:text="월"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintStart_toEndOf="@id/tv_sun"
+            app:layout_constraintEnd_toStartOf="@id/tv_tus"/>
+
+        <TextView
+            android:id="@+id/tv_tus"
+            style="@style/weekTextViewStyle"
+            android:text="화"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintStart_toEndOf="@id/tv_mon"
+            app:layout_constraintEnd_toStartOf="@id/tv_wen"/>
+
+        <TextView
+            android:id="@+id/tv_wen"
+            style="@style/weekTextViewStyle"
+            android:text="수"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintStart_toEndOf="@id/tv_tus"
+            app:layout_constraintEnd_toStartOf="@id/tv_thr"/>
+
+        <TextView
+            android:id="@+id/tv_thr"
+            style="@style/weekTextViewStyle"
+            android:text="목"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintStart_toEndOf="@id/tv_wen"
+            app:layout_constraintEnd_toStartOf="@id/tv_fri"/>
+
+        <TextView
+            android:id="@+id/tv_fri"
+            style="@style/weekTextViewStyle"
+            android:text="금"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintStart_toEndOf="@id/tv_thr"
+            app:layout_constraintEnd_toStartOf="@id/tv_sat"/>
+
+        <TextView
+            android:id="@+id/tv_sat"
+            style="@style/weekTextViewStyle"
+            android:text="토"
+            android:textColor="@color/blue"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_test"
+            app:layout_constraintStart_toEndOf="@id/tv_fri"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_calendar"
@@ -18,7 +94,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_wen" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:onClick="@{() -> viewModel.uploadClicked()}"
+            android:src="@drawable/ic_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,53 +1,54 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarFragment.Companion.KEY_CALENDAR
+import androidx.lifecycle.viewModelScope
+import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
+import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Calendar
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
+
+sealed class Event {
+    data class UploadSuccess(val dateModel: DateModel) : Event()
+    data class UpdateMonth(val month: String) : Event()
+}
+
 @HiltViewModel
-class CalendarViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class CalendarViewModel @Inject constructor() : ViewModel() {
 
-    val calendar = savedStateHandle.get<Calendar>(KEY_CALENDAR)
-        ?: throw IllegalStateException("CalendarViewModel - calendar is null")
+    private lateinit var item: DateModel
+    private var calendar = Calendar.getInstance(Locale.getDefault())
 
-    fun testCalendar() {
-        val tempCalendar = Calendar.getInstance().apply {
-            set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-            set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-            set(Calendar.DAY_OF_MONTH, 1)
+    private val _eventFlow = MutableSharedFlow<Event>()
+    val eventFlow: SharedFlow<Event> = _eventFlow.asSharedFlow()
+
+    private val _calendarFlow = MutableStateFlow("${calendar.get(Calendar.MONTH) + 1}월")
+    val calendarFlow: StateFlow<String> = _calendarFlow.asStateFlow()
+
+    fun onDateItemClicked(item: DateModel) {
+        this.item = item
+    }
+
+    private fun event(event: Event) {
+        viewModelScope.launch {
+            _eventFlow.emit(event)
         }
+    }
 
-        val prevCalendar = Calendar.getInstance().apply {
-            set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-            set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
+    fun getViewPagerPosition(position: Int) {
+
+        viewModelScope.launch {
+            calendar = Calendar.getInstance(Locale.getDefault()).apply {
+                add(Calendar.MONTH, position - CalendarPagerAdapter.START_POSITION)
+            }
+            _calendarFlow.emit("${calendar.get(Calendar.MONTH) + 1}월")
         }
+    }
 
-        val prevMaxDay = prevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val dayOfWeek = tempCalendar.get(Calendar.DAY_OF_WEEK)
-
-        prevCalendar.set(Calendar.DAY_OF_MONTH, prevMaxDay - (dayOfWeek - 2))
-
-        Log.d("Calendar", "")
-        Log.d("Calendar", "testCalendar: Temp - ${tempCalendar.get(Calendar.YEAR)}/${tempCalendar.get(Calendar.MONTH) + 1}/${tempCalendar.get(Calendar.DAY_OF_MONTH)}")
-        Log.d("Calendar", "testCalendar: Prev - ${prevCalendar.get(Calendar.YEAR)}/${prevCalendar.get(Calendar.MONTH) + 1}/${prevCalendar.get(Calendar.DAY_OF_MONTH)}")
-
-        Log.d("Calendar", "Start testCalendar: ${calendar.get(Calendar.MONTH) + 1}")
-
-        for (i in 0 until 42) {
-            val year = prevCalendar.get(Calendar.YEAR)
-            val month = prevCalendar.get(Calendar.MONTH) + 1
-            val dayOfMonth = prevCalendar.get(Calendar.DAY_OF_MONTH)
-            val testDayOfWeek = prevCalendar.get(Calendar.DAY_OF_WEEK)
-
-            Log.d("Calendar", "testCalendar: $year/$month/$dayOfMonth, $testDayOfWeek")
-
-            prevCalendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
+    fun uploadClicked() {
+        event(Event.UploadSuccess(item))
     }
 }
