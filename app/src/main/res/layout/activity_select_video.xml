@@ -4,9 +4,10 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
                 name="viewModel"
-                type="com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoViewModel" />
+                type="com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,11 +15,27 @@
             android:layout_height="match_parent"
             tools:context=".presentation.selectvideo.SelectVideoActivity">
 
+        <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/playerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/rv_media"
+                app:layout_constraintVertical_chainStyle="spread_inside"/>
+
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_media"
-     android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:updateAdapter="@{viewModel.videosState}"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="4" />
+                app:spanCount="4"
+                app:layout_constraintTop_toBottomOf="@+id/playerView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

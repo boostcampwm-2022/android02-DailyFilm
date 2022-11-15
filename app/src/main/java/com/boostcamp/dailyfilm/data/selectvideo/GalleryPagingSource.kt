@@ -1,12 +1,10 @@
 package com.boostcamp.dailyfilm.data.selectvideo
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -31,13 +29,11 @@ class GalleryPagingSource @Inject constructor(
             val pageNumber = params.key ?: STARTING_PAGE_INDEX
             val data = loadVideos((pageNumber - 1) * PAGING_SIZE)
             val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
-            val nextKey = if (data.isEmpty()) null else { pageNumber + 1 }
+            val nextKey = if (data.isEmpty()) null else {
+                pageNumber + 1
+            }
 
-            LoadResult.Page(
-                data,
-                prevKey,
-                nextKey
-            )
+            LoadResult.Page(data, prevKey, nextKey)
         } catch (e: IOException) {
             LoadResult.Error(e)
 
@@ -46,7 +42,7 @@ class GalleryPagingSource @Inject constructor(
         }
     }
 
-    private fun loadVideos(start:Int):List<VideoItem>{
+    private fun loadVideos(start: Int): List<VideoItem> {
         val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             MediaStore.Video.Media.getContentUri(
                 MediaStore.VOLUME_EXTERNAL
@@ -67,17 +63,17 @@ class GalleryPagingSource @Inject constructor(
             TimeUnit.MILLISECONDS.convert(0, TimeUnit.SECONDS).toString()
         )
 
-        val query = if (Build.VERSION.SDK_INT<= Build.VERSION_CODES.Q){
+        val query = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             val sortOrder = "${MediaStore.Video.Media.DISPLAY_NAME} ASC LIMIT $PAGING_SIZE OFFSET $start"
 
             contentResolver.query(
-            collection,
-            projection,
-            selection,
-            selectionArgs,
-            sortOrder
-        )
-        }else{
+                collection,
+                projection,
+                selection,
+                selectionArgs,
+                sortOrder
+            )
+        } else {
             val selectionBundle = bundleOf(
                 ContentResolver.QUERY_ARG_OFFSET to start,
                 ContentResolver.QUERY_ARG_LIMIT to PAGING_SIZE,
@@ -128,6 +124,6 @@ class GalleryPagingSource @Inject constructor(
 
     companion object {
         const val STARTING_PAGE_INDEX = 1
-        const val PAGING_SIZE = 8
+        const val PAGING_SIZE = 16
     }
 }
