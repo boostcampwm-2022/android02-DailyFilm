@@ -20,12 +20,7 @@ class DateViewModel @Inject constructor(
     private val _dateFlow = MutableStateFlow(initialDateList())
     val dateFlow: StateFlow<List<DateModel>> = _dateFlow.asStateFlow()
 
-//    private val _dateFlow = MutableSharedFlow<List<DateModel>>()
-//    val dateFlow: SharedFlow<List<DateModel>> = _dateFlow.asSharedFlow()
-
-    /*init {
-        initialDateList()
-    }*/
+    private var test: Boolean = true
 
     private fun initialDateList(): List<DateModel> {
 
@@ -46,6 +41,7 @@ class DateViewModel @Inject constructor(
         prevCalendar.set(Calendar.DAY_OF_MONTH, prevMaxDay - (dayOfWeek - 2))
 
         val dateModelList = mutableListOf<DateModel>()
+
         val tmpUrl = "https://plchldr.co/i/500x250?text="
 
         for (i in 0 until 42) {
@@ -59,13 +55,16 @@ class DateViewModel @Inject constructor(
                     year.toString(),
                     month.toString(),
                     dayOfMonth.toString(),
-                    tmpUrl + "$year$month$dayOfMonth"
+                    if (test) {
+                        tmpUrl + "$year$month$dayOfMonth"
+                    } else {
+                        null
+                    }
                 )
             )
+            test = !test
         }
-        /*viewModelScope.launch {
-            _dateFlow.emit(dateModelList)
-        }*/
+
         return dateModelList
     }
 }

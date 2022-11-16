@@ -17,18 +17,11 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @AndroidEntryPoint
-class DateFragment(onUploadFilm: (DateModel) -> Unit) :
+class DateFragment(val onUploadFilm: (DateModel) -> Unit) :
     BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
 
     private val viewModel: DateViewModel by viewModels()
-    private val adapter = CalendarAdapter(
-        { dateModel ->
-            Toast.makeText(requireContext(), "img", Toast.LENGTH_SHORT).show()
-        },
-        { dateModel ->
-            onUploadFilm(dateModel)
-            Toast.makeText(requireContext(), "$dateModel", Toast.LENGTH_SHORT).show()
-        })
+    private lateinit var adapter : CalendarAdapter
 
     override fun initView() {
 
@@ -44,6 +37,15 @@ class DateFragment(onUploadFilm: (DateModel) -> Unit) :
     }
 
     private fun initAdapter() {
+        adapter = CalendarAdapter(
+            viewModel.calendar,
+            { dateModel ->
+                Toast.makeText(requireContext(), "img", Toast.LENGTH_SHORT).show()
+            },
+            { dateModel ->
+                onUploadFilm(dateModel)
+                Toast.makeText(requireContext(), "$dateModel", Toast.LENGTH_SHORT).show()
+            })
         binding.rvCalendar.adapter = adapter
     }
 

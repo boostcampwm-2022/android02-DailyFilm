@@ -11,7 +11,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_focused_date"
+        android:focusable="true"
+        android:clickable="true"
+        android:paddingVertical="5dp">
 
         <TextView
             android:id="@+id/tv_day"
@@ -28,13 +32,17 @@
 
         <ImageView
             android:id="@+id/img_thumbnail"
-            android:layout_width="20dp"
-            android:layout_height="40dp"
             loadUrl="@{dateModel.imgUrl}"
-            app:layout_constraintTop_toBottomOf="@id/tv_day"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            cornerRadius="@{10}"
+            android:elevation="2dp"
+            android:layout_marginHorizontal="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_day" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
