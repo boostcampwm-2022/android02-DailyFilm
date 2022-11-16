@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
@@ -11,8 +12,10 @@ import com.boostcamp.dailyfilm.databinding.ActivityCalendarBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
 class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity_calendar) {
@@ -54,6 +57,45 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                     }
                 }
             }
+        }
+
+        binding.imgBtnGoToday.setOnClickListener {
+            binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION
+        }
+
+        binding.imgBtnDatePicker.setOnClickListener {
+            val datePicker =
+                MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select date")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                Log.d("datePicker", "Positive: $it")
+
+                val calendar = Calendar.getInstance().apply {
+                    timeInMillis = it
+                }
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH)
+
+                val todayCalendar = Calendar.getInstance(Locale.getDefault())
+                val todayYear = todayCalendar.get(Calendar.YEAR)
+                val todayMonth = todayCalendar.get(Calendar.MONTH)
+
+                val position = (year * 12 + month) - (todayYear * 12 + todayMonth)
+
+                Log.d("datePicker", "initView: $position")
+
+                binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION + position
+            }
+
+            datePicker.addOnNegativeButtonClickListener {
+                Log.d("datePicker", "Negative: $it")
+                datePicker.dismiss()
+            }
+
+            datePicker.show(supportFragmentManager, "")
         }
     }
 
