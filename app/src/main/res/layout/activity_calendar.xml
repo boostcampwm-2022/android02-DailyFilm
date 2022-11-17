@@ -5,20 +5,135 @@
 
     <data>
 
+        <import type="java.util.Calendar" />
+
+        <variable
+            name="viewModel"
+            type="com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/layout_drawer_calendar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp_calendar"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/layout_bar_calendar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:fitsSystemWindows="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/bar_calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:elevation="0dp"
+                    app:menu="@menu/menu_calendar_drawer"
+                    app:navigationIcon="@drawable/ic_drawer_menu"
+                    app:title="@{viewModel.calendarFlow}"
+                    tools:title="2022년 11월" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <TextView
+                android:id="@+id/tv_sun"
+                style="@style/weekTextViewStyle"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/sunday"
+                android:textColor="@color/red"
+                app:layout_constraintEnd_toStartOf="@id/tv_mon"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_bar_calendar" />
+
+            <TextView
+                android:id="@+id/tv_mon"
+                style="@style/weekTextViewStyle"
+                android:text="@string/monday"
+                app:layout_constraintEnd_toStartOf="@id/tv_tus"
+                app:layout_constraintStart_toEndOf="@id/tv_sun"
+                app:layout_constraintTop_toTopOf="@id/tv_sun" />
+
+            <TextView
+                android:id="@+id/tv_tus"
+                style="@style/weekTextViewStyle"
+                android:text="@string/tuesday"
+                app:layout_constraintEnd_toStartOf="@id/tv_wen"
+                app:layout_constraintStart_toEndOf="@id/tv_mon"
+                app:layout_constraintTop_toTopOf="@id/tv_sun" />
+
+            <TextView
+                android:id="@+id/tv_wen"
+                style="@style/weekTextViewStyle"
+                android:text="@string/wednesday"
+                app:layout_constraintEnd_toStartOf="@id/tv_thr"
+                app:layout_constraintStart_toEndOf="@id/tv_tus"
+                app:layout_constraintTop_toTopOf="@id/tv_sun" />
+
+            <TextView
+                android:id="@+id/tv_thr"
+                style="@style/weekTextViewStyle"
+                android:text="@string/thursday"
+                app:layout_constraintEnd_toStartOf="@id/tv_fri"
+                app:layout_constraintStart_toEndOf="@id/tv_wen"
+                app:layout_constraintTop_toTopOf="@id/tv_sun" />
+
+            <TextView
+                android:id="@+id/tv_fri"
+                style="@style/weekTextViewStyle"
+                android:text="@string/friday"
+                app:layout_constraintEnd_toStartOf="@id/tv_sat"
+                app:layout_constraintStart_toEndOf="@id/tv_thr"
+                app:layout_constraintTop_toTopOf="@id/tv_sun" />
+
+            <TextView
+                android:id="@+id/tv_sat"
+                style="@style/weekTextViewStyle"
+                android:layout_marginEnd="20dp"
+                android:text="@string/saturday"
+                android:textColor="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_fri"
+                app:layout_constraintTop_toTopOf="@id/tv_sun" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_calendar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_wen" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:onClick="@{() -> viewModel.uploadClicked()}"
+                android:src="@drawable/ic_add"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/drawer_navigation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/header_calendar_drawer" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
