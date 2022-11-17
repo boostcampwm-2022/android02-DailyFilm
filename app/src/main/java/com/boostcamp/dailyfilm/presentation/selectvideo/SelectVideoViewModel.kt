@@ -12,8 +12,7 @@ import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,10 +28,20 @@ class SelectVideoViewModel @Inject constructor(
         MutableStateFlow(Result.Success<PagingData<VideoItem>>(PagingData.empty()))
     val videosState: StateFlow<Result<*>> get() = _videosState
 
+    private val _uploadResult = MutableSharedFlow<Boolean>()
+    val uploadResult : SharedFlow<Boolean> get() = _uploadResult
+
     override val selectedVideo = MutableLiveData<VideoItem>()
 
     init {
         Log.d("SelectVideoViewModel", "dateModel: $dateModel")
+    }
+
+
+    fun uploadVideo() {
+        selectedVideo.value?.let {videoItem->
+            selectVideoRepository.uploadVideo(videoItem).onEach { _uploadResult.emit(it)}.launchIn(viewModelScope)
+        }
     }
 
     fun loadVideo() {

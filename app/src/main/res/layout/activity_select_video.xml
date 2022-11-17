@@ -24,15 +24,25 @@
                 app:contentScrim="#B3000000"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+                <TextView
+                    android:id="@+id/tv_selectVideo_next"
+                    android:elevation="1dp"
+                    android:layout_gravity="end"
+                    android:layout_margin="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:text="다음"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:onUploaded="@{viewModel.uploadResult}"
+                    android:onClick="@{() -> viewModel.uploadVideo()}" />
+
                 <com.google.android.exoplayer2.ui.StyledPlayerView
                     android:id="@+id/playerView"
                     android:layout_width="match_parent"
                     android:layout_height="500dp"
+                    app:resize_mode="zoom"
                     app:use_controller="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="spread_inside"
                     app:playVideo="@{viewModel.selectedVideo}" />
 
                 <androidx.appcompat.widget.Toolbar
