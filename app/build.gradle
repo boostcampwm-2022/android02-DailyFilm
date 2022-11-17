@@ -7,6 +7,9 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
 }
+def localPropertiesFile = project.rootProject.file('local.properties')
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
     namespace 'com.boostcamp.dailyfilm'
@@ -18,7 +21,7 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
+        buildConfigField "String", "STORAGE_URL", localProperties["storage.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -66,8 +69,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+    implementation platform('com.google.firebase:firebase-bom:31.0.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // Firebase Storage
+    implementation 'com.google.firebase:firebase-storage-ktx'
 
     // Firebase Google Auth
     implementation 'com.google.firebase:firebase-auth:21.1.0'
