@@ -9,7 +9,7 @@ import java.util.Locale
 
 class CalendarPagerAdapter(
     fragmentActivity: FragmentActivity,
-    private val onUploadFilm: (DateModel) -> Unit
+    private val onUploadFilm: (DateModel?) -> Unit
 ) : FragmentStateAdapter(fragmentActivity) {
 
     private lateinit var calendar: Calendar

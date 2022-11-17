@@ -10,13 +10,15 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import java.util.*
 
 class CalendarAdapter(
-    private val currentCalendar: Calendar,
+    currentCalendar: Calendar,
     val onImgClick: (DateModel) -> Unit,
-    val onDayClick: (DateModel) -> Unit,
+    val onDayClick: (DateModel) -> Unit
 ) :
     ListAdapter<DateModel, CalendarAdapter.DateModelViewHolder>(DateModelDiffCallback()) {
 
-    private val todayCalendar = Calendar.getInstance(Locale.getDefault())
+    private val todayCalendar = Calendar.getInstance(Locale.getDefault()).apply {
+        set(Calendar.HOUR_OF_DAY, 24)
+    }
     private val currentMonth = currentCalendar.get(Calendar.MONTH) + 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateModelViewHolder {
@@ -46,13 +48,22 @@ class CalendarAdapter(
                 bind.imgThumbnail.alpha = 0.3f
             } else {
                 if (item.imgUrl != null) {
-                    bind.root.setOnClickListener { onImgClick(item) }
-                }
-                else {
                     bind.root.setOnClickListener {
-                        bind.root.isFocusableInTouchMode = true
-                        bind.root.requestFocus()
-                        bind.root.isFocusableInTouchMode = false
+                        bind.root.apply {
+                            isFocusableInTouchMode = true
+                            requestFocus()
+                            clearFocus()
+                            isFocusableInTouchMode = false
+                        }
+                        onImgClick(item)
+                    }
+                } else {
+                    bind.root.setOnClickListener {
+                        bind.root.apply {
+                            isFocusableInTouchMode = true
+                            requestFocus()
+                            isFocusableInTouchMode = false
+                        }
                         onDayClick(item)
                     }
                 }
@@ -74,6 +85,5 @@ class CalendarAdapter(
         ): Boolean {
             return oldItem == newItem
         }
-
     }
 }

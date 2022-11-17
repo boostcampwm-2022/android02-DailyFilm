@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -23,7 +25,6 @@ class DateViewModel @Inject constructor(
     private var test: Boolean = true
 
     private fun initialDateList(): List<DateModel> {
-
         val tempCalendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, calendar.get(Calendar.YEAR))
             set(Calendar.MONTH, calendar.get(Calendar.MONTH))
