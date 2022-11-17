@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,7 @@ import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -139,11 +141,19 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun uploadFilm(item: DateModel?) {
-        // TODO : 업로드 화면으로 이동
         if (item != null) {
             Toast.makeText(this, "uploadFilm $item", Toast.LENGTH_SHORT).show()
+            startActivity(
+                Intent(this, SelectVideoActivity::class.java).apply {
+                    putExtra(KEY_DATE_MODEL, item)
+                }
+            )
         } else {
             Toast.makeText(this, "날짜를 선택해주세요", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    companion object {
+        const val KEY_DATE_MODEL = "date_model"
     }
 }

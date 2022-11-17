@@ -17,19 +17,18 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
     override fun initView() {
         binding.viewModel = viewModel
         requestPermission()
-
     }
 
     private fun requestPermission() {
         val requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted){
+                if (isGranted) {
                     viewModel.loadVideo()
                 }
             }
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
-        }else{
+        } else {
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
