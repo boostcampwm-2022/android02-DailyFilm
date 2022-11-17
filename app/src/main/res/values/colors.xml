@@ -10,4 +10,5 @@
     <color name="red">#FF0000</color>
     <color name="blue">#0022FF</color>
     <color name="gray">#CFCFCF</color>
+    <color name="divider_gray">#BBBBBB</color>
 </resources>
