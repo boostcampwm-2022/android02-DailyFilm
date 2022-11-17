@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.data.selectvideo
+package com.boostcamp.dailyfilm.data.selectvideo.local
 
 import android.content.ContentResolver
 import android.content.ContentUris
