@@ -7,9 +7,6 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
 }
-def localPropertiesFile = project.rootProject.file('local.properties')
-def localProperties = new Properties()
-localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
     namespace 'com.boostcamp.dailyfilm'
@@ -21,7 +18,6 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "STORAGE_URL", localProperties["storage.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
