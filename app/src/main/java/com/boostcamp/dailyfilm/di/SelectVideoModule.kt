@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.di
 import android.content.ContentResolver
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepositoryImpl
+import com.boostcamp.dailyfilm.data.selectvideo.remote.GalleryDataRemoteSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,5 +16,5 @@ object SelectVideoModule {
     @Provides
     @Singleton
     fun provideGalleryVideoRepository(contentResolver: ContentResolver): GalleryVideoRepository =
-        GalleryVideoRepositoryImpl(contentResolver)
+        GalleryVideoRepositoryImpl(contentResolver, GalleryDataRemoteSourceImpl())
 }
