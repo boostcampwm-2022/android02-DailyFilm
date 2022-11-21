@@ -16,7 +16,6 @@ import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapte
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
-import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -26,30 +25,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
 
     private lateinit var calendarPagerAdapter: CalendarPagerAdapter
     private val viewModel: CalendarViewModel by viewModels()
-    private val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Select date")
-        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-        .build().apply {
-            addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance().apply {
-                    timeInMillis = it
-                }
-                val year = calendar.get(Calendar.YEAR)
-                val month = calendar.get(Calendar.MONTH)
-
-                val todayCalendar = Calendar.getInstance(Locale.getDefault())
-                val todayYear = todayCalendar.get(Calendar.YEAR)
-                val todayMonth = todayCalendar.get(Calendar.MONTH)
-
-                val position = (year * 12 + month) - (todayYear * 12 + todayMonth)
-
-                binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION + position
-            }
-
-            addOnNegativeButtonClickListener {
-                dismiss()
-            }
-        }
 
     override fun initView() {
         binding.viewModel = viewModel
@@ -88,7 +63,16 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                     true
                 }
                 R.id.item_date_picker -> {
-                    datePicker.show(supportFragmentManager, "")
+                    val datePickerDialog = DatePickerDialog(viewModel.calendar) { year, month ->
+                        val todayCalendar = Calendar.getInstance(Locale.getDefault())
+                        val todayYear = todayCalendar.get(Calendar.YEAR)
+                        val todayMonth = todayCalendar.get(Calendar.MONTH)
+
+                        val position = (year * 12 + month) - (todayYear * 12 + todayMonth)
+
+                        binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION + position
+                    }
+                    datePickerDialog.show(supportFragmentManager, "date_picker")
                     true
                 }
                 else -> false
