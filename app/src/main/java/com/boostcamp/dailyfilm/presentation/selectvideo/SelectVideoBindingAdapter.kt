@@ -4,10 +4,7 @@ import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.dailyfilm.data.model.Result
@@ -22,10 +19,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 @BindingAdapter("onUploaded")
-fun TextView.showResultOnSnackBar(uploadResult: SharedFlow<Boolean>){
-
+fun TextView.showResultOnSnackBar(uploadResult: SharedFlow<Boolean>) {
     findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
-        findViewTreeLifecycleOwner()?.repeatOnLifecycle(Lifecycle.State.STARTED){
+        findViewTreeLifecycleOwner()?.repeatOnLifecycle(Lifecycle.State.STARTED) {
             uploadResult.collect {
                 if (it)
                     Snackbar.make(this@showResultOnSnackBar, "업로드 성공", Snackbar.LENGTH_SHORT).show()
@@ -35,14 +31,16 @@ fun TextView.showResultOnSnackBar(uploadResult: SharedFlow<Boolean>){
 }
 
 @BindingAdapter("playVideo")
-fun StyledPlayerView.playVideo(videoItem: VideoItem?) {
-    if (player == null){
-        player = ExoPlayer.Builder(context).build()
+fun StyledPlayerView.playVideo(uri: Uri?) {
+    if (player == null) {
+        player = ExoPlayer.Builder(context).build().apply {
+            volume = 0f
+            repeatMode = Player.REPEAT_MODE_ONE
+        }
     }
 
-    videoItem?.let {
-        val mediaItem = MediaItem.fromUri(it.uri)
-        player?.repeatMode = Player.REPEAT_MODE_ONE
+    uri?.let {
+        val mediaItem = MediaItem.fromUri(it)
         player?.setMediaItem(mediaItem)
         player?.prepare()
         player?.play()
@@ -50,7 +48,10 @@ fun StyledPlayerView.playVideo(videoItem: VideoItem?) {
 }
 
 @BindingAdapter(value = ["setVideoSelectListener", "updateAdapter"], requireAll = true)
-fun RecyclerView.updateAdapter(videoClickListener: VideoSelectListener, videosState: StateFlow<Result<*>>?) {
+fun RecyclerView.updateAdapter(
+    videoClickListener: VideoSelectListener,
+    videosState: StateFlow<Result<*>>?
+) {
     if (adapter == null) {
         adapter = SelectVideoAdapter(videoClickListener)
     }
@@ -59,12 +60,11 @@ fun RecyclerView.updateAdapter(videoClickListener: VideoSelectListener, videosSt
         when (videosState.value) {
             is Result.Success<*> -> {
                 findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
-                    findViewTreeLifecycleOwner()?.repeatOnLifecycle(Lifecycle.State.STARTED){
-                    (adapter as SelectVideoAdapter).submitData((videosState.value as Result.Success<*>).data as PagingData<VideoItem>)
+                    findViewTreeLifecycleOwner()?.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        (adapter as SelectVideoAdapter).submitData((videosState.value as Result.Success<*>).data as PagingData<VideoItem>)
                     }
                 }
             }
-
             is Result.Empty -> TODO()
             is Result.Error -> TODO()
             is Result.Uninitialized -> TODO()
@@ -81,3 +81,4 @@ fun ImageView.updateThumbnails(uri: Uri?) {
             .into(this)
     }
 }
+

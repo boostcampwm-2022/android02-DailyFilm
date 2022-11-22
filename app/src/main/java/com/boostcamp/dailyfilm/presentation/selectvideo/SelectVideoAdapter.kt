@@ -27,7 +27,9 @@ class SelectVideoAdapter(
     override fun onBindViewHolder(holder: SelectVideoViewHolder, position: Int) {
         holder.bind(getItem(position) ?: return)
         if (videoSelectListener.selectedVideo.value == null){
-            videoSelectListener.selectedVideo.value = getItem(0) ?: return
+            getItem(0)?.let {
+                videoSelectListener.chooseVideo(it)
+            }
         }
     }
 

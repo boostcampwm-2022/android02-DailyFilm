@@ -1,7 +1,5 @@
 package com.boostcamp.dailyfilm.presentation.selectvideo
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +9,7 @@ import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -28,19 +27,27 @@ class SelectVideoViewModel @Inject constructor(
         MutableStateFlow(Result.Success<PagingData<VideoItem>>(PagingData.empty()))
     val videosState: StateFlow<Result<*>> get() = _videosState
 
-    private val _uploadResult = MutableSharedFlow<Boolean>()
-    val uploadResult : SharedFlow<Boolean> get() = _uploadResult
-
-    override val selectedVideo = MutableLiveData<VideoItem>()
-
-    init {
-        Log.d("SelectVideoViewModel", "dateModel: $dateModel")
-    }
+    private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
+    override val selectedVideo = _selectedVideo.asStateFlow()
 
 
-    fun uploadVideo() {
-        selectedVideo.value?.let {videoItem->
-            selectVideoRepository.uploadVideo(videoItem).onEach { _uploadResult.emit(it)}.launchIn(viewModelScope)
+    private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
+    val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
+
+    fun navigateToUpload() {
+        viewModelScope.launch {
+            selectedVideo.value?.let { selectedVideoItem ->
+                if (dateModel != null){
+                    event(
+                        SelectVideoEvent.NextButtonResult(
+                            DateAndVideoModel(
+                                selectedVideoItem.uri,
+                                dateModel.getDate()
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -52,7 +59,20 @@ class SelectVideoViewModel @Inject constructor(
         }
     }
 
+    private fun event(event: SelectVideoEvent) {
+        viewModelScope.launch {
+            _eventFlow.emit(event)
+        }
+    }
+
     override fun chooseVideo(videoItem: VideoItem) {
-        this.selectedVideo.value = videoItem
+        viewModelScope.launch {
+            _selectedVideo.emit(videoItem)
+        }
     }
 }
+
+sealed class SelectVideoEvent {
+    data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel) : SelectVideoEvent()
+}
+

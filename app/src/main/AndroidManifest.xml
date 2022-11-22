@@ -17,6 +17,9 @@
         android:theme="@style/Theme.DailyFilm"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.uploadfilm.UploadFilmActivity"
+            android:exported="false"></activity>
+        <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="true">
             <intent-filter>
