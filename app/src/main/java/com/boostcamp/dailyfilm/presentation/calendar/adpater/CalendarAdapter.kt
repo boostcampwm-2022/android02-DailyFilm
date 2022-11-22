@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar.adpater
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,10 +8,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.dailyfilm.databinding.ItemDateBinding
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.bumptech.glide.RequestManager
 import java.util.*
 
 class CalendarAdapter(
     currentCalendar: Calendar,
+    val glide: RequestManager,
     val onImgClick: (DateModel) -> Unit,
     val onDayClick: (DateModel) -> Unit
 ) :
@@ -22,18 +25,21 @@ class CalendarAdapter(
     private val currentMonth = currentCalendar.get(Calendar.MONTH) + 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateModelViewHolder {
-        val bind = ItemDateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DateModelViewHolder(bind)
+        Log.d("onCreateViewHolder", "${parent.height}")
+        val binding = ItemDateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return DateModelViewHolder(binding, parent.measuredHeight / 6 - 2)
     }
 
     override fun onBindViewHolder(holder: DateModelViewHolder, position: Int) {
         holder.setItem(getItem(position))
     }
 
-    inner class DateModelViewHolder(val bind: ItemDateBinding) :
-        RecyclerView.ViewHolder(bind.root) {
+    inner class DateModelViewHolder(val binding: ItemDateBinding, private val itemHeight: Int) :
+        RecyclerView.ViewHolder(binding.root) {
         fun setItem(item: DateModel) {
-            bind.dateModel = item
+            itemView.layoutParams.height = itemHeight
+            binding.dateModel = item
+            binding.glide = glide
 
             val itemCalendar = Calendar.getInstance().apply {
                 set(Calendar.YEAR, item.year.toInt())
@@ -44,12 +50,12 @@ class CalendarAdapter(
             if (item.month.toInt() != currentMonth ||
                 itemCalendar.timeInMillis > todayCalendar.timeInMillis
             ) {
-                bind.tvDay.alpha = 0.3f
-                bind.imgThumbnail.alpha = 0.3f
+                binding.tvDay.alpha = 0.3f
+                binding.imgThumbnail.alpha = 0.3f
             } else {
                 if (item.imgUrl != null) {
-                    bind.root.setOnClickListener {
-                        bind.root.apply {
+                    binding.root.setOnClickListener {
+                        binding.root.apply {
                             isFocusableInTouchMode = true
                             requestFocus()
                             clearFocus()
@@ -58,8 +64,8 @@ class CalendarAdapter(
                         onImgClick(item)
                     }
                 } else {
-                    bind.root.setOnClickListener {
-                        bind.root.apply {
+                    binding.root.setOnClickListener {
+                        binding.root.apply {
                             isFocusableInTouchMode = true
                             requestFocus()
                             isFocusableInTouchMode = false

@@ -13,6 +13,7 @@ import com.boostcamp.dailyfilm.databinding.FragmentDateBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
     private fun initAdapter() {
         adapter = CalendarAdapter(
             viewModel.calendar,
+            Glide.with(this),
             { dateModel ->
                 onUploadFilm(null)
                 Toast.makeText(requireContext(), "img", Toast.LENGTH_SHORT).show()
