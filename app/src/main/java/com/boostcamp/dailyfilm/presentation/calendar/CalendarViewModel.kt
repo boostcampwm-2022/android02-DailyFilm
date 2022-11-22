@@ -28,6 +28,8 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
     }
+    var calendar: Calendar = localeCalendar
+        private set
 
     private val _eventFlow = MutableSharedFlow<Event>()
     val eventFlow: SharedFlow<Event> = _eventFlow.asSharedFlow()
@@ -53,7 +55,7 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
 
     fun getViewPagerPosition(position: Int) {
         viewModelScope.launch {
-            val calendar = Calendar.getInstance(Locale.getDefault()).apply {
+            calendar = Calendar.getInstance(Locale.getDefault()).apply {
                 add(Calendar.MONTH, position - CalendarPagerAdapter.START_POSITION)
                 set(Calendar.HOUR_OF_DAY, 12)
                 set(Calendar.MINUTE, 0)

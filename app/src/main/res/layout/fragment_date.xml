@@ -15,6 +15,7 @@
             android:id="@+id/rv_calendar"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:overScrollMode="never"
             app:spanCount="7"
             tools:listitem="@layout/item_date"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

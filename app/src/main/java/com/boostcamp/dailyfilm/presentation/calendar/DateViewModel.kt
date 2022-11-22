@@ -50,6 +50,10 @@ class DateViewModel @Inject constructor(
             val month = prevCalendar.get(Calendar.MONTH) + 1
             val dayOfMonth = prevCalendar.get(Calendar.DAY_OF_MONTH)
 
+            if (i == 35 && calendar.get(Calendar.MONTH) + 1 != month) {
+                break
+            }
+
             prevCalendar.add(Calendar.DAY_OF_MONTH, 1)
             dateModelList.add(
                 DateModel(
