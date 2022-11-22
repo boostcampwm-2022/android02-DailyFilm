@@ -1,14 +1,12 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
-import android.content.Intent
-import com.boostcamp.dailyfilm.R
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,7 +21,6 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uploadFilmInfoResult.collect {
                     if (it) {
-                        startActivity(Intent(this@UploadFilmActivity, CalendarActivity::class.java))
                         finish()
                     }
                 }
