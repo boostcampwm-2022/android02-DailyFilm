@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.data.selectvideo.local
+package com.boostcamp.dailyfilm.data.selectvideo
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -64,7 +64,8 @@ class GalleryPagingSource @Inject constructor(
         )
 
         val query = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            val sortOrder = "${MediaStore.Video.Media.DISPLAY_NAME} ASC LIMIT $PAGING_SIZE OFFSET $start"
+            val sortOrder =
+                "${MediaStore.Video.Media.DISPLAY_NAME} ASC LIMIT $PAGING_SIZE OFFSET $start"
 
             contentResolver.query(
                 collection,
