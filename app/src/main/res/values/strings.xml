@@ -7,4 +7,6 @@
     <string name="thursday">목</string>
     <string name="friday">금</string>
     <string name="saturday">토</string>
+    <string name="text_next">다음</string>
+    <string name="text_complete">완료</string>
 </resources>
