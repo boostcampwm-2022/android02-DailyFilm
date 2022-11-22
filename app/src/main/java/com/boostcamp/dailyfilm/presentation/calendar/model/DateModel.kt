@@ -9,4 +9,8 @@ data class DateModel(
     val month: String,
     val day: String,
     val imgUrl: String?
-) : Parcelable
+) : Parcelable{
+    fun getDate() =
+        year + month.padStart(2, '0') + day.padStart(2, '0')
+
+}

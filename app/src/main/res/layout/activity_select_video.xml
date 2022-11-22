@@ -31,11 +31,10 @@
                     android:layout_margin="8dp"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:text="다음"
+                    android:text="@string/text_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:onUploaded="@{viewModel.uploadResult}"
-                    android:onClick="@{() -> viewModel.uploadVideo()}" />
+                    android:onClick="@{() -> viewModel.navigateToUpload()}"/>
 
                 <com.google.android.exoplayer2.ui.StyledPlayerView
                     android:id="@+id/playerView"
@@ -43,7 +42,7 @@
                     android:layout_height="500dp"
                     app:resize_mode="zoom"
                     app:use_controller="false"
-                    app:playVideo="@{viewModel.selectedVideo}" />
+                    app:playVideo="@{viewModel.selectedVideo.uri}" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
