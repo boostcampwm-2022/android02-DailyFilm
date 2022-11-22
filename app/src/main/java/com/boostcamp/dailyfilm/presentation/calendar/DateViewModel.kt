@@ -111,6 +111,7 @@ class DateViewModel @Inject constructor(
                         itemYear.toString(),
                         (itemMonth + 1).toString(),
                         itemDay.toString(),
+                        item.text,
                         item.videoUrl
                     )
                 }
@@ -121,8 +122,6 @@ class DateViewModel @Inject constructor(
     }
 
     private fun initialDateList(): List<DateModel> {
-
-        Log.d("DateViewModel", "initialDateList: ")
 
         val tempCalendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, calendar.get(Calendar.YEAR))
@@ -155,8 +154,7 @@ class DateViewModel @Inject constructor(
                 DateModel(
                     year.toString(),
                     month.toString(),
-                    dayOfMonth.toString(),
-                    null
+                    dayOfMonth.toString()
                 )
             )
             prevCalendar.add(Calendar.DAY_OF_MONTH, 1)
