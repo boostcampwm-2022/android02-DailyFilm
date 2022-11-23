@@ -53,7 +53,7 @@ class CalendarAdapter(
                 binding.tvDay.alpha = 0.3f
                 binding.imgThumbnail.alpha = 0.3f
             } else {
-                if (item.imgUrl != null) {
+                if (item.videoUrl != null) {
                     binding.root.setOnClickListener {
                         binding.root.apply {
                             isFocusableInTouchMode = true

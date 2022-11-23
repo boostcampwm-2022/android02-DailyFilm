@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +24,6 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                 viewModel.uploadFilmInfoResult.collect {
                     if (it) {
                         viewModel.infoItem!!.uri.path?.let { uri -> File(uri).delete() }
-                      //  startActivity(Intent(this@UploadFilmActivity, CalendarActivity::class.java))
                         finish()
                     }
                 }

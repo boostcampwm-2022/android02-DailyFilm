@@ -1,7 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,8 +10,11 @@ import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.flow.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,7 +57,7 @@ class UploadFilmViewModel @Inject constructor(
             uploadFilmRepository.uploadFilmInfo(
                 userId,
                 uploadDate,
-                DailyFilmItem(videoUrl.toString(), text)
+                DailyFilmItem(videoUrl.toString(), text, uploadDate)
             )
                 .onEach { _uploadFilmInfoResult.emit(it) }.launchIn(viewModelScope)
         }
