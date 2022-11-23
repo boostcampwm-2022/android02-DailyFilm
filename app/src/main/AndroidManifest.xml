@@ -39,6 +39,9 @@
         <activity
             android:name=".presentation.selectvideo.SelectVideoActivity"
             android:exported="false" />
+        <activity
+            android:name=".presentation.TrimVideoActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
