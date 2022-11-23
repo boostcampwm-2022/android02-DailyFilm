@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import android.Manifest
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -45,15 +46,29 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
     }
 
     private fun requestPermission() {
-        val requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    viewModel.loadVideo()
-                }
-            }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
+            val requestMultiplePermissions =
+                registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                    permissions.entries.forEach {
+                        if (it.value) {
+                            viewModel.loadVideo()
+                        }
+                    }
+                }
+            requestMultiplePermissions.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_MEDIA_LOCATION,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                )
+            )
         } else {
+            val requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                    if (isGranted) {
+                        viewModel.loadVideo()
+                    }
+                }
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }

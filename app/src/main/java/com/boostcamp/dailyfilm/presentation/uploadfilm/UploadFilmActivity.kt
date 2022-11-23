@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
+import android.view.View
 import com.boostcamp.dailyfilm.R
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
@@ -23,8 +24,11 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uploadFilmInfoResult.collect {
                     if (it) {
+                        binding.backgroundPlayer.visibility= View.INVISIBLE
                         viewModel.infoItem!!.uri.path?.let { uri -> File(uri).delete() }
                         finish()
+                    }else{
+                        binding.lottieUploadingLoading.visibility= View.VISIBLE
                     }
                 }
             }
