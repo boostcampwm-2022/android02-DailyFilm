@@ -1,7 +1,8 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,11 +14,12 @@ import com.boostcamp.dailyfilm.databinding.FragmentDateBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.*
 
 @AndroidEntryPoint
 class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
@@ -44,11 +46,14 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
             Glide.with(this),
             { dateModel ->
                 onUploadFilm(null)
-                Toast.makeText(requireContext(), "img", Toast.LENGTH_SHORT).show()
+                startActivity(
+                    Intent(requireContext(), PlayFilmActivity::class.java).apply {
+                        putExtra(KEY_DATE_MODEL, dateModel)
+                    }
+                )
             },
             { dateModel ->
                 onUploadFilm(dateModel)
-                Toast.makeText(requireContext(), "$dateModel", Toast.LENGTH_SHORT).show()
             }
         )
         binding.rvCalendar.adapter = adapter
@@ -61,9 +66,17 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.fetchCalendar()
+    }
+
     companion object {
         const val KEY_CALENDAR = "calendar"
+        const val KEY_DATE_MODEL = "dateModel"
         fun newInstance(calendar: Calendar, lambda: (DateModel?) -> Unit): DateFragment {
+            Log.d("DateFragment", "newInstance: ${calendar.get(Calendar.MONTH) + 1}")
             return DateFragment(lambda).apply {
                 arguments = Bundle().apply {
                     putSerializable(KEY_CALENDAR, calendar)

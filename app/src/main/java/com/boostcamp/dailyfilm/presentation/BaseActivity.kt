@@ -15,10 +15,17 @@ abstract class BaseActivity<B : ViewDataBinding>(@LayoutRes private val layoutRe
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, layoutResId)
 
+        overridePendingTransition(android.R.anim.fade_in, 0)
+
         binding.lifecycleOwner = this
 
         initView()
     }
 
     abstract fun initView()
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, android.R.anim.fade_out)
+    }
 }
