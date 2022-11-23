@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
+import com.boostcamp.dailyfilm.R
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -9,6 +10,7 @@ import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
 
 @AndroidEntryPoint
 class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.activity_upload_film) {
@@ -21,6 +23,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uploadFilmInfoResult.collect {
                     if (it) {
+                        viewModel.infoItem!!.uri.path?.let { uri -> File(uri).delete() }
                         finish()
                     }
                 }
