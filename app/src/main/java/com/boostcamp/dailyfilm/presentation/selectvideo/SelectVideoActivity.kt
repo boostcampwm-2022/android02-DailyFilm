@@ -3,7 +3,6 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import android.Manifest
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -13,7 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivitySelectVideoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
+import com.boostcamp.dailyfilm.presentation.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,6 +26,8 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
         binding.viewModel = viewModel
         requestPermission()
         nextButtonEvent()
+
+
     }
 
     private fun nextButtonEvent() {
@@ -58,9 +59,8 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
     }
     private fun navigateToUpload(item: DateAndVideoModel?) {
         if (item != null) {
-            Toast.makeText(this, "moveToUploadFilm $item", Toast.LENGTH_SHORT).show()
             startActivity(
-                Intent(this, UploadFilmActivity::class.java).apply {
+                Intent(this, TrimVideoActivity::class.java).apply {
                     putExtra(DATE_VIDEO_ITEM, item)
                 }
             )
@@ -74,7 +74,6 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
         binding.playerView.player?.release()
         binding.playerView.player = null
         super.onDestroy()
-        Log.d("SelectVideoActivity" , "SelectVideoActivity onDestroy")
     }
     companion object {
         const val DATE_VIDEO_ITEM = "DateAndVideoModel"
