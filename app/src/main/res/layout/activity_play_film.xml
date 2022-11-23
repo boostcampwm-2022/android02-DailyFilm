@@ -35,7 +35,7 @@
             android:background="@color/cardview_dark_background"
             android:ems="10"
             android:gravity="start|top"
-            android:text="@{viewModel.dateModel.text ?? @string/error}"
+            android:text='@{viewModel.dateModel.text ?? ""}'
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
