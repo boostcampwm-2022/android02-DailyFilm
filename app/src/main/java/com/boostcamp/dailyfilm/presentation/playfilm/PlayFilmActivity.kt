@@ -12,4 +12,10 @@ class PlayFilmActivity : BaseActivity<ActivityPlayFilmBinding>(R.layout.activity
     override fun initView() {
         binding.viewModel = viewModel
     }
+
+    override fun onDestroy() {
+        binding.backgroundPlayer.player?.release()
+        binding.backgroundPlayer.player = null
+        super.onDestroy()
+    }
 }
