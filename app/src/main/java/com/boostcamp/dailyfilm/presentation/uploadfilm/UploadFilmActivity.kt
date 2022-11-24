@@ -1,6 +1,5 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
-import com.boostcamp.dailyfilm.R
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope

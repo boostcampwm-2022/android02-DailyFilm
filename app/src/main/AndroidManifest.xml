@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -19,8 +19,7 @@
         tools:targetApi="31">
         <activity
             android:name=".presentation.playfilm.PlayFilmActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".presentation.uploadfilm.UploadFilmActivity"
             android:exported="false" />
@@ -38,6 +37,9 @@
             android:exported="false" />
         <activity
             android:name=".presentation.selectvideo.SelectVideoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.TrimVideoActivity"
             android:exported="false" />
     </application>
 
