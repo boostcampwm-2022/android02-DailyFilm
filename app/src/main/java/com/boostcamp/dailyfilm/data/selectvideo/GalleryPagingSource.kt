@@ -60,7 +60,7 @@ class GalleryPagingSource @Inject constructor(
 
         val selection = "${MediaStore.Video.Media.DURATION} >= ?"
         val selectionArgs = arrayOf(
-            TimeUnit.MILLISECONDS.convert(0, TimeUnit.SECONDS).toString()
+            TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS).toString()
         )
 
         val query = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
