@@ -31,8 +31,8 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     var calendar: Calendar = localeCalendar
         private set
 
-    private val _eventFlow = MutableSharedFlow<Event>()
-    val eventFlow: SharedFlow<Event> = _eventFlow.asSharedFlow()
+    private val _calendarEventFlow = MutableSharedFlow<CalendarEvent>()
+    val calendarEventFlow: SharedFlow<CalendarEvent> = _calendarEventFlow.asSharedFlow()
 
     private val _calendarFlow = MutableStateFlow("${localeCalendar.get(Calendar.YEAR)}년 ${localeCalendar.get(Calendar.MONTH) + 1}월")
     val calendarFlow: StateFlow<String> = _calendarFlow.asStateFlow()
@@ -43,50 +43,48 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     private val _userFlow = MutableStateFlow(FirebaseAuth.getInstance().currentUser)
     val userFlow: StateFlow<FirebaseUser?> = _userFlow.asStateFlow()
 
-    fun changeSelectedItem(item: DateModel?) {
-        this.item = item
-    }
+    private val _filmFlow = MutableStateFlow<List<DateModel>>(emptyList())
+    val filmFlow: StateFlow<List<DateModel>> = _filmFlow.asStateFlow()
 
-    private fun event(event: Event) {
-        viewModelScope.launch {
-            _eventFlow.emit(event)
-        }
+    fun emitFilm(filmList: List<DateModel>) {
+        _filmFlow.value = filmList
     }
 
     fun getViewPagerPosition(position: Int) {
         viewModelScope.launch {
             calendar = Calendar.getInstance(Locale.getDefault()).apply {
+                timeInMillis = localeCalendar.timeInMillis
                 add(Calendar.MONTH, position - CalendarPagerAdapter.START_POSITION)
-                set(Calendar.HOUR_OF_DAY, 12)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
             }
             _calendarFlow.emit("${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월")
 
             val diff = calendar.timeInMillis - localeCalendar.timeInMillis
             _isTodayFlow.emit(
                 when {
-                    diff < 0L -> {
-                        DateState.BEFORE
-                    }
-                    diff == 0L -> {
-                        DateState.TODAY
-                    }
-                    else -> {
-                        DateState.AFTER
-                    }
+                    diff < 0L -> DateState.BEFORE
+                    diff == 0L -> DateState.TODAY
+                    else -> DateState.AFTER
                 }
             )
         }
     }
 
+    fun changeSelectedItem(item: DateModel?) {
+        this.item = item
+    }
+
     fun uploadClicked() {
-        event(Event.UploadSuccess(item))
+        event(CalendarEvent.UploadSuccess(item))
+    }
+
+    private fun event(calendarEvent: CalendarEvent) {
+        viewModelScope.launch {
+            _calendarEventFlow.emit(calendarEvent)
+        }
     }
 }
 
-sealed class Event {
-    data class UploadSuccess(val dateModel: DateModel?) : Event()
-    data class UpdateMonth(val month: String) : Event()
+sealed class CalendarEvent {
+    data class UploadSuccess(val dateModel: DateModel?) : CalendarEvent()
+    data class UpdateMonth(val month: String) : CalendarEvent()
 }

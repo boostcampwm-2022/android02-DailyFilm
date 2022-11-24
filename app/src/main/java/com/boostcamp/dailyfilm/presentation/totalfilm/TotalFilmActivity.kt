@@ -1,13 +1,15 @@
-package com.boostcamp.dailyfilm.presentation.playfilm
+package com.boostcamp.dailyfilm.presentation.totalfilm
 
 import androidx.activity.viewModels
 import com.boostcamp.dailyfilm.R
-import com.boostcamp.dailyfilm.databinding.ActivityPlayFilmBinding
+import com.boostcamp.dailyfilm.databinding.ActivityTotalFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class PlayFilmActivity : BaseActivity<ActivityPlayFilmBinding>(R.layout.activity_play_film) {
+@AndroidEntryPoint
+class TotalFilmActivity : BaseActivity<ActivityTotalFilmBinding>(R.layout.activity_total_film) {
 
-    private val viewModel: PlayFilmViewModel by viewModels()
+    private val viewModel: TotalFilmViewModel by viewModels()
 
     override fun initView() {
         binding.viewModel = viewModel

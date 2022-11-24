@@ -1,6 +1,5 @@
 package com.boostcamp.dailyfilm.presentation.calendar.adpater
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -16,8 +15,7 @@ class CalendarAdapter(
     val glide: RequestManager,
     val onImgClick: (DateModel) -> Unit,
     val onDayClick: (DateModel) -> Unit
-) :
-    ListAdapter<DateModel, CalendarAdapter.DateModelViewHolder>(DateModelDiffCallback()) {
+) : ListAdapter<DateModel, CalendarAdapter.DateModelViewHolder>(diffUtil) {
 
     private val todayCalendar = Calendar.getInstance(Locale.getDefault()).apply {
         set(Calendar.HOUR_OF_DAY, 24)
@@ -25,7 +23,6 @@ class CalendarAdapter(
     private val currentMonth = currentCalendar.get(Calendar.MONTH) + 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateModelViewHolder {
-        Log.d("onCreateViewHolder", "${parent.height}")
         val binding = ItemDateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DateModelViewHolder(binding, parent.measuredHeight / 6 - 2)
     }
@@ -36,6 +33,7 @@ class CalendarAdapter(
 
     inner class DateModelViewHolder(val binding: ItemDateBinding, private val itemHeight: Int) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun setItem(item: DateModel) {
             itemView.layoutParams.height = itemHeight
             binding.dateModel = item
@@ -50,12 +48,12 @@ class CalendarAdapter(
             if (item.month.toInt() != currentMonth ||
                 itemCalendar.timeInMillis > todayCalendar.timeInMillis
             ) {
-                binding.tvDay.alpha = 0.3f
-                binding.imgThumbnail.alpha = 0.3f
+                binding.tvDay.alpha = ALPHA_DISABLE
+                binding.imgThumbnail.alpha = ALPHA_DISABLE
             } else {
                 if (item.videoUrl != null) {
-                    binding.root.setOnClickListener {
-                        binding.root.apply {
+                    itemView.setOnClickListener {
+                        itemView.apply {
                             isFocusableInTouchMode = true
                             requestFocus()
                             clearFocus()
@@ -64,8 +62,8 @@ class CalendarAdapter(
                         onImgClick(item)
                     }
                 } else {
-                    binding.root.setOnClickListener {
-                        binding.root.apply {
+                    itemView.setOnClickListener {
+                        itemView.apply {
                             isFocusableInTouchMode = true
                             requestFocus()
                             isFocusableInTouchMode = false
@@ -77,19 +75,22 @@ class CalendarAdapter(
         }
     }
 
-    class DateModelDiffCallback : DiffUtil.ItemCallback<DateModel>() {
-        override fun areItemsTheSame(
-            oldItem: DateModel,
-            newItem: DateModel
-        ): Boolean {
-            return oldItem == newItem
-        }
+    companion object {
+        private const val ALPHA_DISABLE = 0.3f
+        private val diffUtil = object : DiffUtil.ItemCallback<DateModel>() {
+            override fun areItemsTheSame(
+                oldItem: DateModel,
+                newItem: DateModel
+            ): Boolean {
+                return oldItem == newItem
+            }
 
-        override fun areContentsTheSame(
-            oldItem: DateModel,
-            newItem: DateModel
-        ): Boolean {
-            return oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: DateModel,
+                newItem: DateModel
+            ): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 }

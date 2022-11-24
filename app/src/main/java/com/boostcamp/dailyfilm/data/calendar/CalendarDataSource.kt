@@ -1,17 +1,16 @@
 package com.boostcamp.dailyfilm.data.calendar
 
-import android.util.Log
 import com.boostcamp.dailyfilm.BuildConfig
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
+import com.google.firebase.database.ktx.ChildEvent
+import com.google.firebase.database.ktx.childEvents
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-
+import kotlinx.coroutines.flow.map
 
 interface CalendarDataSource {
-    fun loadFilmInfo(userId: String, startAt: String, endAt: String): Flow<List<DailyFilmItem?>>
+    fun loadFilmInfo(userId: String, startAt: String, endAt: String): Flow<DailyFilmItem?>
 }
 
 class CalendarDataSourceImpl : CalendarDataSource {
@@ -19,30 +18,29 @@ class CalendarDataSourceImpl : CalendarDataSource {
         userId: String,
         startAt: String,
         endAt: String
-    ): Flow<List<DailyFilmItem?>> =
-        callbackFlow {
-            database.reference.child(DIRECTORY_USER)
-                .child(userId)
-                .orderByKey()
-                .startAfter(startAt)
-                .endAt(endAt)
-                .get()
-                .addOnSuccessListener { snapshot ->
-                    val list = mutableListOf<DailyFilmItem?>()
-                    snapshot.children.forEach {
-                        val dailyItem = it.getValue(DailyFilmItem::class.java)
-                        Log.d("CalendarDataSourceImpl", "loadFilmInfo: $dailyItem")
-                        list.add(dailyItem)
+    ): Flow<DailyFilmItem?> =
+        database.reference
+            .child(DIRECTORY_USER)
+            .child(userId)
+            .orderByKey()
+            .startAfter(startAt)
+            .endAt(endAt)
+            .childEvents.map { event ->
+                when (event) {
+                    is ChildEvent.Added -> {
+                        event.snapshot.getValue(DailyFilmItem::class.java)
                     }
-                    trySend(list)
+                    is ChildEvent.Changed -> {
+                        null
+                    }
+                    is ChildEvent.Moved -> {
+                        null
+                    }
+                    is ChildEvent.Removed -> {
+                        null
+                    }
                 }
-                .addOnFailureListener {
-                    trySend(listOf())
-                    // TODO : Exception 처리
-                }
-
-            awaitClose()
-        }
+            }
 
     companion object {
         val database = Firebase.database(BuildConfig.DATABASE_URL)
