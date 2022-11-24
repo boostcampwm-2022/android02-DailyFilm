@@ -18,7 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.activity_select_video) {
+class SelectVideoActivity :
+    BaseActivity<ActivitySelectVideoBinding>(R.layout.activity_select_video) {
 
     private val viewModel: SelectVideoViewModel by viewModels()
 
@@ -45,18 +46,33 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
     }
 
     private fun requestPermission() {
-        val requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    viewModel.loadVideo()
-                }
-            }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
+            val requestMultiplePermissions =
+                registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                    permissions.entries.forEach {
+                        if (it.value) {
+                            viewModel.loadVideo()
+                        }
+                    }
+                }
+            requestMultiplePermissions.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_MEDIA_LOCATION,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                )
+            )
         } else {
+            val requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                    if (isGranted) {
+                        viewModel.loadVideo()
+                    }
+                }
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
+
     private fun navigateToUpload(item: DateAndVideoModel?) {
         if (item != null) {
             startActivity(
@@ -75,6 +91,7 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
         binding.playerView.player = null
         super.onDestroy()
     }
+
     companion object {
         const val DATE_VIDEO_ITEM = "DateAndVideoModel"
     }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.data.model.VideoItem
 
@@ -26,11 +27,6 @@ class SelectVideoAdapter(
 
     override fun onBindViewHolder(holder: SelectVideoViewHolder, position: Int) {
         holder.bind(getItem(position) ?: return)
-        if (videoSelectListener.selectedVideo.value == null){
-            getItem(0)?.let {
-                videoSelectListener.chooseVideo(it)
-            }
-        }
     }
 
     companion object {
