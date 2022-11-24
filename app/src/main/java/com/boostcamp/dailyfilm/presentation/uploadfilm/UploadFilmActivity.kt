@@ -6,7 +6,6 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
