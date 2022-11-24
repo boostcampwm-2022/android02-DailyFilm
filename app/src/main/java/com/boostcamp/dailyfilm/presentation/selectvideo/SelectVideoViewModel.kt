@@ -37,7 +37,7 @@ class SelectVideoViewModel @Inject constructor(
     fun navigateToUpload() {
         viewModelScope.launch {
             selectedVideo.value?.let { selectedVideoItem ->
-                if (dateModel != null){
+                if (dateModel != null) {
                     event(
                         SelectVideoEvent.NextButtonResult(
                             DateAndVideoModel(
@@ -50,6 +50,11 @@ class SelectVideoViewModel @Inject constructor(
             }
         }
     }
+
+    fun backToMain() {
+        event(SelectVideoEvent.BackButtonResult(true))
+    }
+
 
     fun loadVideo() {
         viewModelScope.launch {
@@ -74,5 +79,6 @@ class SelectVideoViewModel @Inject constructor(
 
 sealed class SelectVideoEvent {
     data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel) : SelectVideoEvent()
+    data class BackButtonResult(val result: Boolean) : SelectVideoEvent()
 }
 

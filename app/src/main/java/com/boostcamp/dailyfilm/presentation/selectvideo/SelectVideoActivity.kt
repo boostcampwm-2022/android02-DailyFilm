@@ -19,7 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.activity_select_video) {
+class SelectVideoActivity :
+    BaseActivity<ActivitySelectVideoBinding>(R.layout.activity_select_video) {
 
     private val viewModel: SelectVideoViewModel by viewModels()
 
@@ -27,8 +28,6 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
         binding.viewModel = viewModel
         requestPermission()
         nextButtonEvent()
-
-
     }
 
     private fun nextButtonEvent() {
@@ -38,6 +37,9 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
                     when (event) {
                         is SelectVideoEvent.NextButtonResult -> {
                             navigateToUpload(event.dateAndVideoModelItem)
+                        }
+                        is SelectVideoEvent.BackButtonResult -> {
+                            finish()
                         }
                     }
                 }
@@ -72,6 +74,7 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
+
     private fun navigateToUpload(item: DateAndVideoModel?) {
         if (item != null) {
             startActivity(
@@ -90,6 +93,7 @@ class SelectVideoActivity : BaseActivity<ActivitySelectVideoBinding>(R.layout.ac
         binding.playerView.player = null
         super.onDestroy()
     }
+
     companion object {
         const val DATE_VIDEO_ITEM = "DateAndVideoModel"
     }
