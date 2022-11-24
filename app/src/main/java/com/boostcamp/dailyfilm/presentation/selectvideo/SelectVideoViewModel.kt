@@ -1,8 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.selectvideo
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.model.VideoItem
@@ -11,6 +9,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +21,8 @@ class SelectVideoViewModel @Inject constructor(
 ) : ViewModel(), VideoSelectListener {
 
     val dateModel = savedStateHandle.get<DateModel>(CalendarActivity.KEY_DATE_MODEL)
+    override val viewTreeLifecycleScope: CoroutineScope
+        get() = viewModelScope
 
     private val _videosState =
         MutableStateFlow(Result.Success<PagingData<VideoItem>>(PagingData.empty()))
@@ -29,7 +30,6 @@ class SelectVideoViewModel @Inject constructor(
 
     private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
     override val selectedVideo = _selectedVideo.asStateFlow()
-
 
     private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
     val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
@@ -70,11 +70,12 @@ class SelectVideoViewModel @Inject constructor(
         }
     }
 
-    override fun chooseVideo(videoItem: VideoItem) {
+    override fun chooseVideo(videoItem: VideoItem?) {
         viewModelScope.launch {
             _selectedVideo.emit(videoItem)
         }
     }
+
 }
 
 sealed class SelectVideoEvent {

@@ -23,6 +23,8 @@ class SelectVideoViewHolder(
 
         itemView.doOnDetach {
             lifecycleOwner = null
+            binding.item = null
+            binding.clickListener = null
         }
 
     }

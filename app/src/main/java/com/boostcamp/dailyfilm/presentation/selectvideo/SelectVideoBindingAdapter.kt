@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import androidx.paging.PagingData
@@ -18,6 +19,26 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+
+@BindingAdapter(value = ["thisItem", "selectedVideo"], requireAll = false)
+fun ConstraintLayout.chooseVideoAndUpdateAlpha(videoItem: VideoItem, clickListener: VideoSelectListener) {
+    with(clickListener) {
+        viewTreeLifecycleScope.launch {
+            selectedVideo.collect {
+                alpha = if (videoItem.uri == it?.uri)
+                    0.5f
+                else
+                    1.0f
+            }
+        }
+
+        if (selectedVideo.value == null){
+            alpha = 0.5f
+            clickListener.chooseVideo(videoItem)
+        }
+
+    }
+}
 
 @BindingAdapter("onUploaded")
 fun TextView.showResultOnSnackBar(uploadResult: SharedFlow<Boolean>) {
@@ -55,6 +76,7 @@ fun RecyclerView.updateAdapter(
 ) {
     Log.d("LifecycleScope",findViewTreeLifecycleOwner()?.lifecycleScope.toString())
     if (adapter == null) {
+        itemAnimator = null
         adapter = SelectVideoAdapter(videoClickListener)
     }
 
