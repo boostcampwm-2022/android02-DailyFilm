@@ -2,7 +2,6 @@ package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -66,17 +65,10 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.fetchCalendar()
-    }
-
     companion object {
         const val KEY_CALENDAR = "calendar"
         const val KEY_DATE_MODEL = "dateModel"
         fun newInstance(calendar: Calendar, lambda: (DateModel?) -> Unit): DateFragment {
-            Log.d("DateFragment", "newInstance: ${calendar.get(Calendar.MONTH) + 1}")
             return DateFragment(lambda).apply {
                 arguments = Bundle().apply {
                     putSerializable(KEY_CALENDAR, calendar)
