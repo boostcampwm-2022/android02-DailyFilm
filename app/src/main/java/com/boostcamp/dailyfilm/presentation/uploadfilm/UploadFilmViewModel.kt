@@ -11,10 +11,7 @@ import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +30,9 @@ class UploadFilmViewModel @Inject constructor(
     private val _uploadFilmInfoResult = MutableSharedFlow<Boolean>()
     val uploadFilmInfoResult: SharedFlow<Boolean> get() = _uploadFilmInfoResult
 
+    private val _cancelUploadResult = MutableSharedFlow<Boolean>()
+    val cancelUploadResult: SharedFlow<Boolean> get() = _cancelUploadResult
+
     init {
         viewModelScope.launch {
             uploadResult.collect { uri ->
@@ -43,8 +43,18 @@ class UploadFilmViewModel @Inject constructor(
 
     fun uploadVideo() {
         infoItem?.let { item ->
-            uploadFilmRepository.uploadVideo(item.uri).onEach { _uploadResult.emit(it) }
-                .launchIn(viewModelScope)
+            viewModelScope.launch {
+                _uploadFilmInfoResult.emit(false)
+                uploadFilmRepository.uploadVideo(item.uri).collectLatest {
+                    _uploadResult.emit(it)
+                }
+            }
+        }
+    }
+
+    fun cancelUploadVideo() {
+        viewModelScope.launch {
+            _cancelUploadResult.emit(true)
         }
     }
 
@@ -60,8 +70,12 @@ class UploadFilmViewModel @Inject constructor(
                 DailyFilmItem(videoUrl.toString(), text, uploadDate)
             )
                 .onEach { _uploadFilmInfoResult.emit(it) }.launchIn(viewModelScope)
+        } else {
+            // 만약 텍스트나 오류가 났을경우에 true값 emit 하여서 액티비티에서 정상처리되는데 알맞은 오류 처리 필요
+            viewModelScope.launch {
+                _uploadFilmInfoResult.emit(true)
+            }
         }
-
     }
 }
 

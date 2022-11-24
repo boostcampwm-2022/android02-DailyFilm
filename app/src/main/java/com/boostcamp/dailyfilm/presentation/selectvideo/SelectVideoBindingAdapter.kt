@@ -1,6 +1,7 @@
 package com.boostcamp.dailyfilm.presentation.selectvideo
 
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -73,6 +74,7 @@ fun RecyclerView.updateAdapter(
     videoClickListener: VideoSelectListener,
     videosState: StateFlow<Result<*>>?
 ) {
+    Log.d("LifecycleScope",findViewTreeLifecycleOwner()?.lifecycleScope.toString())
     if (adapter == null) {
         itemAnimator = null
         adapter = SelectVideoAdapter(videoClickListener)

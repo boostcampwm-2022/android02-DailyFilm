@@ -51,6 +51,11 @@ class SelectVideoViewModel @Inject constructor(
         }
     }
 
+    fun backToMain() {
+        event(SelectVideoEvent.BackButtonResult(true))
+    }
+
+
     fun loadVideo() {
         viewModelScope.launch {
             selectVideoRepository.loadVideo().collect { videoItem ->
@@ -75,5 +80,6 @@ class SelectVideoViewModel @Inject constructor(
 
 sealed class SelectVideoEvent {
     data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel) : SelectVideoEvent()
+    data class BackButtonResult(val result: Boolean) : SelectVideoEvent()
 }
 

@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import android.Manifest
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -27,8 +28,6 @@ class SelectVideoActivity :
         binding.viewModel = viewModel
         requestPermission()
         nextButtonEvent()
-
-
     }
 
     private fun nextButtonEvent() {
@@ -38,6 +37,9 @@ class SelectVideoActivity :
                     when (event) {
                         is SelectVideoEvent.NextButtonResult -> {
                             navigateToUpload(event.dateAndVideoModelItem)
+                        }
+                        is SelectVideoEvent.BackButtonResult -> {
+                            finish()
                         }
                     }
                 }

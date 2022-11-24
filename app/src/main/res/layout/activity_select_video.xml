@@ -10,46 +10,75 @@
             type="com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoViewModel" />
     </data>
 
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#212121"
+            android:elevation="1dp">
+
+            <ImageView
+                android:id="@+id/iv_selectVideo_next"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:elevation="1dp"
+                android:onClick="@{() -> viewModel.navigateToUpload()}"
+                android:padding="16dp"
+                android:src="@drawable/ic_done"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_selectVideo_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:elevation="1dp"
+                android:onClick="@{() -> viewModel.backToMain()}"
+                android:padding="16dp"
+                android:src="@drawable/ic_back"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="#B3000000"
+                android:minHeight="200dp"
+                app:contentScrim="#3C000000"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                <TextView
-                    android:id="@+id/tv_selectVideo_next"
-                    android:elevation="1dp"
-                    android:layout_gravity="end"
-                    android:layout_margin="8dp"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:text="@string/text_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.navigateToUpload()}"/>
 
                 <com.google.android.exoplayer2.ui.StyledPlayerView
                     android:id="@+id/playerView"
                     android:layout_width="match_parent"
                     android:layout_height="500dp"
+                    android:minHeight="300dp"
+                    app:layout_collapseMode="parallax"
+                    app:playVideo="@{viewModel.selectedVideo.uri}"
                     app:resize_mode="zoom"
-                    app:use_controller="false"
-                    app:playVideo="@{viewModel.selectedVideo.uri}" />
+                    app:use_controller="false" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_gravity="bottom"
+                    android:layout_height="150dp"
                     app:layout_collapseMode="parallax" />
-
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 

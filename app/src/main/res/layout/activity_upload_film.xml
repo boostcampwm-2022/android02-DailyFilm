@@ -1,62 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmViewModel"/>
+            type="com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.uploadfilm.UploadFilmActivity"
-        >
+        tools:context=".presentation.uploadfilm.UploadFilmActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_upload_film"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#212121"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:elevation="1dp"
+                android:onClick="@{() -> viewModel.uploadVideo()}"
+                android:padding="16dp"
+                android:text="@string/accept"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:elevation="1dp"
+                android:onClick="@{() -> viewModel.cancelUploadVideo()}"
+                android:padding="16dp"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_uploading_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:elevation="3dp"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/lottie_loading" />
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
             android:id="@+id/backgroundPlayer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:resize_mode="zoom"
-            app:playVideo="@{viewModel.infoItem.uri}"
-            app:use_controller="false"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_upload_film"
+            app:playVideo="@{viewModel.infoItem.uri}"
+            app:resize_mode="zoom"
+            app:use_controller="false">
 
         </com.google.android.exoplayer2.ui.StyledPlayerView>
 
-        <TextView
-            android:id="@+id/tv_next"
-            android:text="@string/text_complete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:onClick="@{() -> viewModel.uploadVideo()}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
 
         <EditText
+            android:id="@+id/et_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions|textMultiLine"
-            android:gravity="start|top"
             android:alpha="0.5"
-            android:ems="10"
-            android:id="@+id/et_content"
-            android:textColor="@color/white"
             android:background="@color/cardview_dark_background"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textNoSuggestions|textMultiLine"
             android:text="@={viewModel.textContent}"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
