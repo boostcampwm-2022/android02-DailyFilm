@@ -11,6 +11,36 @@ class PlayFilmActivity : BaseActivity<ActivityPlayFilmBinding>(R.layout.activity
 
     override fun initView() {
         binding.viewModel = viewModel
+
+        binding.backgroundPlayer.apply {
+            setOnClickListener {
+                player?.let {
+                    if (it.isPlaying) {
+                        it.pause()
+                    } else {
+                        it.play()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.backgroundPlayer.player?.let { player ->
+            if (player.isPlaying.not()) {
+                player.play()
+            }
+        }
+    }
+
+    override fun onStop() {
+        binding.backgroundPlayer.player?.let { player ->
+            if (player.isPlaying) {
+                player.pause()
+            }
+        }
+        super.onStop()
     }
 
     override fun onDestroy() {
