@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> clickListener.chooseVideo(item)}"
+        app:thisItem="@{item}"
+        app:selectedVideo="@{clickListener}"
         android:padding="4dp">
 
         <ImageView
