@@ -20,15 +20,32 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
 
     override fun initView() {
         binding.viewModel = viewModel
+        uploadFilmResult()
+        cancelUploadResult()
+    }
+
+    private fun cancelUploadResult() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.cancelUploadResult.collect {
+                    if (it) {
+                        finish()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun uploadFilmResult() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uploadFilmInfoResult.collect {
                     if (it) {
-                        binding.backgroundPlayer.visibility= View.INVISIBLE
+                        binding.backgroundPlayer.visibility = View.INVISIBLE
                         viewModel.infoItem!!.uri.path?.let { uri -> File(uri).delete() }
                         finish()
-                    }else{
-                        binding.lottieUploadingLoading.visibility= View.VISIBLE
+                    } else {
+                        binding.lottieUploadingLoading.visibility = View.VISIBLE
                     }
                 }
             }

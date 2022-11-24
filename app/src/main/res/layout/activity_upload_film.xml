@@ -15,6 +15,44 @@
         android:layout_height="match_parent"
         tools:context=".presentation.uploadfilm.UploadFilmActivity">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_upload_film"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#212121"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:elevation="1dp"
+                android:onClick="@{() -> viewModel.uploadVideo()}"
+                android:padding="16dp"
+                android:text="@string/accept"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:elevation="1dp"
+                android:onClick="@{() -> viewModel.cancelUploadVideo()}"
+                android:padding="16dp"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_uploading_loading"
             android:layout_width="wrap_content"
@@ -37,24 +75,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_upload_film"
             app:playVideo="@{viewModel.infoItem.uri}"
             app:resize_mode="zoom"
             app:use_controller="false">
 
         </com.google.android.exoplayer2.ui.StyledPlayerView>
 
-        <TextView
-            android:id="@+id/tv_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:onClick="@{() -> viewModel.uploadVideo()}"
-            android:text="@string/text_complete"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/et_content"

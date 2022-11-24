@@ -30,6 +30,9 @@ class UploadFilmViewModel @Inject constructor(
     private val _uploadFilmInfoResult = MutableSharedFlow<Boolean>()
     val uploadFilmInfoResult: SharedFlow<Boolean> get() = _uploadFilmInfoResult
 
+    private val _cancelUploadResult = MutableSharedFlow<Boolean>()
+    val cancelUploadResult: SharedFlow<Boolean> get() = _cancelUploadResult
+
     init {
         viewModelScope.launch {
             uploadResult.collect { uri ->
@@ -49,6 +52,12 @@ class UploadFilmViewModel @Inject constructor(
         }
     }
 
+    fun cancelUploadVideo() {
+        viewModelScope.launch {
+            _cancelUploadResult.emit(true)
+        }
+    }
+
     private fun uploadFilmInfo(videoUrl: Uri?) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val uploadDate = infoItem?.uploadDate
@@ -61,7 +70,7 @@ class UploadFilmViewModel @Inject constructor(
                 DailyFilmItem(videoUrl.toString(), text, uploadDate)
             )
                 .onEach { _uploadFilmInfoResult.emit(it) }.launchIn(viewModelScope)
-        }else{
+        } else {
             // 만약 텍스트나 오류가 났을경우에 true값 emit 하여서 액티비티에서 정상처리되는데 알맞은 오류 처리 필요
             viewModelScope.launch {
                 _uploadFilmInfoResult.emit(true)
