@@ -12,4 +12,6 @@
     <string name="cancel">취소</string>
     <string name="accept">완료</string>
     <string name="date">%s년 %s월 %s일</string>
+    <string name="text_date">날짜</string>
+    <string name="text_description">내용</string>
 </resources>

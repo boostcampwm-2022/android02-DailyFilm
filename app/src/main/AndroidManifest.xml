@@ -18,6 +18,9 @@
         android:theme="@style/Theme.DailyFilm"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.totalfilm.TotalFilmActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.playfilm.PlayFilmActivity"
             android:exported="false" />
         <activity

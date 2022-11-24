@@ -2,24 +2,23 @@ package com.boostcamp.dailyfilm.presentation.calendar
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class DateViewModel @Inject constructor(
-    private val calendarRepository: CalendarRepository,
+    calendarRepository: CalendarRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -45,13 +44,7 @@ class DateViewModel @Inject constructor(
     private val _dateFlow = MutableStateFlow(initialDateList())
     val dateFlow: StateFlow<List<DateModel>> = _dateFlow.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            calendarRepository.loadFilmInfo(userId, getStartAt(), getEndAt()).collect { item ->
-                reloadCalendar(item)
-            }
-        }
-    }
+    val itemFlow: Flow<DailyFilmItem?> = calendarRepository.loadFilmInfo(userId, getStartAt(), getEndAt())
 
     private fun getStartAt(): String {
         val tempCalendar = Calendar.getInstance().apply {
@@ -75,7 +68,7 @@ class DateViewModel @Inject constructor(
         return dateFormat.format(tempCalendar.time)
     }
 
-    private fun reloadCalendar(item: DailyFilmItem?) {
+    fun reloadCalendar(item: DailyFilmItem?) {
         item ?: return
 
         val tempCalendar = Calendar.getInstance().apply {

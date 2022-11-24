@@ -15,10 +15,12 @@ import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapte
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity_calendar) {
@@ -82,6 +84,14 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                 when (menuItem.itemId) {
                     R.id.item_go_today -> {
                         binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION
+                        true
+                    }
+                    R.id.item_play_month -> {
+                        startActivity(
+                            Intent(this@CalendarActivity, TotalFilmActivity::class.java).apply {
+                                putParcelableArrayListExtra(KEY_FILM_ARRAY, ArrayList(viewModel.filmFlow.value))
+                            }
+                        )
                         true
                     }
                     R.id.item_date_picker -> {
@@ -154,6 +164,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
 
     companion object {
         const val KEY_DATE_MODEL = "date_model"
+        const val KEY_FILM_ARRAY = "film_list"
         private const val MESSAGE_SELECT_DATE = "날짜를 선택해주세요"
     }
 }

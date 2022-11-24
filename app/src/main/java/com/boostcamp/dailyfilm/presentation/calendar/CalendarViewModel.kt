@@ -43,6 +43,13 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     private val _userFlow = MutableStateFlow(FirebaseAuth.getInstance().currentUser)
     val userFlow: StateFlow<FirebaseUser?> = _userFlow.asStateFlow()
 
+    private val _filmFlow = MutableStateFlow<List<DateModel>>(emptyList())
+    val filmFlow: StateFlow<List<DateModel>> = _filmFlow.asStateFlow()
+
+    fun emitFilm(filmList: List<DateModel>) {
+        _filmFlow.value = filmList
+    }
+
     fun getViewPagerPosition(position: Int) {
         viewModelScope.launch {
             calendar = Calendar.getInstance(Locale.getDefault()).apply {
