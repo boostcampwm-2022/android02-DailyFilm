@@ -1,7 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
@@ -16,6 +15,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapte
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -26,7 +26,19 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     private lateinit var calendarPagerAdapter: CalendarPagerAdapter
     private val viewModel: CalendarViewModel by viewModels()
 
+    private val todayCalendar = Calendar.getInstance(Locale.getDefault())
+    private val todayYear = todayCalendar.get(Calendar.YEAR)
+    private val todayMonth = todayCalendar.get(Calendar.MONTH)
+    private lateinit var datePickerDialog: DatePickerDialog
+
     override fun initView() {
+        initViewModel()
+        initAdapter()
+        initMenu()
+        collectFlow()
+    }
+
+    private fun initViewModel() {
         binding.viewModel = viewModel
 
         val headerBinding: HeaderCalendarDrawerBinding =
@@ -37,7 +49,9 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                 true
             )
         headerBinding.viewModel = viewModel
+    }
 
+    private fun initAdapter() {
         calendarPagerAdapter = CalendarPagerAdapter(this) {
             viewModel.changeSelectedItem(it)
         }
@@ -55,43 +69,45 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                 }
             })
         }
+    }
 
-        binding.barCalendar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.item_go_today -> {
-                    binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION
-                    true
-                }
-                R.id.item_date_picker -> {
-                    val datePickerDialog = DatePickerDialog(viewModel.calendar) { year, month ->
-                        val todayCalendar = Calendar.getInstance(Locale.getDefault())
-                        val todayYear = todayCalendar.get(Calendar.YEAR)
-                        val todayMonth = todayCalendar.get(Calendar.MONTH)
+    private fun initMenu() {
+        datePickerDialog = DatePickerDialog(viewModel.calendar) { year, month ->
+            val position = (year * 12 + month) - (todayYear * 12 + todayMonth)
+            binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION + position
+        }
 
-                        val position = (year * 12 + month) - (todayYear * 12 + todayMonth)
-
-                        binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION + position
+        binding.barCalendar.apply {
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.item_go_today -> {
+                        binding.vpCalendar.currentItem = CalendarPagerAdapter.START_POSITION
+                        true
                     }
-                    datePickerDialog.show(supportFragmentManager, "date_picker")
-                    true
+                    R.id.item_date_picker -> {
+                        datePickerDialog.show(supportFragmentManager, "date_picker")
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
+            }
+
+            setNavigationOnClickListener {
+                binding.layoutDrawerCalendar.open()
             }
         }
+    }
 
-        binding.barCalendar.setNavigationOnClickListener {
-            binding.layoutDrawerCalendar.open()
-        }
-
+    private fun collectFlow() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.eventFlow.collect { event ->
+                    viewModel.calendarEventFlow.collect { event ->
                         when (event) {
-                            is Event.UploadSuccess -> {
+                            is CalendarEvent.UploadSuccess -> {
                                 uploadFilm(event.dateModel)
                             }
-                            is Event.UpdateMonth -> {
+                            is CalendarEvent.UpdateMonth -> {
                                 updateMonth(event.month)
                             }
                         }
@@ -126,18 +142,18 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
 
     private fun uploadFilm(item: DateModel?) {
         if (item != null) {
-            Toast.makeText(this, "uploadFilm $item", Toast.LENGTH_SHORT).show()
             startActivity(
                 Intent(this, SelectVideoActivity::class.java).apply {
                     putExtra(KEY_DATE_MODEL, item)
                 }
             )
         } else {
-            Toast.makeText(this, "날짜를 선택해주세요", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, MESSAGE_SELECT_DATE, Snackbar.LENGTH_SHORT).show()
         }
     }
 
     companion object {
         const val KEY_DATE_MODEL = "date_model"
+        private const val MESSAGE_SELECT_DATE = "날짜를 선택해주세요"
     }
 }

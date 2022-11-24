@@ -1,7 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +23,6 @@ class DatePickerDialog(private val calendar: Calendar, private val callback: (In
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.d("DatePickerFragment", "onViewCreated: ${calendar.get(Calendar.YEAR)}, ${calendar.get(Calendar.MONTH)}")
 
         binding.calendar = calendar
 
