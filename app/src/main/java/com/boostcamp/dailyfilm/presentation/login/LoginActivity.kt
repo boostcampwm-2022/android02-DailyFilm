@@ -1,45 +1,88 @@
 package com.boostcamp.dailyfilm.presentation.login
 
 import android.content.Intent
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityLoginBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
+import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
+import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
     private val viewModel: LoginViewModel by viewModels()
+    private val loadingDialogFragment by lazy { LottieDialogFragment() }
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun initView() {
         setGoogleLogin()
-        getLoginResult()
+        setObserveLoginResult()
     }
 
-    private fun getLoginResult() {
-        viewModel.userInfo.onEach { userInfoResult ->
-            userInfoResult?.let { userInfo ->
-                Toast.makeText(
-                    this,
-                    "Success Google Login : ${userInfo.email} ",
-                    Toast.LENGTH_SHORT
-                ).show()
-                startActivity(Intent(this, CalendarActivity::class.java))
-                finish()
+    override fun onStart() {
+        super.onStart()
+        GoogleSignIn.getLastSignedInAccount(this)?.let {
+            startActivity(Intent(this, CalendarActivity::class.java))
+            finish()
+        }
+
+    }
+
+    private fun setObserveLoginResult() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest { state ->
+                    when (state) {
+                        is UiState.Success -> {
+                            hideProgressDialog()
+                            startActivity(Intent(this@LoginActivity, CalendarActivity::class.java))
+                        }
+                        is UiState.Loading -> {
+                            showProgressDialog()
+                        }
+                        is UiState.Failure -> {
+                            hideProgressDialog()
+                            state.throwable.message?.let { showSnackBarMessage(it) }
+                        }
+                        is UiState.Uninitialized -> {
+
+                        }
+                    }
+                }
             }
-        }.launchIn(lifecycleScope)
+        }
+    }
+
+    private fun showProgressDialog() {
+        if (!loadingDialogFragment.isAdded) {
+            loadingDialogFragment.show(supportFragmentManager, "loader")
+        }
+    }
+
+    private fun hideProgressDialog() {
+        if (loadingDialogFragment.isAdded) {
+            loadingDialogFragment.dismissAllowingStateLoss()
+        }
+    }
+
+    private fun showSnackBarMessage(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun setGoogleLogin() {
@@ -57,10 +100,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                     val account = task.getResult(ApiException::class.java)
                     viewModel.requestLogin(account.idToken!!)
                 } catch (e: ApiException) {
-                    Toast.makeText(this, "Failed Google Login", Toast.LENGTH_SHORT).show()
+                    showSnackBarMessage("Failed Google Login")
                 }
             }
         }
+
         binding.btnLoginGoogleAuth.setOnClickListener {
             activityResultLauncher.launch(client.signInIntent)
         }
