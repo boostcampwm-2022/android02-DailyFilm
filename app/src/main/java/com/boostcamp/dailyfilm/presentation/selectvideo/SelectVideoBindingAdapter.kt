@@ -89,7 +89,6 @@ fun RecyclerView.updateAdapter(
                     }
                 }
             }
-            is Result.Empty -> TODO()
             is Result.Error -> TODO()
             is Result.Uninitialized -> TODO()
         }
