@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.FragmentDateBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_FILM_ARRAY
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
-class DateFragment(val onUploadFilm: (DateModel?) -> Unit) : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
+class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
+    BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
 
     private val viewModel: DateViewModel by viewModels()
     private val activityViewModel: CalendarViewModel by activityViewModels()
@@ -65,7 +67,14 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) : BaseFragment<Fragme
             onUploadFilm(null)
             startActivity(
                 Intent(requireContext(), PlayFilmActivity::class.java).apply {
-                    putExtra(KEY_DATE_MODEL, dateModel)
+                    putExtra(
+                        KEY_DATE_MODEL_INDEX,
+                        activityViewModel.filmFlow.value.indexOf(dateModel)
+                    )
+                    putParcelableArrayListExtra(
+                        KEY_FILM_ARRAY,
+                        ArrayList(activityViewModel.filmFlow.value)
+                    )
                 }
             )
         }, { dateModel ->
@@ -83,7 +92,7 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) : BaseFragment<Fragme
 
     companion object {
         const val KEY_CALENDAR = "calendar"
-        const val KEY_DATE_MODEL = "dateModel"
+        const val KEY_DATE_MODEL_INDEX = "dateModelIndex"
         fun newInstance(calendar: Calendar, lambda: (DateModel?) -> Unit): DateFragment {
             return DateFragment(lambda).apply {
                 arguments = Bundle().apply {
