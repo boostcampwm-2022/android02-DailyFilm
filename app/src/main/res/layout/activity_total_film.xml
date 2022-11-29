@@ -16,7 +16,7 @@
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
             android:id="@+id/backgroundPlayer"
-            playTotalVideo="@{viewModel.filmArray}"
+            playTotalVideo="@{viewModel}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -37,9 +37,9 @@
             android:background="@color/cardview_dark_background"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
-            android:text="@string/text_date"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/white"
+            android:text="@{@string/date(viewModel.currentDateItem.year, viewModel.currentDateItem.month, viewModel.currentDateItem.day)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2022년 11월 24일" />
@@ -52,7 +52,7 @@
             android:background="@color/cardview_dark_background"
             android:ems="10"
             android:gravity="start|top"
-            android:text="@string/text_description"
+            android:text='@{viewModel.currentDateItem.text ?? ""}'
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
