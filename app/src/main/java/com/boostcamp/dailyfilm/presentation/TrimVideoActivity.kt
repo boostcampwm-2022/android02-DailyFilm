@@ -43,7 +43,6 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                 .setTrimType(TrimType.FIXED_DURATION)
                 .setFixedDuration(10)
                 .setHideSeekBar(true)
-                .setTitle("비디오 편집 (임시 Toolbar 제목)")
                 .start(this,startForResult)
 
     }
