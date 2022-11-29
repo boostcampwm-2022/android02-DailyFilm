@@ -78,26 +78,65 @@
             app:layout_constraintTop_toBottomOf="@+id/cl_upload_film"
             app:playVideo="@{viewModel.infoItem.uri}"
             app:resize_mode="zoom"
-            app:use_controller="false">
+            app:use_controller="false"/>
 
-        </com.google.android.exoplayer2.ui.StyledPlayerView>
+        <ImageButton
+            android:id="@+id/btn_write_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_text_button_ripple"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_upload_film"
+            android:layout_marginTop="16dp" />
 
+        <ImageButton
+            android:id="@+id/btn_write_content_alpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_text_button_ripple_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_upload_film"
+            android:layout_marginTop="16dp" />
 
         <EditText
             android:id="@+id/et_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.5"
-            android:background="@color/cardview_dark_background"
-            android:ems="10"
-            android:gravity="start|top"
+            android:alpha="0.0"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
             android:inputType="textNoSuggestions|textMultiLine"
             android:text="@={viewModel.textContent}"
             android:textColor="@color/white"
+            android:textSize="22sp"
+            android:afterTextChanged="@{() -> viewModel.updateSpannableText()}"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.showedTextContent}"
+            android:bufferType="spannable"
+            android:textSize="22sp"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

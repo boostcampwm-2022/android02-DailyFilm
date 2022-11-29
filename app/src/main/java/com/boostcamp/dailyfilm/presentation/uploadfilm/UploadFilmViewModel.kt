@@ -1,10 +1,11 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
+import android.graphics.Color
 import android.net.Uri
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
+import androidx.lifecycle.*
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
@@ -26,6 +27,9 @@ class UploadFilmViewModel @Inject constructor(
     val uploadResult: SharedFlow<Uri?> get() = _uploadResult
 
     val textContent = MutableLiveData("")
+
+    private val _showedTextContent = MutableLiveData<SpannableString>()
+    val showedTextContent: LiveData<SpannableString> get() = _showedTextContent
 
     private val _uploadFilmInfoResult = MutableSharedFlow<Boolean>()
     val uploadFilmInfoResult: SharedFlow<Boolean> get() = _uploadFilmInfoResult
@@ -74,6 +78,25 @@ class UploadFilmViewModel @Inject constructor(
             // 만약 텍스트나 오류가 났을경우에 true값 emit 하여서 액티비티에서 정상처리되는데 알맞은 오류 처리 필요
             viewModelScope.launch {
                 _uploadFilmInfoResult.emit(true)
+            }
+        }
+    }
+
+    fun updateSpannableText() {
+        textContent.value?.let { text ->
+            if (text.isNotEmpty()){
+                _showedTextContent.value = SpannableString(text).apply {
+                    setSpan(
+                        BackgroundColorSpan(Color.BLACK),
+                        0,
+                        text.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                }
+            }
+            else {
+                _showedTextContent.value = SpannableString("")
             }
         }
     }
