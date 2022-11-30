@@ -20,7 +20,7 @@
         android:onClick="@{() -> clickListener.chooseVideo(item)}"
         app:thisItem="@{item}"
         app:selectedVideo="@{clickListener}"
-        android:padding="4dp">
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/imageView"

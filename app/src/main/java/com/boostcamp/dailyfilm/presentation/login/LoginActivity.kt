@@ -1,7 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.login
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,11 +36,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
 
     override fun onStart() {
         super.onStart()
+
         GoogleSignIn.getLastSignedInAccount(this)?.let {
             startActivity(Intent(this, CalendarActivity::class.java))
             finish()
         }
-
     }
 
     private fun setObserveLoginResult() {
@@ -49,19 +48,19 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
                     when (state) {
+                        is UiState.Uninitialized -> {
+                            return@collectLatest
+                        }
                         is UiState.Success -> {
-                            hideProgressDialog()
+                            loadingDialogFragment.hideProgressDialog()
                             startActivity(Intent(this@LoginActivity, CalendarActivity::class.java))
                         }
                         is UiState.Loading -> {
-                            showProgressDialog()
+                            loadingDialogFragment.showProgressDialog(supportFragmentManager)
                         }
                         is UiState.Failure -> {
-                            hideProgressDialog()
+                            loadingDialogFragment.hideProgressDialog()
                             state.throwable.message?.let { showSnackBarMessage(it) }
-                        }
-                        is UiState.Uninitialized -> {
-
                         }
                     }
                 }
@@ -69,7 +68,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         }
     }
 
-    private fun showProgressDialog() {
+/*    private fun showProgressDialog() {
         if (!loadingDialogFragment.isAdded) {
             loadingDialogFragment.show(supportFragmentManager, "loader")
         }
@@ -79,7 +78,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         if (loadingDialogFragment.isAdded) {
             loadingDialogFragment.dismissAllowingStateLoss()
         }
-    }
+    }*/
 
     private fun showSnackBarMessage(message: String) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
@@ -109,4 +108,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             activityResultLauncher.launch(client.signInIntent)
         }
     }
+
 }
+
