@@ -19,6 +19,5 @@ fun StyledPlayerView.streamVideo(url: String?) {
         val mediaItem = MediaItem.fromUri(it)
         player?.setMediaItem(mediaItem)
         player?.prepare()
-        player?.playWhenReady = true
     }
 }
