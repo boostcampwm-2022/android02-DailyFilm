@@ -21,6 +21,7 @@ object CalendarModule {
     @Singleton
     @Provides
     fun provideCalenderRepository(
-        calendarDataSource: CalendarDataSource
-    ): CalendarRepository = CalendarRepositoryImpl(calendarDataSource)
+        calendarDataRemoteSource: CalendarDataSource
+    ): CalendarRepository =
+        CalendarRepositoryImpl(calendarDataRemoteSource)
 }
