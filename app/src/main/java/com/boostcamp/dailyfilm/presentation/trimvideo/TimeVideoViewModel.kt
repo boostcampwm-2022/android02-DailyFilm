@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.presentation
+package com.boostcamp.dailyfilm.presentation.trimvideo
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
