@@ -4,11 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
-
+import com.boostcamp.dailyfilm.data.model.FilmEntity
 
 @Database(
-    entities = [DateModel::class],
+    entities = [FilmEntity::class],
     version = 1,
     exportSchema = false
 )
@@ -22,5 +21,5 @@ abstract class CalendarDB : RoomDatabase() {
         }
     }
 
-    abstract fun calendarDao() : CalendarDao
+    abstract fun calendarDao(): CalendarDao
 }
