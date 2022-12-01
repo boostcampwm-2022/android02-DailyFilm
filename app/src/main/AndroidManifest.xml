@@ -24,9 +24,6 @@
             android:name=".presentation.totalfilm.TotalFilmActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.playfilm.PlayFilmActivity"
-            android:exported="false" />
-        <activity
             android:name=".presentation.uploadfilm.UploadFilmActivity"
             android:exported="false" />
         <activity
