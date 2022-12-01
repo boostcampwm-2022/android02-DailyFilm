@@ -1,10 +1,12 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
+import android.graphics.Color
 import android.net.Uri
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
+import android.view.View
+import androidx.lifecycle.*
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
@@ -31,10 +33,19 @@ class UploadFilmViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<Unit>>(UiState.Uninitialized)
     val uiState = _uiState.asStateFlow()
 
+    private val _showedTextContent = MutableLiveData<SpannableString>()
+    val showedTextContent: LiveData<SpannableString> get() = _showedTextContent
+
+    private val _uploadFilmInfoResult = MutableSharedFlow<Boolean>()
+    val uploadFilmInfoResult: SharedFlow<Boolean> get() = _uploadFilmInfoResult
+    
     val textContent = MutableLiveData("")
 
     private val _cancelUploadResult = MutableSharedFlow<Boolean>()
     val cancelUploadResult: SharedFlow<Boolean> get() = _cancelUploadResult
+
+    private val _isWriting = MutableLiveData(false)
+    val isWriting: LiveData<Boolean> get() = _isWriting
 
     private val _clickSound = MutableStateFlow(true)
     val clickSound = _clickSound.asStateFlow()
@@ -96,6 +107,35 @@ class UploadFilmViewModel @Inject constructor(
             _uiState.value =
                 UiState.Failure(Throwable("userId == null or videoUrl == null or uploadDate or null "))
         }
+    }
+
+    fun updateSpannableText() {
+        textContent.value?.let { text ->
+            if (text.isNotEmpty()){
+                _showedTextContent.value = SpannableString(text).apply {
+                    setSpan(
+                        BackgroundColorSpan(Color.BLACK),
+                        0,
+                        text.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                }
+            }
+            else {
+                _showedTextContent.value = SpannableString("")
+            }
+        }
+    }
+
+    fun changeIsWriting() {
+        _isWriting.value?.let {
+            _isWriting.value = it.not()
+        }
+    }
+
+    fun updateIsWriting(flag: Boolean){
+        _isWriting.value = flag
     }
 
     fun controlSound() {

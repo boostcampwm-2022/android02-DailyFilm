@@ -1,9 +1,18 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
+import android.content.Context
+import android.os.Build
+import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.animation.ValueAnimator
 import android.content.Intent
 import com.boostcamp.dailyfilm.R
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -27,6 +36,9 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
 
     override fun initView() {
         binding.viewModel = viewModel
+        binding.activity = this
+
+        detectKeyboardState()
         cancelUploadResult()
         setObserveVideoUploadResult()
         soundControl()
@@ -65,6 +77,26 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             )
         )
         finish()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun detectKeyboardState() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.etContent) { _, insets ->
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            viewModel.updateIsWriting(imeVisible)
+            insets
+        }
+    }
+
+    fun showKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.etContent, 0)
+    }
+
+    fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etContent.windowToken, 0)
     }
 
     private fun cancelUploadResult() {
