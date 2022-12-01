@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashSet
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor() : ViewModel() {
@@ -30,6 +31,8 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     }
     var calendar: Calendar = localeCalendar
         private set
+
+    val syncSet = HashSet<Int>()
 
     private val _calendarEventFlow = MutableSharedFlow<CalendarEvent>()
     val calendarEventFlow: SharedFlow<CalendarEvent> = _calendarEventFlow.asSharedFlow()
