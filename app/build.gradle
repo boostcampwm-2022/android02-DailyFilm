@@ -24,6 +24,7 @@ android {
         versionName "1.0"
         buildConfigField "String", "DATABASE_URL", localProperties["database.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs "ko-rKR", "ko"
     }
 
     buildTypes {
