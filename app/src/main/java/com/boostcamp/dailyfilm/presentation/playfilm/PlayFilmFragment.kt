@@ -29,19 +29,17 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
 
     override fun onResume() {
         super.onResume()
-        binding.backgroundPlayer.player?.let { player ->
-            player.seekTo(0L)
-            player.play()
-        }
+        binding.backgroundPlayer.player?.play()
     }
 
-    override fun onStop() {
+    override fun onPause() {
         binding.backgroundPlayer.player?.let { player ->
             if (player.isPlaying) {
+                player.seekTo(0L)
                 player.pause()
             }
         }
-        super.onStop()
+        super.onPause()
     }
 
     override fun onDestroyView() {

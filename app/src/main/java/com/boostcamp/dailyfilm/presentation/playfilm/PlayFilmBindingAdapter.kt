@@ -11,7 +11,7 @@ fun StyledPlayerView.streamVideo(url: String?) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
             volume = 0f
-            repeatMode = Player.REPEAT_MODE_OFF
+            repeatMode = Player.REPEAT_MODE_ALL
         }
     }
 
