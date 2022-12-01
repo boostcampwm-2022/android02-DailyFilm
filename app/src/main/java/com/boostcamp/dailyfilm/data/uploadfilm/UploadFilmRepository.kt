@@ -3,14 +3,15 @@ package com.boostcamp.dailyfilm.data.uploadfilm
 import android.net.Uri
 import android.util.Log
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
+import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface UploadFilmRepository {
-    fun uploadVideo(videoUri: Uri): Flow<Uri?>
+    fun uploadVideo(videoUri: Uri): Flow<Result<Uri?>>
 
-    fun uploadFilmInfo(userId: String, uploadDate:String, filmInfo: DailyFilmItem): Flow<Boolean>
+    fun uploadFilmInfo(userId: String, uploadDate:String, filmInfo: DailyFilmItem): Flow<Result<Unit>>
 
 }
 

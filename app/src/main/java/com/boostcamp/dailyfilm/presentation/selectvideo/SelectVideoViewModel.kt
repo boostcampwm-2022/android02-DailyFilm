@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.selectvideo
 
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.boostcamp.dailyfilm.data.model.Result
@@ -21,6 +22,7 @@ class SelectVideoViewModel @Inject constructor(
 ) : ViewModel(), VideoSelectListener {
 
     val dateModel = savedStateHandle.get<DateModel>(CalendarActivity.KEY_DATE_MODEL)
+
     override val viewTreeLifecycleScope: CoroutineScope
         get() = viewModelScope
 
@@ -30,6 +32,9 @@ class SelectVideoViewModel @Inject constructor(
 
     private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
     override val selectedVideo = _selectedVideo.asStateFlow()
+
+    private val _clickSound = MutableStateFlow(true)
+    val clickSound = _clickSound.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
     val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
@@ -51,10 +56,13 @@ class SelectVideoViewModel @Inject constructor(
         }
     }
 
+    fun controlSound() {
+        _clickSound.value = !_clickSound.value
+    }
+
     fun backToMain() {
         event(SelectVideoEvent.BackButtonResult(true))
     }
-
 
     fun loadVideo() {
         viewModelScope.launch {
