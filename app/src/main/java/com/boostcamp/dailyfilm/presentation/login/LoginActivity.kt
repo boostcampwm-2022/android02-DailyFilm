@@ -68,18 +68,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         }
     }
 
-/*    private fun showProgressDialog() {
-        if (!loadingDialogFragment.isAdded) {
-            loadingDialogFragment.show(supportFragmentManager, "loader")
-        }
-    }
-
-    private fun hideProgressDialog() {
-        if (loadingDialogFragment.isAdded) {
-            loadingDialogFragment.dismissAllowingStateLoss()
-        }
-    }*/
-
     private fun showSnackBarMessage(message: String) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
     }
