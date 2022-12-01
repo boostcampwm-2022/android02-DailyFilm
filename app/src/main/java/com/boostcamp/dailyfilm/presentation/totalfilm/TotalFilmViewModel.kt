@@ -1,11 +1,13 @@
 package com.boostcamp.dailyfilm.presentation.totalfilm
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,7 +17,10 @@ class TotalFilmViewModel @Inject constructor(
 
     val filmArray = savedStateHandle.get<ArrayList<DateModel>>(CalendarActivity.KEY_FILM_ARRAY)
 
-    init {
-        Log.d("TotalFilmViewModel", "TotalFilmViewModel: $filmArray")
+    private val _currentDateItem = MutableStateFlow(filmArray?.get(0))
+    val currentDateItem: StateFlow<DateModel?> = _currentDateItem.asStateFlow()
+
+    fun setCurrentDateItem(dateModel: DateModel) {
+        _currentDateItem.value = dateModel
     }
 }

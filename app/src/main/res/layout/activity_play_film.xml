@@ -1,59 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.exoplayer2.ui.StyledPlayerView
-            android:id="@+id/backgroundPlayer"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_player"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:resize_mode="zoom"
-            app:streamVideo="@{viewModel.dateModel.videoUrl}"
-            app:use_controller="false">
-
-        </com.google.android.exoplayer2.ui.StyledPlayerView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:alpha="0.5"
-            android:background="@color/cardview_dark_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/white"
-            android:text="@{@string/date(viewModel.dateModel.year, viewModel.dateModel.month, viewModel.dateModel.day)}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="2022년 11월 24일" />
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="0.5"
-            android:background="@color/cardview_dark_background"
-            android:ems="10"
-            android:gravity="start|top"
-            android:text='@{viewModel.dateModel.text ?? ""}'
-            android:textColor="@color/white"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
