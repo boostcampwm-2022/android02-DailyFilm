@@ -14,4 +14,5 @@
     <string name="date">%s년 %s월 %s일</string>
     <string name="text_date">날짜</string>
     <string name="text_description">내용</string>
+    <string name="before">이전</string>
 </resources>

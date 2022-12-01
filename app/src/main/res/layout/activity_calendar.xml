@@ -115,17 +115,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_wen" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_upload"
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/fab_upload_Test"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                android:layout_marginBottom="20dp"
+                app:lottie_autoPlay="true"
+                android:elevation="2dp"
+                app:lottie_fileName="calendar_floating_button.json"
+                app:lottie_loop="true"
                 android:onClick="@{() -> viewModel.uploadClicked()}"
-                android:src="@drawable/ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:ignore="ContentDescription" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
