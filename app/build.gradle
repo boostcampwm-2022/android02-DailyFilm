@@ -98,7 +98,7 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
 
     // ffmpeg
-    implementation 'com.github.TTC1018:android-video-trimmer:0.0.8'
+    implementation 'com.github.TTC1018:android-video-trimmer:0.1.0'
 
     // lottie
     implementation 'com.airbnb.android:lottie:5.0.2'

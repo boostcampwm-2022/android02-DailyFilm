@@ -56,7 +56,7 @@ fun TextView.showResultOnSnackBar(uploadResult: SharedFlow<Boolean>) {
 fun StyledPlayerView.playVideo(uri: Uri?) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
-            volume = 0f
+            volume = 0.5f
             repeatMode = Player.REPEAT_MODE_ONE
         }
     }
@@ -89,7 +89,6 @@ fun RecyclerView.updateAdapter(
                     }
                 }
             }
-            is Result.Empty -> TODO()
             is Result.Error -> TODO()
             is Result.Uninitialized -> TODO()
         }
