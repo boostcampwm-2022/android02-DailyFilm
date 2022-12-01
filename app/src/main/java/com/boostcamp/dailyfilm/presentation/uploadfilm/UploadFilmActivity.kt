@@ -1,11 +1,16 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
-import android.animation.ValueAnimator
 import android.content.Context
+import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.boostcamp.dailyfilm.R
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,31 +27,31 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
 
     override fun initView() {
         binding.viewModel = viewModel
+        binding.activity = this
 
-        initWriteButton()
+        detectKeyboardState()
         uploadFilmResult()
         cancelUploadResult()
     }
 
-    private fun initWriteButton() {
-        binding.btnWriteContent.setOnClickListener(WriteClickListener())
-        binding.btnWriteContentAlpha.setOnClickListener(WriteClickListener())
-
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.addUpdateListener {
-            binding.btnWriteContentAlpha.alpha = it.animatedValue as Float
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun detectKeyboardState() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.etContent) { _, insets ->
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            viewModel.updateIsWriting(imeVisible)
+            insets
         }
-
-        animator.also {
-            it.duration = 1400
-            it.repeatMode = ValueAnimator.REVERSE
-            it.repeatCount = -1
-        }.start()
     }
 
-    private fun showKeyboard() {
+    fun showKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(binding.etContent, 0)
+    }
+
+    fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etContent.windowToken, 0)
     }
 
     private fun cancelUploadResult() {
@@ -83,7 +88,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
         super.onDestroy()
     }
 
-    inner class WriteClickListener: View.OnClickListener {
+    inner class WriteClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             binding.etContent.requestFocus()
             showKeyboard()

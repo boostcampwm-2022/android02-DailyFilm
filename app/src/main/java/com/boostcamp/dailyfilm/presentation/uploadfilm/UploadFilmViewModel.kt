@@ -5,6 +5,7 @@ import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
+import android.view.View
 import androidx.lifecycle.*
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
@@ -36,6 +37,9 @@ class UploadFilmViewModel @Inject constructor(
 
     private val _cancelUploadResult = MutableSharedFlow<Boolean>()
     val cancelUploadResult: SharedFlow<Boolean> get() = _cancelUploadResult
+
+    private val _isWriting = MutableLiveData(false)
+    val isWriting: LiveData<Boolean> get() = _isWriting
 
     init {
         viewModelScope.launch {
@@ -99,6 +103,16 @@ class UploadFilmViewModel @Inject constructor(
                 _showedTextContent.value = SpannableString("")
             }
         }
+    }
+
+    fun changeIsWriting() {
+        _isWriting.value?.let {
+            _isWriting.value = it.not()
+        }
+    }
+
+    fun updateIsWriting(flag: Boolean){
+        _isWriting.value = flag
     }
 }
 
