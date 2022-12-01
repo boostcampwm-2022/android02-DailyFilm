@@ -18,51 +18,68 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#212121"
+            android:background="#00000000"
             android:elevation="1dp">
 
             <ImageView
                 android:id="@+id/iv_selectVideo_next"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="end"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_back_button"
                 android:elevation="1dp"
                 android:onClick="@{() -> viewModel.navigateToUpload()}"
-                android:padding="16dp"
+                android:padding="8dp"
                 android:src="@drawable/ic_done"
                 android:textColor="@color/white"
-                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_selectVideo_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="end"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_back_button"
                 android:elevation="1dp"
                 android:onClick="@{() -> viewModel.backToMain()}"
-                android:padding="16dp"
+                android:padding="8dp"
                 android:src="@drawable/ic_back"
                 android:textColor="@color/white"
-                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_selectVideo_sound_control"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/ic_back_button"
+                android:onClick="@{() -> viewModel.controlSound()}"
+                android:padding="8dp"
+                android:scaleType="fitStart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_selectVideo_back"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="false"
+                app:lottie_fileName="sound_lottie.json"
+                app:lottie_loop="false" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="200dp"
-                app:contentScrim="#3C000000"
+                app:contentScrim="#4D000000"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <com.google.android.exoplayer2.ui.StyledPlayerView
@@ -86,6 +103,7 @@
             android:id="@+id/rv_media"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:setVideoSelectListener="@{viewModel}"

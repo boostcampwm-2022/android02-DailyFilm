@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.presentation
+package com.boostcamp.dailyfilm.presentation.trimvideo
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityTrimViedoBinding
+import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
@@ -30,24 +32,38 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                 if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                     val uri: Uri = Uri.parse(TrimVideo.getTrimmedVideoPath(result.data))
                     val uriString = Uri.parse("file://$uri")
-
-                    startActivity(
-                        Intent(this, UploadFilmActivity::class.java).apply {
-                            putExtra(
-                                SelectVideoActivity.DATE_VIDEO_ITEM,
-                                DateAndVideoModel(uriString, viewModel.infoItem!!.uploadDate)
-                            )
-                        }
-                    )
-                    finish()
-                } else
-                // 오류
-                    finish()
+                    moveToUpload(uriString)
+                } else {
+                    moveToSelectVideo()
+                }
             }
-
         openTrimActivity(startForResult)
     }
 
+    private fun moveToUpload(uriString: Uri) {
+        startActivity(
+            Intent(this, UploadFilmActivity::class.java).apply {
+                putExtra(
+                    SelectVideoActivity.DATE_VIDEO_ITEM,
+                    DateAndVideoModel(uriString, viewModel.infoItem!!.uploadDate)
+                )
+                putExtra("beforeItem", viewModel.infoItem)
+            }
+        )
+        finish()
+    }
+
+    private fun moveToSelectVideo() {
+        startActivity(
+            Intent(this, SelectVideoActivity::class.java).apply {
+                putExtra(
+                    CalendarActivity.KEY_DATE_MODEL,
+                    viewModel.infoItem!!.getDateModel()
+                )
+            }
+        )
+        finish()
+    }
     private fun openTrimActivity(activityResultLauncher: ActivityResultLauncher<Intent>) {
         viewModel.infoItem?.let {
             val videoWidthAndHeight = TrimmerUtils.getVideoWidthHeight(this, it.uri)
@@ -80,5 +96,4 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
             intArrayOf(newWidth, newHeight)
         }
     }
-
 }
