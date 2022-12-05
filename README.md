@@ -44,7 +44,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 ---
 |나만의 필름 캘린더|
 |:---:|
-|<img src="https://user-images.githubusercontent.com/39405316/205529292-ac678c42-8e09-4f3a-8990-8f4e392797ca.gif" width="300"/>|
+|<img src="https://user-images.githubusercontent.com/39405316/205529292-ac678c42-8e09-4f3a-8990-8f4e392797ca.gif" width="250"/>|
 
 - 썸네일을 통해 업로드 된 영상을 확인할 수 있습니다.
 - 좌, 우로 Swipe 하며 월별 캘린더를 확인할 수 있습니다.
