@@ -13,7 +13,8 @@ data class DateModel(
     val day: String,
     val text: String? = null,
     val videoUrl: String? = null
-) : Parcelable{
+) : Parcelable {
+
     fun getDate() =
         year + month.padStart(2, '0') + day.padStart(2, '0')
 }

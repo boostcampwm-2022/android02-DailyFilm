@@ -24,7 +24,7 @@ const val HD_WIDTH = 1280
 
 @AndroidEntryPoint
 class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activity_trim_viedo) {
-    private val viewModel: TimeVideoViewModel by viewModels()
+    private val viewModel: TrimVideoViewModel by viewModels()
 
     override fun initView() {
         val startForResult =

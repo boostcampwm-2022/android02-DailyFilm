@@ -31,6 +31,11 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
     private lateinit var adapter: CalendarAdapter
 
     override fun initView() {
+        if (activityViewModel.syncSet.contains(viewModel.calendar.get(Calendar.YEAR)).not()) {
+            viewModel.syncFilmItem()
+            activityViewModel.syncSet.add(viewModel.calendar.get(Calendar.YEAR))
+        }
+
         initAdapter()
 
         lifecycleScope.launch {

@@ -5,8 +5,11 @@ import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
-import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
@@ -14,9 +17,14 @@ import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +46,7 @@ class UploadFilmViewModel @Inject constructor(
 
     private val _uploadFilmInfoResult = MutableSharedFlow<Boolean>()
     val uploadFilmInfoResult: SharedFlow<Boolean> get() = _uploadFilmInfoResult
-    
+
     val textContent = MutableLiveData("")
 
     private val _cancelUploadResult = MutableSharedFlow<Boolean>()
@@ -64,7 +72,7 @@ class UploadFilmViewModel @Inject constructor(
                     when (result) {
                         is Result.Success -> {
                             // storage 업로드 성공
-                            //_uploadResult.emit(result.data)
+                            // _uploadResult.emit(result.data)
                             uploadFilmInfo(result.data)
                         }
                         is Result.Error -> {
@@ -85,24 +93,23 @@ class UploadFilmViewModel @Inject constructor(
         val text = textContent.value ?: ""
 
         if (userId != null && videoUrl != null && uploadDate != null) {
+            val filmItem = DailyFilmItem(videoUrl.toString(), text, uploadDate)
             uploadFilmRepository.uploadFilmInfo(
                 userId,
                 uploadDate,
-                DailyFilmItem(videoUrl.toString(), text, uploadDate)
-            )
-                .onEach {
-                    when (it) {
-                        is Result.Success -> {
-                            _uiState.value = UiState.Success(it.data)
-                        }
-                        is Result.Error -> {
-                            _uiState.value = UiState.Failure(it.exception)
-                        }
-                        is Result.Uninitialized -> {
-
-                        }
+                filmItem
+            ).onEach {
+                when (it) {
+                    is Result.Success -> {
+                        uploadFilmRepository.insertFilmEntity(filmItem)
+                        _uiState.value = UiState.Success(it.data)
                     }
-                }.launchIn(viewModelScope)
+                    is Result.Error -> {
+                        _uiState.value = UiState.Failure(it.exception)
+                    }
+                    is Result.Uninitialized -> {}
+                }
+            }.launchIn(viewModelScope)
         } else {
             _uiState.value =
                 UiState.Failure(Throwable("userId == null or videoUrl == null or uploadDate or null "))
@@ -111,7 +118,7 @@ class UploadFilmViewModel @Inject constructor(
 
     fun updateSpannableText() {
         textContent.value?.let { text ->
-            if (text.isNotEmpty()){
+            if (text.isNotEmpty()) {
                 _showedTextContent.value = SpannableString(text).apply {
                     setSpan(
                         BackgroundColorSpan(Color.BLACK),
@@ -119,10 +126,8 @@ class UploadFilmViewModel @Inject constructor(
                         text.length,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-
                 }
-            }
-            else {
+            } else {
                 _showedTextContent.value = SpannableString("")
             }
         }
@@ -134,7 +139,7 @@ class UploadFilmViewModel @Inject constructor(
         }
     }
 
-    fun updateIsWriting(flag: Boolean){
+    fun updateIsWriting(flag: Boolean) {
         _isWriting.value = flag
     }
 
