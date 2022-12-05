@@ -27,7 +27,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 |<img src="https://user-images.githubusercontent.com/39405316/205534514-50d8bd0d-2805-47a7-8405-97b16cebcc11.png" width=300>|<img src="" width=300>|
 |[김무현](https://github.com/KimMooHyeon)|[김재현](https://github.com/eoeo0326)|
 |**K016**|**K038**|
-|<img src="https://user-images.githubusercontent.com/39405316/205534530-7a810333-46d4-4ab9-9c68-9308a34b853f.png" width=300>|<img src="" width=300>|
+|<img src="https://user-images.githubusercontent.com/39405316/205534530-7a810333-46d4-4ab9-9c68-9308a34b853f.png" width=300>|<img src="https://user-images.githubusercontent.com/39405316/205541582-cbaafa5f-e694-4995-91ce-ffa4c0fa5039.png" width=300>|
 |[박동현](https://github.com/TTC1018)|[이준형](https://github.com/junhyeongleeee)|
 
 ## 🖼️ 프로젝트 한눈에 보기
