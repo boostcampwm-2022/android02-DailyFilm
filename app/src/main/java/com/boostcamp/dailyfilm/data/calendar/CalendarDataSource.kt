@@ -1,49 +1,28 @@
 package com.boostcamp.dailyfilm.data.calendar
 
-import com.boostcamp.dailyfilm.BuildConfig
-import com.boostcamp.dailyfilm.data.model.DailyFilmItem
-import com.google.firebase.database.ktx.ChildEvent
-import com.google.firebase.database.ktx.childEvents
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.boostcamp.dailyfilm.data.model.FilmEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 interface CalendarDataSource {
-    fun loadFilmInfo(userId: String, startAt: String, endAt: String): Flow<DailyFilmItem?>
+    fun loadFilm(startAt: Int, endAt: Int): Flow<List<FilmEntity?>>
+
+    suspend fun insertFilm(film: FilmEntity)
+
+    suspend fun insertAllFilm(filmList: List<FilmEntity>)
 }
 
-class CalendarDataSourceImpl : CalendarDataSource {
-    override fun loadFilmInfo(
-        userId: String,
-        startAt: String,
-        endAt: String
-    ): Flow<DailyFilmItem?> =
-        database.reference
-            .child(DIRECTORY_USER)
-            .child(userId)
-            .orderByKey()
-            .startAfter(startAt)
-            .endAt(endAt)
-            .childEvents.map { event ->
-                when (event) {
-                    is ChildEvent.Added -> {
-                        event.snapshot.getValue(DailyFilmItem::class.java)
-                    }
-                    is ChildEvent.Changed -> {
-                        null
-                    }
-                    is ChildEvent.Moved -> {
-                        null
-                    }
-                    is ChildEvent.Removed -> {
-                        null
-                    }
-                }
-            }
+class CalendarLocalDataSource(
+    private val calendarDao: CalendarDao
+) : CalendarDataSource {
 
-    companion object {
-        val database = Firebase.database(BuildConfig.DATABASE_URL)
-        const val DIRECTORY_USER = "users"
+    override fun loadFilm(startAt: Int, endAt: Int): Flow<List<FilmEntity?>> =
+        calendarDao.loadFilm(startAt, endAt)
+
+    override suspend fun insertFilm(film: FilmEntity) {
+        calendarDao.insert(film)
+    }
+
+    override suspend fun insertAllFilm(filmList: List<FilmEntity>) {
+        calendarDao.insertAll(filmList)
     }
 }

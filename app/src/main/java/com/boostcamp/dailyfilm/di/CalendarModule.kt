@@ -1,7 +1,8 @@
 package com.boostcamp.dailyfilm.di
 
+import com.boostcamp.dailyfilm.data.calendar.CalendarDao
 import com.boostcamp.dailyfilm.data.calendar.CalendarDataSource
-import com.boostcamp.dailyfilm.data.calendar.CalendarDataSourceImpl
+import com.boostcamp.dailyfilm.data.calendar.CalendarLocalDataSource
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepositoryImpl
 import dagger.Module
@@ -16,11 +17,12 @@ object CalendarModule {
 
     @Singleton
     @Provides
-    fun provideCalenderDataSource(): CalendarDataSource = CalendarDataSourceImpl()
+    fun provideCalenderDataSource(calendarDao: CalendarDao): CalendarDataSource = CalendarLocalDataSource(calendarDao)
 
     @Singleton
     @Provides
     fun provideCalenderRepository(
-        calendarDataSource: CalendarDataSource
-    ): CalendarRepository = CalendarRepositoryImpl(calendarDataSource)
+        calendarLocalDataSource: CalendarDataSource
+    ): CalendarRepository =
+        CalendarRepositoryImpl(calendarLocalDataSource)
 }
