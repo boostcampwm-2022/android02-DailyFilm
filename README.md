@@ -123,7 +123,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 ## 📚 Tech Stacks
 |분류|Stack|
 |------|---|
-|App Compontents|<img src="https://img.shields.io/badge/MediaStore-3DDC84?style=forthebadge&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/ContentResolver-3DDC84?style=forthebage&logo=Android&logoColor=white"/>|
+|App Components|<img src="https://img.shields.io/badge/MediaStore-3DDC84?style=forthebadge&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/ContentResolver-3DDC84?style=forthebage&logo=Android&logoColor=white"/>|
 |App Architecture|<img src="https://img.shields.io/badge/ViewModel-3DDC84?style=forthebage&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/LiveData-3DDC84?style=forthebage&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/DataBinding-3DDC84?style=forthebage&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/Lifecycle-3DDC84?style=forthebage&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/Paging-3DDC84?style=forthebage&logo=Android&logoColor=white"/> <img src="https://img.shields.io/badge/ViewPager2-3DDC84?style=forthebage&logo=Android&logoColor=white"/>|
 |Design Patterns|<img src="https://img.shields.io/badge/Flow-f3841c?style=forthebage&logo=Kotlin&logoColor=blueviolet"/> <img src="https://img.shields.io/badge/MVVM-2962FF?style=forthebadge"/>|
 |DI|<img src="https://img.shields.io/badge/Hilt-FDA061?style=forthebadge"/>|
