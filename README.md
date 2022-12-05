@@ -21,10 +21,13 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 >
 
 ## 5678.toList() - 팀원 소개
-|K005|K009|K016|K038|
-|:---:|:---:|:---:|:---:|
-|<img src="" width=100>|<img src="" width=100>|<img src="" width=100>|<img src="" width=100>|
-|[김무현](https://github.com/KimMooHyeon)|[김재현](https://github.com/eoeo0326)|[박동현](https://github.com/TTC1018)|[이준형](https://github.com/junhyeongleeee)|
+|K005|K009|
+|:---:|:---:|
+|<img src="https://user-images.githubusercontent.com/39405316/205534514-50d8bd0d-2805-47a7-8405-97b16cebcc11.png" width=300>|<img src="" width=300>|
+|[김무현](https://github.com/KimMooHyeon)|[김재현](https://github.com/eoeo0326)|
+|**K016**|**K038**|
+|<img src="https://user-images.githubusercontent.com/39405316/205534530-7a810333-46d4-4ab9-9c68-9308a34b853f.png" width=300>|<img src="" width=300>|
+|[박동현](https://github.com/TTC1018)|[이준형](https://github.com/junhyeongleeee)|
 
 ## 기능 소개
 |<img src="https://user-images.githubusercontent.com/39405316/205529931-4418e436-1252-485d-ae2e-e7da99040c8d.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/205529292-ac678c42-8e09-4f3a-8990-8f4e392797ca.gif" width="180"/>|<img src="https://user-images.githubusercontent.com/39405316/205529859-c97f8f25-54c6-407a-b218-6c00fc056eb2.gif" width="180" />|
