@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
@@ -33,8 +34,7 @@ class SelectVideoViewModel @Inject constructor(
     private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
     override val selectedVideo = _selectedVideo.asStateFlow()
 
-    private val _clickSound = MutableStateFlow(true)
-    val clickSound = _clickSound.asStateFlow()
+    private var clickSound = true
 
     private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
     val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
@@ -57,7 +57,8 @@ class SelectVideoViewModel @Inject constructor(
     }
 
     fun controlSound() {
-        _clickSound.value = !_clickSound.value
+        clickSound = !clickSound
+        event(SelectVideoEvent.ControlSoundResult(clickSound))
     }
 
     fun backToMain() {
@@ -65,11 +66,9 @@ class SelectVideoViewModel @Inject constructor(
     }
 
     fun loadVideo() {
-        viewModelScope.launch {
-            selectVideoRepository.loadVideo().collect { videoItem ->
-                _videosState.value = Result.Success(videoItem)
-            }
-        }
+        selectVideoRepository.loadVideo().cachedIn(viewModelScope).onEach {
+            _videosState.value = Result.Success(it)
+        }.launchIn(viewModelScope)
     }
 
     private fun event(event: SelectVideoEvent) {
@@ -89,5 +88,6 @@ class SelectVideoViewModel @Inject constructor(
 sealed class SelectVideoEvent {
     data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel) : SelectVideoEvent()
     data class BackButtonResult(val result: Boolean) : SelectVideoEvent()
+    data class ControlSoundResult(val result: Boolean) : SelectVideoEvent()
 }
 
