@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.model.VideoItem
@@ -27,9 +28,8 @@ class SelectVideoViewModel @Inject constructor(
     override val viewTreeLifecycleScope: CoroutineScope
         get() = viewModelScope
 
-    private val _videosState =
-        MutableStateFlow(Result.Success<PagingData<VideoItem>>(PagingData.empty()))
-    val videosState: StateFlow<Result<*>> get() = _videosState
+    private val _videosState = MutableStateFlow<PagingData<VideoItem>>(PagingData.empty())
+    val videosState: StateFlow<PagingData<VideoItem>> get() = _videosState
 
     private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
     override val selectedVideo = _selectedVideo.asStateFlow()
@@ -66,8 +66,8 @@ class SelectVideoViewModel @Inject constructor(
     }
 
     fun loadVideo() {
-        selectVideoRepository.loadVideo().cachedIn(viewModelScope).onEach {
-            _videosState.value = Result.Success(it)
+        selectVideoRepository.loadVideo().cachedIn(viewModelScope).onEach { pagingData ->
+            _videosState.value = pagingData
         }.launchIn(viewModelScope)
     }
 
