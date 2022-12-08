@@ -1,60 +1,67 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.boostcamp.dailyfilm.R
-import com.boostcamp.dailyfilm.databinding.FragmentDateBinding
+import com.boostcamp.dailyfilm.databinding.FragmentCalendarCustomBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_FILM_ARRAY
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
-import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
 class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
-    BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
+    BaseFragment<FragmentCalendarCustomBinding>(R.layout.fragment_calendar_custom) {
 
     private val viewModel: DateViewModel by viewModels()
     private val activityViewModel: CalendarViewModel by activityViewModels()
     private lateinit var adapter: CalendarAdapter
 
     override fun initView() {
+
         if (activityViewModel.syncSet.contains(viewModel.calendar.get(Calendar.YEAR)).not()) {
             viewModel.syncFilmItem()
             activityViewModel.syncSet.add(viewModel.calendar.get(Calendar.YEAR))
         }
 
-        initAdapter()
+//        initAdapter()
 
         lifecycleScope.launch {
             launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.dateFlow.collectLatest { dateList ->
-                        adapter.submitList(dateList)
+                    launch {
+                        viewModel.dateFlow.collect { dateList ->
+                            binding.customCalendarView.initCalendar(
+                                Glide.with(this@DateFragment),
+                                dateList
+                            )
+                            cancel()
+                        }
+                    }
+                    launch {
+                        viewModel.reloadFlow.collect {
+                            binding.customCalendarView.reloadItem(it.first, it.second)
+                        }
+                    }
+                    launch {
+                        viewModel.itemFlow.collect { item ->
+                            viewModel.reloadCalendar(item)
+                        }
                     }
                 }
             }
 
             launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    launch {
-                        viewModel.itemFlow.collect { item ->
-                            viewModel.reloadCalendar(item)
-                        }
-                    }
-
                     launch {
                         viewModel.dateFlow.collectLatest { dateList ->
                             activityViewModel.emitFilm(
@@ -67,7 +74,7 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
         }
     }
 
-    private fun initAdapter() {
+    /*private fun initAdapter() {
         adapter = CalendarAdapter(viewModel.calendar, Glide.with(this), { dateModel ->
             onUploadFilm(null)
             startActivity(
@@ -93,7 +100,7 @@ class DateFragment(val onUploadFilm: (DateModel?) -> Unit) :
                 }
             }
         )
-    }
+    }*/
 
     companion object {
         const val KEY_CALENDAR = "calendar"

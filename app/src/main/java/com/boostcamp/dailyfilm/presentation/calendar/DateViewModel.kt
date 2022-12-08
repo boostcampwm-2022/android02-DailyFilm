@@ -10,10 +10,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,6 +49,9 @@ class DateViewModel @Inject constructor(
         getStartAt(getStartCalendar(prevCalendar, prevMaxDay, dayOfWeek)),
         getEndAt(calendar.get(Calendar.MONTH), getStartCalendar(prevCalendar, prevMaxDay, dayOfWeek))
     )
+
+    private val _reloadFlow = MutableSharedFlow<Pair<Int, DateModel>>()
+    val reloadFlow: SharedFlow<Pair<Int, DateModel>> = _reloadFlow.asSharedFlow()
 
     private fun getStartAt(startCalendar: Calendar): String {
         return dateFormat.format(startCalendar.time)
@@ -127,7 +127,55 @@ class DateViewModel @Inject constructor(
         val currentMonth = calendar.get(Calendar.MONTH)
         val currentMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        itemList.forEach { item ->
+        for (i in itemList.indices) {
+
+            val item = itemList[i]
+            val prevItem = _dateFlow.value[i]
+            if (item == null) return
+
+            val itemDate = dateFormat.parse(item.updateDate) ?: return
+            val itemCalendar = Calendar.getInstance().apply {
+                time = itemDate
+            }
+
+            val itemMonth = itemCalendar.get(Calendar.MONTH)
+            val itemDay = itemCalendar.get(Calendar.DAY_OF_MONTH)
+            val itemYear = itemCalendar.get(Calendar.YEAR)
+
+            val index = if (currentMonth > itemMonth) {
+                itemDay - prevDay
+            } else if (currentMonth == itemMonth) {
+                prevCnt + itemDay
+            } else {
+                prevCnt + currentMaxDay + itemDay
+            }
+
+            val currentItem = DateModel(
+                itemYear.toString(),
+                (itemMonth + 1).toString(),
+                itemDay.toString(),
+                item.text,
+                item.videoUrl
+            )
+
+            viewModelScope.launch {
+                if (prevItem != currentItem) {
+                    _reloadFlow.emit(Pair(index, currentItem))
+                }
+            }
+
+            dateModelList[index] = DateModel(
+                itemYear.toString(),
+                (itemMonth + 1).toString(),
+                itemDay.toString(),
+                item.text,
+                item.videoUrl
+            )
+        }
+
+        _dateFlow.value = dateModelList
+
+        /*itemList.forEach { item ->
             if (item == null) return
 
             val itemDate = dateFormat.parse(item.updateDate) ?: return
@@ -156,7 +204,7 @@ class DateViewModel @Inject constructor(
             )
         }
 
-        _dateFlow.value = dateModelList
+        _dateFlow.value = dateModelList*/
     }
 
     private fun initialDateList(): List<DateModel> {
