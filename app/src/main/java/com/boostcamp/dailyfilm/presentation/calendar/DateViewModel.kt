@@ -174,37 +174,6 @@ class DateViewModel @Inject constructor(
         }
 
         _dateFlow.value = dateModelList
-
-        /*itemList.forEach { item ->
-            if (item == null) return
-
-            val itemDate = dateFormat.parse(item.updateDate) ?: return
-            val itemCalendar = Calendar.getInstance().apply {
-                time = itemDate
-            }
-
-            val itemMonth = itemCalendar.get(Calendar.MONTH)
-            val itemDay = itemCalendar.get(Calendar.DAY_OF_MONTH)
-            val itemYear = itemCalendar.get(Calendar.YEAR)
-
-            val index = if (currentMonth > itemMonth) {
-                itemDay - prevDay
-            } else if (currentMonth == itemMonth) {
-                prevCnt + itemDay
-            } else {
-                prevCnt + currentMaxDay + itemDay
-            }
-
-            dateModelList[index] = DateModel(
-                itemYear.toString(),
-                (itemMonth + 1).toString(),
-                itemDay.toString(),
-                item.text,
-                item.videoUrl
-            )
-        }
-
-        _dateFlow.value = dateModelList*/
     }
 
     private fun initialDateList(): List<DateModel> {
