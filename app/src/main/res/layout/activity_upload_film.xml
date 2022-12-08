@@ -75,9 +75,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:playVideo="@{viewModel.infoItem.uri}"
             app:resize_mode="zoom"
-            app:use_controller="false"/>
+            app:use_controller="false" />
 
         <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
@@ -97,37 +98,45 @@
 
         <EditText
             android:id="@+id/et_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="0.0"
-            android:gravity="center_horizontal"
-            android:textAlignment="center"
-            android:inputType="textNoSuggestions|textMultiLine"
-            android:text="@={viewModel.textContent}"
-            android:textColor="@color/white"
-            android:textSize="22sp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:afterTextChanged="@{() -> viewModel.updateSpannableText()}"
+            android:alpha="0.0"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:inputType="textNoSuggestions|textMultiLine"
+            android:text="@={viewModel.textContent}"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
 
         <TextView
             android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.showedTextContent}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:bufferType="spannable"
-            android:textSize="22sp"
-            android:textColor="@color/white"
-            android:gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@{viewModel.showedTextContent}"
             android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
