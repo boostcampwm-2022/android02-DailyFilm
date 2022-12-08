@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.data.model.VideoItem
 
@@ -40,7 +39,5 @@ class SelectVideoAdapter(
                 return oldItem == newItem
             }
         }
-
     }
-
 }
