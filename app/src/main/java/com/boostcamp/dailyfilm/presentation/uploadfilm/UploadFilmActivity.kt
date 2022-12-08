@@ -1,24 +1,20 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
-import android.content.Context
-import android.os.Build
-import android.util.Log
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
-import com.boostcamp.dailyfilm.R
+import android.os.Build
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
@@ -51,7 +47,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                     when (state) {
                         is UiState.Success -> {
                             loadingDialogFragment.hideProgressDialog()
-                            moveToCalendar()
+                            finish()
                         }
                         is UiState.Loading -> {
                             loadingDialogFragment.showProgressDialog(supportFragmentManager)
@@ -67,16 +63,6 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                 }
             }
         }
-    }
-
-    private fun moveToCalendar() {
-        startActivity(
-            Intent(
-                this@UploadFilmActivity,
-                CalendarActivity::class.java
-            )
-        )
-        finish()
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
