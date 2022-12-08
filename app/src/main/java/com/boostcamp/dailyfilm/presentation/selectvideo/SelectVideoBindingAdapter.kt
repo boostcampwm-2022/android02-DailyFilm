@@ -1,15 +1,16 @@
 package com.boostcamp.dailyfilm.presentation.selectvideo
 
 import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ConcatAdapter.Config
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
@@ -21,7 +22,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 @BindingAdapter(value = ["thisItem", "selectedVideo"], requireAll = false)
-fun ConstraintLayout.chooseVideoAndUpdateAlpha(videoItem: VideoItem, clickListener: VideoSelectListener) {
+fun ConstraintLayout.chooseVideoAndUpdateAlpha(
+    videoItem: VideoItem,
+    clickListener: VideoSelectListener
+) {
     with(clickListener) {
         viewTreeLifecycleScope.launch {
             selectedVideo.collect {
@@ -32,7 +36,7 @@ fun ConstraintLayout.chooseVideoAndUpdateAlpha(videoItem: VideoItem, clickListen
             }
         }
 
-        if (selectedVideo.value == null){
+        if (selectedVideo.value == null) {
             alpha = 0.5f
             clickListener.chooseVideo(videoItem)
         }
@@ -72,25 +76,37 @@ fun StyledPlayerView.playVideo(uri: Uri?) {
 @BindingAdapter(value = ["setVideoSelectListener", "updateAdapter"], requireAll = true)
 fun RecyclerView.updateAdapter(
     videoClickListener: VideoSelectListener,
-    videosState: StateFlow<Result<*>>?
+    videosState: StateFlow<PagingData<VideoItem>>
 ) {
-    Log.d("LifecycleScope",findViewTreeLifecycleOwner()?.lifecycleScope.toString())
     if (adapter == null) {
         itemAnimator = null
-        adapter = SelectVideoAdapter(videoClickListener)
-    }
+        val newAdapter = SelectVideoAdapter(videoClickListener)
+        adapter = newAdapter.withLoadStateFooter(
+            footer = VideoLoadStateAdapter(newAdapter::retry)
+        ).apply {
+            Config.Builder().apply {
+                setIsolateViewTypes(false)
+            }.build()
+        }
 
-    if (videosState != null) {
-        when (videosState.value) {
-            is Result.Success<*> -> {
-                findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
-                    findViewTreeLifecycleOwner()?.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        (adapter as SelectVideoAdapter).submitData((videosState.value as Result.Success<*>).data as PagingData<VideoItem>)
+        this.layoutManager = GridLayoutManager(this.context, 3).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when ((adapter as ConcatAdapter).getItemViewType(position)) {
+                        1 -> {
+                            3
+                        }
+                        else -> {
+                            1
+                        }
                     }
                 }
             }
-            is Result.Error -> TODO()
-            is Result.Uninitialized -> TODO()
+        }
+    }
+    findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
+        findViewTreeLifecycleOwner()?.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            ((adapter as ConcatAdapter).adapters[0] as SelectVideoAdapter).submitData(videosState.value)
         }
     }
 }
@@ -101,6 +117,7 @@ fun ImageView.updateThumbnails(uri: Uri?) {
         Glide.with(this)
             .load(it)
             .centerCrop()
+            .placeholder(com.boostcamp.dailyfilm.R.color.gray)
             .into(this)
     }
 }
