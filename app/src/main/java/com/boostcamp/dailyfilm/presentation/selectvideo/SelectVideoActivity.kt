@@ -149,7 +149,11 @@ class SelectVideoActivity :
             )
             finish()
         } else {
-            Snackbar.make(findViewById(android.R.id.content), R.string.guide_choice_video, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.guide_choice_video,
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -179,7 +183,11 @@ class SelectVideoActivity :
                 requestSettingLauncher.launch(intent)
             }
             .setNegativeButton(R.string.text_close) { _, _ ->
-                Snackbar.make(findViewById(android.R.id.content), R.string.guide_accept_permission, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    R.string.guide_accept_permission,
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }.create()
         return builder
     }
