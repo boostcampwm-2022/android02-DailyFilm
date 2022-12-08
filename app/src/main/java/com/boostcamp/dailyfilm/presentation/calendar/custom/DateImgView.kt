@@ -24,13 +24,9 @@ class DateImgView constructor(
         setMeasuredDimension(staticWidth, staticHeight)
     }
 
-    private fun loadingImg() {
-        load(requestManager, dateModel.videoUrl)
-    }
-
     fun setVideoUrl(dateModel: DateModel) {
         this.dateModel = dateModel
-        loadingImg()
+        load(requestManager, dateModel.videoUrl)
     }
 
     private fun load(glide: RequestManager, imageUrl: String?) {
@@ -40,10 +36,6 @@ class DateImgView constructor(
             .placeholder(R.color.gray)
             .transform(CenterCrop(), RoundedCorners(10))
             .into(this)
-    }
-
-    override fun setOnClickListener(l: OnClickListener?) {
-        super.setOnClickListener(l)
     }
 }
 
