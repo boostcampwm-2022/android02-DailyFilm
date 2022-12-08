@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -23,42 +25,68 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:resize_mode="fill"
+            app:resize_mode="zoom"
             app:streamVideo="@{viewModel.dateModel.videoUrl}"
-            app:use_controller="false">
-
-        </com.google.android.exoplayer2.ui.StyledPlayerView>
+            app:use_artwork="true"
+            app:use_controller="false" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_date"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:alpha="0.5"
-            android:background="@color/cardview_dark_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/white"
+            android:background="@drawable/background_rounded"
+            android:bufferType="spannable"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:text="@{@string/date(viewModel.dateModel.year, viewModel.dateModel.month, viewModel.dateModel.day)}"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2022년 11월 24일" />
 
         <TextView
             android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
             android:alpha="0.5"
-            android:background="@color/cardview_dark_background"
-            android:ems="10"
-            android:gravity="start|top"
-            android:text='@{viewModel.dateModel.text ?? ""}'
+            android:bufferType="spannable"
+            android:gravity="center"
+            android:textAlignment="center"
             android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/lottieAnimationView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_date"
+            app:spannableText='@{viewModel.dateModel.text ?? ""}'
+            app:visibilityAnimation="@{viewModel.isContentShowed()}" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.5"
+            android:background="@drawable/ic_back_button"
+            android:elevation="1dp"
+            android:onClick="@{() -> viewModel.changeShowState()}"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+            app:lottie_progress="0.67"
+            app:lottie_rawRes="@raw/lottie_textstate"
+            app:syncViewState="@{viewModel.isContentShowed()}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

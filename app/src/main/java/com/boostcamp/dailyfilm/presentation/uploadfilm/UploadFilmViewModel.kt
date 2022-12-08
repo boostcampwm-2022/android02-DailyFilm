@@ -1,10 +1,9 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
-import android.graphics.Color
+
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.style.BackgroundColorSpan
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -15,6 +14,7 @@ import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
+import com.boostcamp.dailyfilm.presentation.util.RoundedBackgroundSpan
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -121,7 +121,7 @@ class UploadFilmViewModel @Inject constructor(
             if (text.isNotEmpty()) {
                 _showedTextContent.value = SpannableString(text).apply {
                     setSpan(
-                        BackgroundColorSpan(Color.BLACK),
+                        RoundedBackgroundSpan(),
                         0,
                         text.length,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
