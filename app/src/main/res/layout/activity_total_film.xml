@@ -19,14 +19,15 @@
             playTotalVideo="@{viewModel}"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:changeVolume="@{viewModel.isMuted()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:resize_mode="zoom"
-            app:use_controller="false">
-
-        </com.google.android.exoplayer2.ui.StyledPlayerView>
+            app:use_controller="false" />
 
         <TextView
             android:id="@+id/tv_date"
@@ -45,6 +46,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2022년 11월 24일" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/btn_sound_control"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="16dp"
+            android:alpha="0.5"
+            android:background="@drawable/background_rounded"
+            android:onClick="@{() -> viewModel.changeMuteState()}"
+            android:padding="8dp"
+            android:scaleType="fitStart"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+            app:layout_constraintEnd_toEndOf="@+id/backgroundPlayer"
+            app:layout_constraintTop_toTopOf="@+id/tv_date"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="sound_lottie.json"
+            app:lottie_loop="false"
+            app:syncMuteIcon="@{viewModel.isMuted()}" />
 
         <TextView
             android:id="@+id/tv_content"
