@@ -65,7 +65,7 @@ class GalleryPagingSource @Inject constructor(
 
         val query = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             val sortOrder =
-                "${MediaStore.Video.Media.DISPLAY_NAME} ASC LIMIT $PAGING_SIZE OFFSET $start"
+                "${MediaStore.Video.Media.DATE_MODIFIED} DESC LIMIT $PAGING_SIZE OFFSET $start"
 
             contentResolver.query(
                 collection,
