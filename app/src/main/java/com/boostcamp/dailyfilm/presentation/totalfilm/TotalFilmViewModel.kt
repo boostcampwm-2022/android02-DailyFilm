@@ -1,5 +1,7 @@
 package com.boostcamp.dailyfilm.presentation.totalfilm
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
@@ -20,7 +22,15 @@ class TotalFilmViewModel @Inject constructor(
     private val _currentDateItem = MutableStateFlow(filmArray?.get(0))
     val currentDateItem: StateFlow<DateModel?> = _currentDateItem.asStateFlow()
 
+    private val _isContentShowed = MutableLiveData(true)
+    val isContentShowed: LiveData<Boolean> get() = _isContentShowed
+
     fun setCurrentDateItem(dateModel: DateModel) {
         _currentDateItem.value = dateModel
     }
+
+    fun changeShowState(){
+        _isContentShowed.value = _isContentShowed.value?.not()
+    }
+
 }
