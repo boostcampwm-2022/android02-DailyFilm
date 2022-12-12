@@ -16,8 +16,15 @@ class PlayFilmViewModel @Inject constructor(
     private val _isContentShowed = MutableLiveData(true)
     val isContentShowed: LiveData<Boolean> get() = _isContentShowed
 
+    private val _isMuted = MutableLiveData(false)
+    val isMuted: LiveData<Boolean> get() = _isMuted
+
     fun changeShowState(){
         _isContentShowed.value = _isContentShowed.value?.not()
+    }
+
+    fun changeMuteState(){
+        _isMuted.value = _isMuted.value?.not()
     }
 
 }

@@ -22,7 +22,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 fun StyledPlayerView.streamVideo(url: String?) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
-            volume = 0f
+            volume = 0.5f
             repeatMode = Player.REPEAT_MODE_ALL
         }
     }
