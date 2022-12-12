@@ -28,6 +28,7 @@ class TotalFilmViewModel @Inject constructor(
     private val _isMuted = MutableLiveData(false)
     val isMuted: LiveData<Boolean> get() = _isMuted
 
+
     fun setCurrentDateItem(dateModel: DateModel) {
         _currentDateItem.value = dateModel
     }

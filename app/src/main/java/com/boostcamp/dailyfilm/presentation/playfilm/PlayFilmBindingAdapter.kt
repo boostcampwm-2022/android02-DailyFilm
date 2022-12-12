@@ -30,11 +30,12 @@ fun StyledPlayerView.streamVideo(url: String?) {
     url?.let {
         // Add placeholder
         // TODO 제대로 작동하는지 확인 필요
-        val artwork:ImageView = findViewById(com.google.android.exoplayer2.ui.R.id.exo_artwork)
-        artwork.visibility = View.VISIBLE
-        Glide.with(this)
-            .load(it)
-            .into(artwork)
+//        val artwork:ImageView = findViewById(com.google.android.exoplayer2.ui.R.id.exo_artwork)
+//        artwork.visibility = View.VISIBLE
+//        Glide.with(this)
+//            .load(it)
+//            .centerInside()
+//            .into(artwork)
 
         val mediaItem = MediaItem.fromUri(it)
         player?.setMediaItem(mediaItem)
