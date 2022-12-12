@@ -2,6 +2,7 @@ package com.boostcamp.dailyfilm.presentation.trimvideo
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -20,7 +21,9 @@ import com.gowtham.library.utils.TrimVideo
 import com.gowtham.library.utils.TrimmerUtils
 import dagger.hilt.android.AndroidEntryPoint
 
+
 const val HD_WIDTH = 1280
+const val HD_HEIGHT = 720
 
 @AndroidEntryPoint
 class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activity_trim_viedo) {
@@ -69,31 +72,41 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
             val videoWidthAndHeight = TrimmerUtils.getVideoWidthHeight(this, it.uri)
             val videoWidth = videoWidthAndHeight.first()
             val videoHeight = videoWidthAndHeight.last()
-            val (newWidth, newHeight) = getCompressedWidthAndHeight(videoWidth, videoHeight)
 
-            TrimVideo.activity(it.uri.toString())
-                .setTrimType(TrimType.FIXED_DURATION)
-                .setFixedDuration(10)
-                .setHideSeekBar(true)
-                .setCompressOption(CompressOption(24, "5M", newWidth, newHeight)) // 720p, 24 FPS, Bitrate 5M
-                .start(this, activityResultLauncher)
+            if (videoWidth >= 1280 || videoHeight >= 1280){
+                // 720p, 24 FPS
+                if (getRotationData(it.uri) == 90 || getRotationData(it.uri) == 270){ //
+                    TrimVideo.activity(it.uri.toString())
+                        .setTrimType(TrimType.FIXED_DURATION)
+                        .setFixedDuration(10)
+                        .setHideSeekBar(true)
+                        .setCompressOption(CompressOption(24, "5M", HD_HEIGHT, HD_WIDTH))
+                        .start(this, activityResultLauncher)
+                }
+                else{
+                    TrimVideo.activity(it.uri.toString())
+                        .setTrimType(TrimType.FIXED_DURATION)
+                        .setFixedDuration(10)
+                        .setHideSeekBar(true)
+                        .setCompressOption(CompressOption(24, "5M", HD_WIDTH, HD_HEIGHT))
+                        .start(this, activityResultLauncher)
+                }
+            }
+            else{ // HD 해상도보다 작은 영상
+                TrimVideo.activity(it.uri.toString())
+                    .setTrimType(TrimType.FIXED_DURATION)
+                    .setFixedDuration(10)
+                    .setHideSeekBar(true)
+                    .start(this, activityResultLauncher)
+            }
         }
     }
 
-    // 긴 변을 기준으로 720p 비율로 조정하기 (720p보다 낮은 화질이면 압축 안 함)
-    private fun getCompressedWidthAndHeight(videoWidth: Int, videoHeight: Int): IntArray {
-        return if (videoWidth > videoHeight) {
-            val newWidth = if (videoWidth > HD_WIDTH) HD_WIDTH else videoWidth
-            val newHeight =
-                if (videoWidth > HD_WIDTH) (videoHeight / (videoWidth.toDouble() / HD_WIDTH)).toInt() else videoHeight
+    private fun getRotationData(videoPath: Uri): Int {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(this, videoPath)
+        val metaRotation= retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
 
-            intArrayOf(newWidth, newHeight)
-        } else {
-            val newWidth =
-                if (videoHeight > HD_WIDTH) (videoWidth / (videoHeight.toDouble() / HD_WIDTH)).toInt() else videoWidth
-            val newHeight = if (videoHeight > HD_WIDTH) HD_WIDTH else videoHeight
-
-            intArrayOf(newWidth, newHeight)
-        }
+        return metaRotation?.toInt() ?: 0
     }
 }
