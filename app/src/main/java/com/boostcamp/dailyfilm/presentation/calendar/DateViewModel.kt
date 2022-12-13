@@ -176,7 +176,7 @@ class DateViewModel @Inject constructor(
         _dateFlow.value = dateModelList
     }
 
-    private fun initialDateList(): List<DateModel> {
+    fun initialDateList(): List<DateModel> {
         val tempCalendar = Calendar.getInstance().apply {
             timeInMillis = prevCalendar.timeInMillis
             set(Calendar.DAY_OF_MONTH, prevMaxDay - (dayOfWeek - 2))

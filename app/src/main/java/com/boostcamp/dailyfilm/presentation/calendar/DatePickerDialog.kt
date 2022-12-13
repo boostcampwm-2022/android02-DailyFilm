@@ -10,7 +10,7 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.DialogDatepickerBinding
 import java.util.*
 
-class DatePickerDialog(private val calendar: Calendar, private val callback: (Int, Int) -> Unit) : DialogFragment() {
+class DatePickerDialog(private var calendar: Calendar, private val callback: (Int, Int) -> Unit) : DialogFragment() {
 
     private var _binding: DialogDatepickerBinding? = null
     private val binding get() = _binding ?: error("Binding is null")
@@ -37,6 +37,9 @@ class DatePickerDialog(private val calendar: Calendar, private val callback: (In
             )
             dismiss()
         }
+    }
+    fun setCalendar(calendar: Calendar) {
+        this.calendar = calendar
     }
 
     override fun onDestroyView() {

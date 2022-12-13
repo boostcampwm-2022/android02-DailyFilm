@@ -54,9 +54,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun initAdapter() {
-        calendarPagerAdapter = CalendarPagerAdapter(this) {
-            viewModel.changeSelectedItem(it)
-        }
+        calendarPagerAdapter = CalendarPagerAdapter(this)
 
         binding.vpCalendar.apply {
             adapter = calendarPagerAdapter
@@ -68,6 +66,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                     super.onPageSelected(position)
                     viewModel.getViewPagerPosition(position)
                     viewModel.changeSelectedItem(null)
+
+                    val calendar = Calendar.getInstance(Locale.getDefault()).apply {
+                        add(Calendar.MONTH, position - CalendarPagerAdapter.START_POSITION)
+                    }
+                    datePickerDialog.setCalendar(calendar)
                 }
             })
         }
@@ -87,6 +90,10 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         true
                     }
                     R.id.item_play_month -> {
+                        if (viewModel.filmFlow.value.isEmpty()) {
+                            Snackbar.make(this, NOT_FILM_DATA, Snackbar.LENGTH_SHORT).show()
+                            return@setOnMenuItemClickListener true
+                        }
                         startActivity(
                             Intent(this@CalendarActivity, TotalFilmActivity::class.java).apply {
                                 putParcelableArrayListExtra(KEY_FILM_ARRAY, ArrayList(viewModel.filmFlow.value))
@@ -95,7 +102,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         true
                     }
                     R.id.item_date_picker -> {
-                        datePickerDialog.show(supportFragmentManager, "date_picker")
+                        if (datePickerDialog.isAdded) {
+                            return@setOnMenuItemClickListener true
+                        }
+
+                        datePickerDialog.show(supportFragmentManager, DATE_PICKER_TAG)
                         true
                     }
                     else -> false
@@ -166,5 +177,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         const val KEY_DATE_MODEL = "date_model"
         const val KEY_FILM_ARRAY = "film_list"
         private const val MESSAGE_SELECT_DATE = "날짜를 선택해주세요"
+        private const val NOT_FILM_DATA = "영상이 존재 하지 않습니다."
+        private const val DATE_PICKER_TAG = "date_picker"
     }
 }
