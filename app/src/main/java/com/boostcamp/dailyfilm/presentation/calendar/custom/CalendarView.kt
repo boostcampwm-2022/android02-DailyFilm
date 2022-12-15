@@ -146,14 +146,13 @@ class CalendarView(
         }
     }
 
-    fun setSelected(index: Int, onUploadFilm: (DateModel?) -> Unit) {
+    fun setSelected(index: Int, changedSelectedItem: (DateModel?) -> Unit) {
 
         resetBackground()
 
         val imgView = getChildAt(index + 1) as DateImgView
 
         if (imgView.dateModel.videoUrl != null) {
-            onUploadFilm(null)
             return
         }
 
@@ -162,7 +161,7 @@ class CalendarView(
 
         selected = index
 
-        onUploadFilm(imgView.dateModel)
+        changedSelectedItem(imgView.dateModel)
     }
 
     private fun isNotCurrentMonth(dateModel: DateModel): Boolean {
