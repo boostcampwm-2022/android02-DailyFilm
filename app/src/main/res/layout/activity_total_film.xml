@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmViewModel" />
@@ -16,7 +15,7 @@
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
             android:id="@+id/backgroundPlayer"
-            playTotalVideo="@{viewModel}"
+            setViewModel="@{viewModel}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:changeVolume="@{viewModel.isMuted()}"

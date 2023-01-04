@@ -13,18 +13,6 @@ class TotalFilmActivity : BaseActivity<ActivityTotalFilmBinding>(R.layout.activi
 
     override fun initView() {
         binding.viewModel = viewModel
-
-        binding.backgroundPlayer.apply {
-            setOnClickListener {
-                player?.let {
-                    if (it.isPlaying) {
-                        it.pause()
-                    } else {
-                        it.play()
-                    }
-                }
-            }
-        }
     }
 
     override fun onResume() {
