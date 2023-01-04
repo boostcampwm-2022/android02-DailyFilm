@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityCalendarBinding
 import com.boostcamp.dailyfilm.databinding.HeaderCalendarDrawerBinding
@@ -20,14 +19,11 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity_calendar) {
 
-    private lateinit var calendarPagerAdapter: CalendarPagerAdapter
     private val viewModel: CalendarViewModel by viewModels()
-
     private val todayCalendar = Calendar.getInstance(Locale.getDefault())
     private val todayYear = todayCalendar.get(Calendar.YEAR)
     private val todayMonth = todayCalendar.get(Calendar.MONTH)
@@ -54,26 +50,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun initAdapter() {
-        calendarPagerAdapter = CalendarPagerAdapter(this)
-
-        binding.vpCalendar.apply {
-            adapter = calendarPagerAdapter
-            setCurrentItem(CalendarPagerAdapter.START_POSITION, false)
-            offscreenPageLimit = 2
-
-            registerOnPageChangeCallback(object : OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    viewModel.getViewPagerPosition(position)
-                    viewModel.changeSelectedItem(null)
-
-                    val calendar = Calendar.getInstance(Locale.getDefault()).apply {
-                        add(Calendar.MONTH, position - CalendarPagerAdapter.START_POSITION)
-                    }
-                    datePickerDialog.setCalendar(calendar)
-                }
-            })
-        }
+        binding.adapter = CalendarPagerAdapter(this)
     }
 
     private fun initMenu() {
@@ -96,7 +73,10 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         }
                         startActivity(
                             Intent(this@CalendarActivity, TotalFilmActivity::class.java).apply {
-                                putParcelableArrayListExtra(KEY_FILM_ARRAY, ArrayList(viewModel.filmFlow.value))
+                                putParcelableArrayListExtra(
+                                    KEY_FILM_ARRAY,
+                                    ArrayList(viewModel.filmFlow.value)
+                                )
                             }
                         )
                         true
