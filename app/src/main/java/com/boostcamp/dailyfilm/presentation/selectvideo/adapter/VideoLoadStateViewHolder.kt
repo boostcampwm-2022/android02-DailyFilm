@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.presentation.selectvideo
+package com.boostcamp.dailyfilm.presentation.selectvideo.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
