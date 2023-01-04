@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- common dimens -->
+    <dimen name="small_25">2dp</dimen>
+    <dimen name="small_50">4dp</dimen>
+    <dimen name="small_100">8dp</dimen>   <!-- 50% of normal = 8dp -->
+
+    <dimen name="normal_100">16dp</dimen> <!-- 100% of normal = 16dp -->
+    <dimen name="normal_125">20dp</dimen> <!-- 125% of normal = 16dp + 4dp = 20dp -->
+    <dimen name="normal_150">24dp</dimen>
+    <dimen name="normal_175">28dp</dimen>
+
+    <dimen name="large_100">32dp</dimen>  <!-- large_100 = 2 x normal_100 -->
+    <dimen name="large_125">40dp</dimen>
+    <dimen name="large_150">48dp</dimen>
+    <dimen name="large_175">56dp</dimen>
+    <dimen name="large_200">64dp</dimen>
+</resources>
