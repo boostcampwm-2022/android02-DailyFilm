@@ -7,7 +7,7 @@
 
         <variable
             name="clickListener"
-            type="com.boostcamp.dailyfilm.presentation.selectvideo.VideoSelectListener" />
+            type="com.boostcamp.dailyfilm.presentation.selectvideo.adapter.VideoSelectListener" />
 
         <variable
             name="item"
