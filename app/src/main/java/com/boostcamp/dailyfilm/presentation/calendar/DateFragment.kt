@@ -3,7 +3,6 @@ package com.boostcamp.dailyfilm.presentation.calendar
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.MotionEvent
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,7 +13,6 @@ import com.boostcamp.dailyfilm.databinding.FragmentDateBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_FILM_ARRAY
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
-import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -28,18 +26,12 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView() {
+        initSync()
+        initBinding()
+        collectFlow()
+    }
 
-        if (activityViewModel.syncSet.contains(viewModel.calendar.get(Calendar.YEAR)).not()) {
-            viewModel.syncFilmItem()
-            activityViewModel.syncSet.add(viewModel.calendar.get(Calendar.YEAR))
-        }
-
-        binding.customCalendarView.initCalendar(
-            Glide.with(this),
-            viewModel.initialDateList(),
-            viewModel.calendar
-        )
-
+    private fun collectFlow() {
         lifecycleScope.launch {
             launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -81,27 +73,18 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
                 }
             }
         }
+    }
 
-        binding.customCalendarView.apply {
-            setOnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> true
-                    MotionEvent.ACTION_UP -> {
-                        val x = event.x.toInt() / tmpHorizontal         // child horizontal Index
-                        val y = event.y.toInt() / tmpVertical           // child vertical Index
+    private fun initBinding() {
+        binding.fragment = this
+        binding.activityViewModel = activityViewModel
+        binding.viewModel = viewModel
+    }
 
-                        val index = (y * 7 + x) * 2
-
-                        if (childCount <= index) return@setOnTouchListener false
-
-                        setSelected(index) {
-                            activityViewModel.changeSelectedItem(it)
-                        }
-                        true
-                    }
-                    else -> false
-                }
-            }
+    private fun initSync() {
+        if (activityViewModel.syncSet.contains(viewModel.calendar.get(Calendar.YEAR)).not()) {
+            viewModel.syncFilmItem()
+            activityViewModel.syncSet.add(viewModel.calendar.get(Calendar.YEAR))
         }
     }
 
