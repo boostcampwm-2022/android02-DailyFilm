@@ -14,6 +14,6 @@ interface LocalUriDao {
     suspend fun insert(cachedVideoEntity: CachedVideoEntity)
 
     @Query("SELECT * FROM cached_video_entity WHERE updateDate = :updateDate LIMIT 1")
-    suspend fun loadFilm(updateDate: Int): CachedVideoEntity
+    suspend fun loadFilm(updateDate: Int): CachedVideoEntity?
 
 }
