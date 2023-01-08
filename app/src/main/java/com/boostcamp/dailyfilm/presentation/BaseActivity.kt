@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,7 @@ abstract class BaseActivity<B : ViewDataBinding>(@LayoutRes private val layoutRe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, layoutResId)
-
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         overridePendingTransition(android.R.anim.fade_in, 0)
 
         binding.lifecycleOwner = this
