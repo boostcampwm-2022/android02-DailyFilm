@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel" />
@@ -19,9 +20,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:text="@{viewModel.userFlow.displayName}"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textSize="40sp"
-            android:text="@{viewModel.userFlow.displayName}"
             app:layout_constraintBottom_toTopOf="@id/tv_email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,13 +34,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="20sp"
             android:text="@{viewModel.userFlow.email}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_logout"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_name"
             tools:text="5678@boost.camp" />
 
+        <TextView
+            android:id="@+id/tv_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="80dp"
+            android:text="@string/logout"
+            android:textSize="25sp"
+            android:onClick="@{() -> viewModel.logout()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_email"
+         />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
