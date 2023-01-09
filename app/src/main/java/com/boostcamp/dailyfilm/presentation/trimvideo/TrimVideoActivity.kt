@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activity_trim_viedo) {
     private val viewModel: TrimVideoViewModel by viewModels()
@@ -100,7 +101,7 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                     SelectVideoActivity.DATE_VIDEO_ITEM,
                     trimAndVideoModel
                 )
-                putExtra("beforeItem", viewModel.infoItem)
+                putExtra(KEY_INFO_ITEM, viewModel.infoItem)
             }
         )
         finish()

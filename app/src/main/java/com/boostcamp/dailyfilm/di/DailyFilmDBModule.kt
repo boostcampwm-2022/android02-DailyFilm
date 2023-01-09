@@ -1,8 +1,9 @@
 package com.boostcamp.dailyfilm.di
 
 import android.content.Context
-import com.boostcamp.dailyfilm.data.calendar.CalendarDB
+import com.boostcamp.dailyfilm.data.DailyFilmDB
 import com.boostcamp.dailyfilm.data.calendar.CalendarDao
+import com.boostcamp.dailyfilm.data.uploadfilm.local.LocalUriDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,17 +13,24 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CalendarDBModule {
+object DailyFilmDBModule {
 
     @Provides
     @Singleton
     fun provideDB(
         @ApplicationContext context: Context
-    ): CalendarDB = CalendarDB.create(context)
+    ): DailyFilmDB = DailyFilmDB.create(context)
 
     @Provides
     @Singleton
     fun provideCalendarDao(
-        calendarDB: CalendarDB
-    ): CalendarDao = calendarDB.calendarDao()
+        dailyFilmDB: DailyFilmDB
+    ): CalendarDao = dailyFilmDB.calendarDao()
+
+    @Provides
+    @Singleton
+    fun provideLocalUriDao(
+        dailyFilmDB: DailyFilmDB
+    ): LocalUriDao = dailyFilmDB.localUriDao()
+
 }

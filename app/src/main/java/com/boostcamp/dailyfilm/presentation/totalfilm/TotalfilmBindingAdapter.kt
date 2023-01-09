@@ -8,7 +8,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 
-@BindingAdapter("playTotalVideo")
+@BindingAdapter("setViewModel")
 fun StyledPlayerView.playTotalVideo(viewModel: TotalFilmViewModel) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
@@ -36,6 +36,14 @@ fun StyledPlayerView.playTotalVideo(viewModel: TotalFilmViewModel) {
                 }
             }
         })
+
+        setOnClickListener {
+            if (isPlaying) {
+                pause()
+            } else {
+                play()
+            }
+        }
     }
 }
 

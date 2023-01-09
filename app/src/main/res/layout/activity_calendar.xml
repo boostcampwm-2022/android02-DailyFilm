@@ -5,7 +5,9 @@
 
     <data>
 
-        <import type="java.util.Calendar" />
+        <variable
+            name="adapter"
+            type="com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter" />
 
         <variable
             name="viewModel"
@@ -105,16 +107,20 @@
                 app:layout_constraintStart_toEndOf="@id/tv_fri"
                 app:layout_constraintTop_toTopOf="@id/tv_sun" />
 
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_calendar"
+                setAdapter="@{adapter}"
+                setViewModel="@{viewModel}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_wen" />
-
+                app:layout_constraintTop_toBottomOf="@id/tv_wen"
+                app:layout_constraintVertical_bias="1.0" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/fab_upload_Test"

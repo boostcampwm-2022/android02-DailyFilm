@@ -6,13 +6,10 @@ import android.animation.ValueAnimator
 import android.text.SpannableString
 import android.text.Spanned
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
-import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.util.RoundedBackgroundSpan
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -40,6 +37,16 @@ fun StyledPlayerView.streamVideo(url: String?) {
         val mediaItem = MediaItem.fromUri(it)
         player?.setMediaItem(mediaItem)
         player?.prepare()
+    }
+
+    setOnClickListener {
+        player?.let {
+            if (it.isPlaying) {
+                it.pause()
+            } else {
+                it.play()
+            }
+        }
     }
 }
 
@@ -88,7 +95,7 @@ fun View.startVisibilityAnimation(showFlag: Boolean) {
             this.animate()
                 .alpha(0.5f)
                 .setDuration(500)
-                .setListener(object: AnimatorListenerAdapter(){
+                .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
                         alpha = 0.5f
                     }
@@ -98,7 +105,7 @@ fun View.startVisibilityAnimation(showFlag: Boolean) {
             this.animate()
                 .alpha(0f)
                 .setDuration(500)
-                .setListener(object: AnimatorListenerAdapter(){
+                .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
                         visibility = View.INVISIBLE
                     }

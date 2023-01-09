@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.presentation.selectvideo
+package com.boostcamp.dailyfilm.presentation.selectvideo.adapter
 
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import kotlinx.coroutines.CoroutineScope
