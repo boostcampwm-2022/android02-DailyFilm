@@ -68,7 +68,7 @@ class UploadFilmViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             viewModelScope.launch {
                 // _uploadFilmInfoResult.emit(false)
-                uploadFilmRepository.uploadVideo(item.uri).collectLatest { result ->
+                uploadFilmRepository.uploadVideo(item.uploadDate, item.uri).collectLatest { result ->
                     when (result) {
                         is Result.Success -> {
                             // storage 업로드 성공
@@ -88,14 +88,12 @@ class UploadFilmViewModel @Inject constructor(
     }
 
     private fun uploadFilmInfo(videoUrl: Uri?) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
         val uploadDate = infoItem?.uploadDate
         val text = textContent.value ?: ""
 
-        if (userId != null && videoUrl != null && uploadDate != null) {
+        if (videoUrl != null && uploadDate != null) {
             val filmItem = DailyFilmItem(videoUrl.toString(), text, uploadDate)
             uploadFilmRepository.uploadFilmInfo(
-                userId,
                 uploadDate,
                 filmItem
             ).onEach {
