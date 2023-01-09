@@ -10,11 +10,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.LoginActivity1">
+        tools:context=".presentation.LoginActivity">
 
         <ImageView
-            android:layout_width="300dp"
-            android:layout_height="250dp"
+            android:layout_width="0dp"
+            android:layout_height="350dp"
             android:src="@mipmap/img_logo"
             app:layout_constraintBottom_toTopOf="@+id/btn_login_google_auth"
             app:layout_constraintEnd_toEndOf="parent"
