@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityTrimViedoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
@@ -111,11 +110,16 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
         startActivity(
             Intent(this, SelectVideoActivity::class.java).apply {
                 putExtra(
-                    CalendarActivity.KEY_DATE_MODEL,
+                    KEY_DATE_MODEL,
                     dateModel
                 )
             }
         )
         finish()
+    }
+
+    companion object {
+        const val KEY_INFO_ITEM = "beforeItem"
+        const val KEY_DATE_MODEL = "date_model"
     }
 }
