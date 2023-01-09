@@ -24,6 +24,7 @@ class LottieDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.setCanceledOnTouchOutside(false)
         setStyle(STYLE_NO_FRAME, R.style.Theme_DailyFilm)
     }
 
@@ -44,6 +45,7 @@ class LottieDialogFragment : DialogFragment() {
             val args = Bundle()
             val fragment = LottieDialogFragment()
             fragment.arguments = args
+            fragment.isCancelable=false
             return fragment
 
         }
