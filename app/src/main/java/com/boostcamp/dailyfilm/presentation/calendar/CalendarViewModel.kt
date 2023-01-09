@@ -85,9 +85,14 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
             _calendarEventFlow.emit(calendarEvent)
         }
     }
+
+    fun logout(){
+        event(CalendarEvent.Logout)
+    }
 }
 
 sealed class CalendarEvent {
     data class UploadSuccess(val dateModel: DateModel?) : CalendarEvent()
     data class UpdateMonth(val month: String) : CalendarEvent()
+    object Logout : CalendarEvent()
 }

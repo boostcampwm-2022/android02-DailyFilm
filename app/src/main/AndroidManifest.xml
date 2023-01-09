@@ -38,6 +38,7 @@
         </activity>
         <activity
             android:name=".presentation.calendar.CalendarActivity"
+            android:theme="@style/Theme.DailyFilm.Calendar"
             android:exported="false" />
         <activity
             android:name=".presentation.selectvideo.SelectVideoActivity"

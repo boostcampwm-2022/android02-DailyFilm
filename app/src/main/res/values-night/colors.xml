@@ -6,18 +6,18 @@
     <color name="red">#FF0000</color>
     <color name="blue">#0022FF</color>
     <color name="gray">#CFCFCF</color>
-    <color name="divider_gray">#BBBBBB</color>
+    <color name="divider_gray">#37363B</color>
 
-    <color name="Primary">#202022</color>
+    <color name="Primary">#FFFFFF</color>
     <color name="PrimaryVariant">#202022</color>
     <color name="Secondary">#03DAC6</color>
     <color name="SecondaryVariant">#018786</color>
-    <color name="Background">#FFFFFF</color>
-    <color name="Surface">#FFFFFF</color>
-    <color name="Error">#B00020</color>
+    <color name="Background">#202022</color>
+    <color name="Surface">#121212</color>
+    <color name="Error">#CF6679</color>
     <color name="OnPrimary">#FFFFFF</color>
-    <color name="OnSecondary">#000000</color>
+    <color name="OnSecondary">#FFFFFF</color>
     <color name="OnBackground">#FFFFFF</color>
-    <color name="OnSurface">#000000</color>
-    <color name="OnError">#FFFFFF</color>
+    <color name="OnSurface">#FFFFFF</color>
+    <color name="OnError">#000000</color>
 </resources>

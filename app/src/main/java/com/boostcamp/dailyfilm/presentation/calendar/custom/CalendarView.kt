@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.setPadding
 import com.boostcamp.dailyfilm.R
@@ -104,7 +105,7 @@ class CalendarView(
                 textHeight
             ).apply {
                 text = dateModel.day
-                setTextColor(Color.BLACK)
+                setTextColor(ContextCompat.getColor(this.context, R.color.OnSurface))
                 textSize = TEXT_SIZE
                 gravity = Gravity.CENTER
                 setPadding(0, TEXT_PADDING_TOP, 0, 0)

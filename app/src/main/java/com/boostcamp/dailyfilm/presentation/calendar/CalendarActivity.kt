@@ -13,12 +13,17 @@ import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
+import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
+
 
 @AndroidEntryPoint
 class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity_calendar) {
@@ -111,6 +116,9 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                             is CalendarEvent.UpdateMonth -> {
                                 updateMonth(event.month)
                             }
+                            is CalendarEvent.Logout -> {
+                                navigateToLogin()
+                            }
                         }
                     }
                 }
@@ -151,6 +159,22 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         } else {
             Snackbar.make(binding.root, MESSAGE_SELECT_DATE, Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun navigateToLogin() {
+        logout()
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+        )
+    }
+
+    private fun logout() {
+        FirebaseAuth.getInstance().signOut()
+        GoogleSignIn.getClient(
+            this, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build()
+        ).signOut()
     }
 
     companion object {
