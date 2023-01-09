@@ -4,11 +4,7 @@ package com.boostcamp.dailyfilm.presentation.uploadfilm
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
@@ -16,15 +12,8 @@ import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.RoundedBackgroundSpan
 import com.boostcamp.dailyfilm.presentation.util.UiState
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +23,7 @@ class UploadFilmViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val infoItem = savedStateHandle.get<DateAndVideoModel>(SelectVideoActivity.DATE_VIDEO_ITEM)
-    val beforeItem = savedStateHandle.get<DateAndVideoModel>("beforeItem")
+    val beforeItem = savedStateHandle.get<DateAndVideoModel>(KEY_INFO_ITEM)
     private val _uploadResult = MutableSharedFlow<Uri?>()
     val uploadResult: SharedFlow<Uri?> get() = _uploadResult
 
@@ -68,21 +57,22 @@ class UploadFilmViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             viewModelScope.launch {
                 // _uploadFilmInfoResult.emit(false)
-                uploadFilmRepository.uploadVideo(item.uploadDate, item.uri).collectLatest { result ->
-                    when (result) {
-                        is Result.Success -> {
-                            // storage 업로드 성공
-                            // _uploadResult.emit(result.data)
-                            uploadFilmInfo(result.data)
-                        }
-                        is Result.Error -> {
-                            // storage 업로드 실패
-                            _uiState.value = UiState.Failure(result.exception)
-                        }
-                        is Result.Uninitialized -> {
+                uploadFilmRepository.uploadVideo(item.uploadDate, item.uri)
+                    .collectLatest { result ->
+                        when (result) {
+                            is Result.Success -> {
+                                // storage 업로드 성공
+                                // _uploadResult.emit(result.data)
+                                uploadFilmInfo(result.data)
+                            }
+                            is Result.Error -> {
+                                // storage 업로드 실패
+                                _uiState.value = UiState.Failure(result.exception)
+                            }
+                            is Result.Uninitialized -> {
+                            }
                         }
                     }
-                }
             }
         }
     }
@@ -149,5 +139,9 @@ class UploadFilmViewModel @Inject constructor(
         viewModelScope.launch {
             _cancelUploadResult.emit(true)
         }
+    }
+
+    companion object {
+        const val KEY_INFO_ITEM = "beforeItem"
     }
 }

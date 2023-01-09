@@ -13,10 +13,11 @@ class PlayFilmActivity : BaseActivity<ActivityPlayFilmBinding>(R.layout.activity
     private val viewModel: PlayFilmActivityViewModel by viewModels()
 
     override fun initView() {
-        initAdapter()
+        initBinding()
     }
 
-    private fun initAdapter() {
+    private fun initBinding() {
+        binding.viewModel = viewModel
         binding.adapter = PlayFilmPageAdapter(
             viewModel.filmArray ?: arrayListOf(),
             this
