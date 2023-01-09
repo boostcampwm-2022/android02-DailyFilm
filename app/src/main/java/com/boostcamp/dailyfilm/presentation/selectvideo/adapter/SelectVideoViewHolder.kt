@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.presentation.selectvideo
+package com.boostcamp.dailyfilm.presentation.selectvideo.adapter
 
 import androidx.core.view.doOnAttach
 import androidx.core.view.doOnDetach

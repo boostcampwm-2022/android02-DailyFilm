@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivityViewModel" />
 
+        <variable
+            name="adapter"
+            type="com.boostcamp.dailyfilm.presentation.playfilm.adapter.PlayFilmPageAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +18,8 @@
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_player"
+            setAdapter="@{adapter}"
+            setViewModel="@{viewModel}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"

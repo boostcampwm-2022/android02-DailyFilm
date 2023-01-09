@@ -3,10 +3,24 @@
 
     <data>
 
+        <variable
+            name="fragment"
+            type="com.boostcamp.dailyfilm.presentation.calendar.DateFragment" />
+
+        <variable
+            name="activityViewModel"
+            type="com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.boostcamp.dailyfilm.presentation.calendar.DateViewModel" />
     </data>
 
     <com.boostcamp.dailyfilm.presentation.calendar.custom.CalendarView
         android:id="@+id/custom_calendar_view"
+        setDateFragment="@{fragment}"
+        setActivityViewModel="@{activityViewModel}"
+        setViewModel="@{viewModel}"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
