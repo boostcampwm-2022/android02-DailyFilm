@@ -31,10 +31,10 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 |[박동현](https://github.com/TTC1018)|[이준형](https://github.com/junhyeongleeee)|
 
 ## 🖼️ 프로젝트 한눈에 보기
-|<img src="https://user-images.githubusercontent.com/39405316/205529931-4418e436-1252-485d-ae2e-e7da99040c8d.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/205529292-ac678c42-8e09-4f3a-8990-8f4e392797ca.gif" width="180"/>|<img src="https://user-images.githubusercontent.com/39405316/205529859-c97f8f25-54c6-407a-b218-6c00fc056eb2.gif" width="180" />|
+|<img src="https://user-images.githubusercontent.com/39405316/207547227-58522778-f72e-4eac-84d2-93063b06d413.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/207547409-c8994676-7608-4637-853a-c15fad0846ec.gif" width="180"/>|<img src="https://user-images.githubusercontent.com/39405316/207547853-8d8ef796-d027-4a98-b549-c7477807e813.gif" width="180" />|
 |:--:|:--:|:--:|
 |구글 로그인|나만의 필름 캘린더|필름 선택|
-|<img src="https://user-images.githubusercontent.com/39405316/205529870-01ca6399-0440-402d-8122-2aff3c3b4bcf.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/205530668-41e6f8a2-0572-415a-9ccd-b28364d6c9dc.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/205532175-7c9d20c8-7ed1-4514-a7bd-f3026ba19456.gif" width="180" />|
+|<img src="https://user-images.githubusercontent.com/39405316/205529870-01ca6399-0440-402d-8122-2aff3c3b4bcf.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/205530668-41e6f8a2-0572-415a-9ccd-b28364d6c9dc.gif" width="180" />|<img src="https://user-images.githubusercontent.com/39405316/207548581-50170be8-bd3b-410e-83b8-01ff06093b2c.gif" width="180" />|
 |필름 편집|일기 작성|필름 재생|
 
 ## 🔢 기능 소개
@@ -44,7 +44,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 ---
 |나만의 필름 캘린더|
 |:---:|
-|<img src="https://user-images.githubusercontent.com/39405316/205529292-ac678c42-8e09-4f3a-8990-8f4e392797ca.gif" width="250"/>|
+|<img src="https://user-images.githubusercontent.com/39405316/207547409-c8994676-7608-4637-853a-c15fad0846ec.gif" width="250"/>|
 
 - 썸네일을 통해 업로드 된 영상을 확인할 수 있습니다.
 - 좌, 우로 Swipe 하며 월별 캘린더를 확인할 수 있습니다.
@@ -57,7 +57,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 ---
 |필름 선택|
 |:---:|
-|<img src="https://user-images.githubusercontent.com/39405316/205529859-c97f8f25-54c6-407a-b218-6c00fc056eb2.gif" width="250"/>|
+|<img src="https://user-images.githubusercontent.com/39405316/207547853-8d8ef796-d027-4a98-b549-c7477807e813.gif" width="250"/>|
 
 - 하루를 기록한 영상을 갤러리에서 선택할 수 있습니다.
     - 스크롤에 따라 선택한 영상 재생 영역과 갤러리 영역의 크기가 자동으로 조절됩니다.
@@ -92,7 +92,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 ---
 |필름 재생|
 |:---:|
-|<img src="https://user-images.githubusercontent.com/39405316/205532175-7c9d20c8-7ed1-4514-a7bd-f3026ba19456.gif" width="250"/>|
+|<img src="https://user-images.githubusercontent.com/39405316/207548581-50170be8-bd3b-410e-83b8-01ff06093b2c.gif" width="250"/>|
 
 **특정 날짜 필름 재생**
 
@@ -108,7 +108,7 @@ DailyFilm에 마음껏 기록해두실 수 있습니다.*
 ---
 |구글 로그인|
 |:---:|
-|<img src="https://user-images.githubusercontent.com/39405316/205529931-4418e436-1252-485d-ae2e-e7da99040c8d.gif" width="250"/>|
+|<img src="https://user-images.githubusercontent.com/39405316/207547227-58522778-f72e-4eac-84d2-93063b06d413.gif" width="250"/>|
 
 **구글 아이디를 통한 간편 로그인**
 
