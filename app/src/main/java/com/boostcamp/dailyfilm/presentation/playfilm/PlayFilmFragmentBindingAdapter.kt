@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.presentation.playfilm
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.view.View
@@ -16,7 +17,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 
 @BindingAdapter("streamVideo")
-fun StyledPlayerView.streamVideo(url: String?) {
+fun StyledPlayerView.streamVideo(uri: Uri?) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
             volume = 0.5f
@@ -24,16 +25,7 @@ fun StyledPlayerView.streamVideo(url: String?) {
         }
     }
 
-    url?.let {
-        // Add placeholder
-        // TODO 제대로 작동하는지 확인 필요
-//        val artwork:ImageView = findViewById(com.google.android.exoplayer2.ui.R.id.exo_artwork)
-//        artwork.visibility = View.VISIBLE
-//        Glide.with(this)
-//            .load(it)
-//            .centerInside()
-//            .into(artwork)
-
+    uri?.let {
         val mediaItem = MediaItem.fromUri(it)
         player?.setMediaItem(mediaItem)
         player?.prepare()
