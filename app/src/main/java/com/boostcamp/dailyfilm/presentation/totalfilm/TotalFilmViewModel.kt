@@ -28,17 +28,22 @@ class TotalFilmViewModel @Inject constructor(
     private val _isMuted = MutableLiveData(false)
     val isMuted: LiveData<Boolean> get() = _isMuted
 
+    private val _isEnded = MutableStateFlow(false)
+    val isEnded: StateFlow<Boolean> get() = _isEnded.asStateFlow()
 
     fun setCurrentDateItem(dateModel: DateModel) {
         _currentDateItem.value = dateModel
     }
 
-    fun changeShowState(){
+    fun changeShowState() {
         _isContentShowed.value = _isContentShowed.value?.not()
     }
 
-    fun changeMuteState(){
+    fun changeMuteState() {
         _isMuted.value = _isMuted.value?.not()
     }
 
+    fun changeEndState() {
+        _isEnded.value = _isEnded.value.not()
+    }
 }
