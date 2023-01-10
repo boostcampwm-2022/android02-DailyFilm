@@ -18,14 +18,6 @@ fun StyledPlayerView.playTotalVideo(viewModel: TotalFilmViewModel) {
     }
 
     player?.apply {
-        setMediaItems(
-            viewModel.filmArray?.map { dateModel ->
-                MediaItem.fromUri(dateModel.videoUrl ?: "")
-            } ?: emptyList()
-        )
-        prepare()
-        playWhenReady = true
-
         addListener(object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
@@ -35,7 +27,21 @@ fun StyledPlayerView.playTotalVideo(viewModel: TotalFilmViewModel) {
                     }
                 }
             }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == ExoPlayer.STATE_ENDED) {
+                    viewModel.changeEndState()
+                }
+            }
         })
+
+        setMediaItems(
+            viewModel.filmArray?.map { dateModel ->
+                MediaItem.fromUri(dateModel.videoUrl ?: "")
+            } ?: emptyList()
+        )
+        prepare()
+        playWhenReady = true
 
         setOnClickListener {
             if (isPlaying) {
