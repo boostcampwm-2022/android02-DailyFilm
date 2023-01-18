@@ -34,8 +34,11 @@ class PlayFilmRemoteDataSource @Inject constructor(@ApplicationContext private v
                     /*snapshot.children.map {
                         trySend(Result.Success(Uri.parse(it.getValue(String::class.java))))
                     }*/
+                    snapshot.value ?: return@addOnSuccessListener
+
                     val videoUrl = snapshot.value.toString()
                     val storageReference = storage.getReferenceFromUrl(videoUrl)
+
 //                    File("TrimmedVideo/").mkdirs()
                     val file = File(context.filesDir, "$uploadDate.mp4")
                     Log.d("LoadVideo", "absolutePath : ${file.absolutePath}")
