@@ -23,7 +23,7 @@ class SyncRemoteDataSource : SyncDataSource {
             .child(DIRECTORY_USER)
             .child(userId)
             .orderByKey()
-            .startAfter(startAt)
+            .startAt(startAt)
             .endAt(endAt)
             .get()
             .addOnSuccessListener { snapshot ->
