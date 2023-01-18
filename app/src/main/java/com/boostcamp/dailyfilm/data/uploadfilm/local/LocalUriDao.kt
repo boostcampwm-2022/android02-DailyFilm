@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.boostcamp.dailyfilm.data.model.CachedVideoEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocalUriDao {
@@ -16,4 +15,9 @@ interface LocalUriDao {
     @Query("SELECT * FROM cached_video_entity WHERE updateDate = :updateDate LIMIT 1")
     suspend fun loadFilm(updateDate: Int): CachedVideoEntity?
 
+    @Query("DELETE FROM cached_video_entity WHERE updateDate = :updateDate")
+    suspend fun deleteVideoFilm(updateDate: Int)
+
+    @Query("DELETE FROM film_entity WHERE updateDate = :updateDate")
+    suspend fun deleteFilm(updateDate: Int)
 }
