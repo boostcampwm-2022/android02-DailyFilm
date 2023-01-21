@@ -30,7 +30,7 @@ fun ViewPager2.initViewPager(
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             viewModel.getViewPagerPosition(position)
-            viewModel.changeSelectedItem(null)
+            viewModel.changeSelectedItem(null, null)
 
             val calendar = Calendar.getInstance(Locale.getDefault()).apply {
                 add(Calendar.MONTH, position - CalendarPagerAdapter.START_POSITION)

@@ -74,7 +74,6 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
             launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
                     viewModel.dateFlow.collectLatest { dateList ->
-                        Log.d("startForResult", "dateList: $dateList")
                         activityViewModel.emitFilm(
                             dateList.filter { dateModel -> dateModel.videoUrl != null }
                         )
@@ -123,7 +122,7 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
 
     override fun onPause() {
         binding.customCalendarView.resetBackground()
-        activityViewModel.changeSelectedItem(null)
+        activityViewModel.changeSelectedItem(null, null)
         super.onPause()
     }
 

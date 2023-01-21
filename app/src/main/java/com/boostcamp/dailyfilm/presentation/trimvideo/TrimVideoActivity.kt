@@ -13,8 +13,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityTrimViedoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.gowtham.library.utils.CompressOption
@@ -96,11 +99,11 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
     private fun moveToUpload(trimAndVideoModel: DateAndVideoModel) {
         startActivity(
             Intent(this, UploadFilmActivity::class.java).apply {
-                putExtra(
-                    SelectVideoActivity.DATE_VIDEO_ITEM,
-                    trimAndVideoModel
-                )
+                putExtra(DATE_VIDEO_ITEM, trimAndVideoModel)
+                putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
                 putExtra(KEY_INFO_ITEM, viewModel.infoItem)
+                putExtra(KEY_EDIT_FLAG, viewModel.editFlag)
+                putExtra(KEY_DATE_MODEL, viewModel.dateModel)
             }
         )
         finish()
@@ -120,6 +123,6 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
 
     companion object {
         const val KEY_INFO_ITEM = "beforeItem"
-        const val KEY_DATE_MODEL = "date_model"
+        const val KEY_DATE_MODEL = "dateModel"
     }
 }

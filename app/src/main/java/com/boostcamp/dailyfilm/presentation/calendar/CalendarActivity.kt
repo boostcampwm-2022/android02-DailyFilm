@@ -10,6 +10,7 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityCalendarBinding
 import com.boostcamp.dailyfilm.databinding.HeaderCalendarDrawerBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
@@ -154,6 +155,8 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
             startActivity(
                 Intent(this, SelectVideoActivity::class.java).apply {
                     putExtra(KEY_DATE_MODEL, item)
+                    putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
+                    putExtra(KEY_EDIT_FLAG, false)
                 }
             )
         } else {
@@ -178,10 +181,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     companion object {
-        const val KEY_DATE_MODEL = "date_model"
-        const val KEY_FILM_ARRAY = "film_list"
+        const val KEY_DATE_MODEL = "dateModel"
+        const val KEY_FILM_ARRAY = "filmList"
+        const val KEY_EDIT_FLAG = "editFlag"
         private const val MESSAGE_SELECT_DATE = "날짜를 선택해주세요"
         private const val NOT_FILM_DATA = "영상이 존재 하지 않습니다."
-        private const val DATE_PICKER_TAG = "date_picker"
+        private const val DATE_PICKER_TAG = "datePicker"
     }
 }

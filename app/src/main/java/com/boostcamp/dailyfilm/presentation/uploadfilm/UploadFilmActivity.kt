@@ -15,6 +15,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
@@ -47,6 +50,13 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                     when (state) {
                         is UiState.Success -> {
                             loadingDialogFragment.hideProgressDialog()
+                            setResult(
+                                RESULT_OK, Intent(
+                                    this@UploadFilmActivity, CalendarActivity::class.java
+                                ).apply {
+                                    putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
+                                    putExtra(KEY_DATE_MODEL, state.item)
+                                })
                             finish()
                         }
                         is UiState.Loading -> {

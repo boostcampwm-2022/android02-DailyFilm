@@ -12,8 +12,12 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.FragmentPlayFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
+import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,6 +50,26 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
                     }
                 }
             }
+        }
+
+        binding.ibEdit.setOnClickListener {
+            startActivity(
+                Intent(
+                    requireContext(), SelectVideoActivity::class.java
+                ).apply {
+                    putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
+                    putExtra(KEY_DATE_MODEL, viewModel.dateModel)
+                    putExtra(KEY_EDIT_FLAG, true)
+                    putExtra(
+                        DATE_VIDEO_ITEM,
+                        DateAndVideoModel(
+                            viewModel.videoUri.value ?: return@setOnClickListener,
+                            viewModel.dateModel.getDate()
+                        )
+                    )
+                }
+            )
+            requireActivity().finish()
         }
     }
 

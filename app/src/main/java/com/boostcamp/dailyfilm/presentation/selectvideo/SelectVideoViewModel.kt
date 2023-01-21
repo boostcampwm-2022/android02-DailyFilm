@@ -8,6 +8,8 @@ import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.selectvideo.adapter.VideoSelectListener
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
@@ -24,6 +26,8 @@ class SelectVideoViewModel @Inject constructor(
 ) : ViewModel(), VideoSelectListener {
 
     val dateModel = savedStateHandle.get<DateModel>(CalendarActivity.KEY_DATE_MODEL)
+    val calendarIndex = savedStateHandle.get<Int>(DateFragment.KEY_CALENDAR_INDEX)
+    val editFlag = savedStateHandle.get<Boolean>(KEY_EDIT_FLAG)
 
     override val viewTreeLifecycleScope: CoroutineScope
         get() = viewModelScope
