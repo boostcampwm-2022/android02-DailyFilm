@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.DialogBottomSheetBinding
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
-import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
 import com.boostcamp.dailyfilm.presentation.playfilm.adapter.PlayFilmBottomSheetAdapter
 import com.boostcamp.dailyfilm.presentation.playfilm.model.BottomSheetModel
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
+import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -25,7 +28,7 @@ class PlayFilmBottomSheetDialog(
     private val binding get() = _binding ?: error("Binding is null")
 
     private val adapter = PlayFilmBottomSheetAdapter { resId ->
-        when(resId) {
+        when (resId) {
             R.string.delete -> {
                 viewModel.deleteVideo()
             }
@@ -34,9 +37,9 @@ class PlayFilmBottomSheetDialog(
                     Intent(
                         requireContext(), SelectVideoActivity::class.java
                     ).apply {
-                        putExtra(DateFragment.KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
-                        putExtra(PlayFilmFragment.KEY_DATE_MODEL, viewModel.dateModel)
-                        putExtra(CalendarActivity.KEY_EDIT_FLAG, true)
+                        putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
+                        putExtra(KEY_DATE_MODEL, viewModel.dateModel)
+                        putExtra(KEY_EDIT_FLAG, true)
                         putExtra(
                             SelectVideoActivity.DATE_VIDEO_ITEM,
                             DateAndVideoModel(
@@ -49,7 +52,21 @@ class PlayFilmBottomSheetDialog(
                 requireActivity().finish()
             }
             R.string.edit_text -> {
-
+                startActivity(
+                    Intent(requireContext(), UploadFilmActivity::class.java).apply {
+                        putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
+                        putExtra(
+                            DATE_VIDEO_ITEM,
+                            DateAndVideoModel(
+                                viewModel.videoUri.value ?: return@PlayFilmBottomSheetAdapter,
+                                viewModel.dateModel.getDate()
+                            )
+                        )
+                        putExtra(KEY_EDIT_FLAG, true)
+                        putExtra(KEY_DATE_MODEL, viewModel.dateModel)
+                    }
+                )
+                requireActivity().finish()
             }
         }
     }

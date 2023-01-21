@@ -99,12 +99,20 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.cancelUploadResult.collect {
                     if (it) {
-                        viewModel.infoItem!!.uri.path?.let { uri -> File(uri).delete() }
-                        startActivity(
-                            Intent(this@UploadFilmActivity, TrimVideoActivity::class.java).apply {
-                                putExtra(SelectVideoActivity.DATE_VIDEO_ITEM, viewModel.beforeItem)
-                            }
-                        )
+                        if (viewModel.beforeItem != null) {
+                            viewModel.infoItem!!.uri.path?.let { uri -> File(uri).delete() }
+                            startActivity(
+                                Intent(
+                                    this@UploadFilmActivity,
+                                    TrimVideoActivity::class.java
+                                ).apply {
+                                    putExtra(
+                                        SelectVideoActivity.DATE_VIDEO_ITEM,
+                                        viewModel.beforeItem
+                                    )
+                                }
+                            )
+                        }
                         finish()
                     }
                 }
