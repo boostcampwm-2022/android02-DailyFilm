@@ -12,12 +12,8 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.FragmentPlayFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
-import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
-import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
-import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,9 +23,11 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
 
     private val viewModel: PlayFilmViewModel by viewModels()
     private val activityViewModel: PlayFilmActivityViewModel by activityViewModels()
+    private lateinit var playFilmBottomSheetDialog: PlayFilmBottomSheetDialog
 
     override fun initView() {
         binding.viewModel = viewModel
+        playFilmBottomSheetDialog = PlayFilmBottomSheetDialog(viewModel, activityViewModel)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -51,25 +49,11 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
                 }
             }
         }
-
-        binding.ibEdit.setOnClickListener {
-            startActivity(
-                Intent(
-                    requireContext(), SelectVideoActivity::class.java
-                ).apply {
-                    putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
-                    putExtra(KEY_DATE_MODEL, viewModel.dateModel)
-                    putExtra(KEY_EDIT_FLAG, true)
-                    putExtra(
-                        DATE_VIDEO_ITEM,
-                        DateAndVideoModel(
-                            viewModel.videoUri.value ?: return@setOnClickListener,
-                            viewModel.dateModel.getDate()
-                        )
-                    )
-                }
-            )
-            requireActivity().finish()
+        binding.ibMenu.setOnClickListener {
+            if (playFilmBottomSheetDialog.isAdded) {
+                return@setOnClickListener
+            }
+            playFilmBottomSheetDialog.show(parentFragmentManager, BOTTOM_SHEET_TAG)
         }
     }
 
@@ -96,6 +80,7 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
 
     companion object {
         const val KEY_DATE_MODEL = "dateModel"
+        const val BOTTOM_SHEET_TAG = "bottomSheet"
         fun newInstance(dateModel: DateModel) =
             PlayFilmFragment().apply {
                 arguments = Bundle().apply {

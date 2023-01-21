@@ -69,22 +69,14 @@
             app:syncMuteIcon="@{viewModel.isMuted()}" />
 
         <ImageButton
-            android:id="@+id/ib_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:src="@drawable/ic_construction"
-            app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
-            app:layout_constraintEnd_toStartOf="@id/ib_delete"
-            app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
-
-        <ImageButton
-            android:id="@+id/ib_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:onClick="@{() -> viewModel.deleteVideo()}"
-            android:src="@drawable/ic_delete"
+            android:id="@+id/ib_menu"
+            android:layout_width="@dimen/normal_175"
+            android:layout_height="@dimen/normal_175"
+            android:layout_marginRight="@dimen/normal_100"
+            android:adjustViewBounds="true"
+            android:alpha="0.5"
+            android:background="@drawable/background_rounded"
+            android:src="@drawable/ic_menu"
             app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
             app:layout_constraintEnd_toStartOf="@id/btn_sound_control"
             app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
