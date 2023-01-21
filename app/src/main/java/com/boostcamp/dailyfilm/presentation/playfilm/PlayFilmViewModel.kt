@@ -34,7 +34,7 @@ class PlayFilmViewModel @Inject constructor(
     private val _isMuted = MutableLiveData(false)
     val isMuted: LiveData<Boolean> get() = _isMuted
 
-    private val _uiState = MutableStateFlow<UiState<Unit>>(UiState.Uninitialized)
+    private val _uiState = MutableStateFlow<UiState<DateModel>>(UiState.Uninitialized)
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -90,7 +90,6 @@ class PlayFilmViewModel @Inject constructor(
     }
 
     fun deleteVideo() {
-        Log.d("deleteVideo", "start")
         viewModelScope.launch {
             val updateDate = dateModel.getDate()
 
@@ -107,7 +106,13 @@ class PlayFilmViewModel @Inject constructor(
                                 when (result) {
                                     is Result.Uninitialized -> {}
                                     is Result.Success -> {
-                                        _uiState.value = UiState.Success(Unit)
+                                        _uiState.value = UiState.Success(
+                                            DateModel(
+                                                year = dateModel.year,
+                                                month = dateModel.month,
+                                                day = dateModel.day
+                                            )
+                                        )
                                     }
                                     is Result.Error -> {}
                                 }

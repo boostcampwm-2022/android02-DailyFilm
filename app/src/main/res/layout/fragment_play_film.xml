@@ -10,7 +10,6 @@
         <variable
             name="viewModel"
             type="com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmViewModel" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,9 +26,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:resize_mode="zoom"
-            app:surface_type="texture_view"
             app:show_buffering="always"
             app:streamVideo="@{viewModel.videoUri}"
+            app:surface_type="texture_view"
             app:use_artwork="true"
             app:use_controller="false" />
 
@@ -70,15 +69,25 @@
             app:syncMuteIcon="@{viewModel.isMuted()}" />
 
         <ImageButton
+            android:id="@+id/ib_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_construction"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
+            app:layout_constraintEnd_toStartOf="@id/ib_delete"
+            app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
+
+        <ImageButton
             android:id="@+id/ib_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete"
+            android:backgroundTint="@android:color/transparent"
             android:onClick="@{() -> viewModel.deleteVideo()}"
-            app:layout_constraintTop_toTopOf="@id/btn_sound_control"
+            android:src="@drawable/ic_delete"
             app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
             app:layout_constraintEnd_toStartOf="@id/btn_sound_control"
-            android:backgroundTint="@android:color/transparent"/>
+            app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
 
         <TextView
             android:id="@+id/tv_content"
