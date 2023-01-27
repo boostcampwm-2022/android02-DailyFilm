@@ -18,6 +18,7 @@ import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Comp
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlayFilmBottomSheetDialog(
     val viewModel: PlayFilmViewModel,
@@ -30,7 +31,15 @@ class PlayFilmBottomSheetDialog(
     private val adapter = PlayFilmBottomSheetAdapter { resId ->
         when (resId) {
             R.string.delete -> {
-                viewModel.deleteVideo()
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(resources.getString(R.string.delete_dialog))
+                    .setNegativeButton(resources.getString(R.string.yes)) { dialog, _ ->
+                        viewModel.deleteVideo()
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton(resources.getString(R.string.no)) { dialog, _ ->
+                        dialog.dismiss()
+                    }.show()
             }
             R.string.re_upload -> {
                 startActivity(
@@ -41,7 +50,7 @@ class PlayFilmBottomSheetDialog(
                         putExtra(KEY_DATE_MODEL, viewModel.dateModel)
                         putExtra(KEY_EDIT_FLAG, true)
                         putExtra(
-                            SelectVideoActivity.DATE_VIDEO_ITEM,
+                            DATE_VIDEO_ITEM,
                             DateAndVideoModel(
                                 viewModel.videoUri.value ?: return@PlayFilmBottomSheetAdapter,
                                 viewModel.dateModel.getDate()

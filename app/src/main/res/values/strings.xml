@@ -27,5 +27,7 @@
     <string name="delete">Delete</string>
     <string name="re_upload">Re-Upload</string>
     <string name="edit_text">Edit Text</string>
-
+    <string name="delete_dialog">정말로 삭제 하시겠습니까?</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
 </resources>
