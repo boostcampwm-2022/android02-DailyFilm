@@ -24,5 +24,6 @@
     <string name="guide_accept_permission">앱을 원활히 사용하시려면 권한 허용을 설정 부탁드립니다.</string>
     <string name="retry">재시도</string>
     <string name="logout">로그아웃</string>
+    <string name="deleteAccount">탈퇴하기</string>
 
 </resources>

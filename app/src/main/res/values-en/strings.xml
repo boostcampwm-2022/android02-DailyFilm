@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">DailyFilm</string>
+    <string name="sunday">sun</string>
+    <string name="monday">mon</string>
+    <string name="tuesday">tus</string>
+    <string name="wednesday">wed</string>
+    <string name="thursday">thu</string>
+    <string name="friday">fri</string>
+    <string name="saturday">sat</string>
+    <string name="text_next">next</string>
+    <string name="text_complete">complete</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">accept</string>
+    <string name="date">%sY %sM %sD</string>
+    <string name="text_date">date</string>
+    <string name="text_description">contents</string>
+    <string name="before">before</string>
+    <string name="text_close">close</string>
+    <string name="guide_required_permission_title">Guide to Required Permissions</string>
+    <string name="guide_required_permission_message">Permissions are required for the following reasons.\n\n1. Video access rights \n -Required for video registration.</string>
+    <string name="text_re_request">request again</string>
+    <string name="text_change_setting">change settings</string>
+    <string name="guide_choice_video">Please select a video</string>
+    <string name="guide_accept_permission">To use the app smoothly, please set permission permission.</string>
+    <string name="retry">retry</string>
+    <string name="logout">Logout</string>
+    <string name="deleteAccount">Delete Account</string>
+
+</resources>

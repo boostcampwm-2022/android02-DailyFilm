@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">DailyFilm</string>
+    <string name="sunday">日</string>
+    <string name="monday">月</string>
+    <string name="tuesday">火</string>
+    <string name="wednesday">水</string>
+    <string name="thursday">木</string>
+    <string name="friday">金</string>
+    <string name="saturday">土</string>
+    <string name="text_next">次</string>
+    <string name="text_complete">完了</string>
+    <string name="cancel">キャンセル</string>
+    <string name="accept">受け入れる</string>
+    <string name="date">%s年 %s月 %s日</string>
+    <string name="text_date">日にち</string>
+    <string name="text_description">コンテンツ</string>
+    <string name="before">前</string>
+    <string name="text_close">近い</string>
+    <string name="guide_required_permission_title">必要なアクセス許可のガイド</string>
+    <string name="guide_required_permission_message">
+次の理由により、アクセス許可が必要です。\n\n1.ビデオ アクセス権 \n - ビデオの登録に必要です。\n -Required for video registration.</string>
+    <string name="text_re_request">再度リクエストする</string>
+    <string name="text_change_setting">設定を変更する</string>
+    <string name="guide_choice_video">動画を選択してください</string>
+    <string name="guide_accept_permission">アプリをスムーズにご利用いただくために、パーミッションパーミッションの設定をお願いいたします。</string>
+    <string name="retry">リトライ</string>
+    <string name="logout">ログアウト</string>
+    <string name="deleteAccount">アカウントを削除する</string>
+
+</resources>
