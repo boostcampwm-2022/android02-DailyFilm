@@ -4,7 +4,9 @@ package com.boostcamp.dailyfilm.presentation.uploadfilm
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.lifecycle.*
+import com.arthenica.mobileffmpeg.Config
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
@@ -47,12 +49,36 @@ class UploadFilmViewModel @Inject constructor(
     private val _clickSound = MutableStateFlow(true)
     val clickSound = _clickSound.asStateFlow()
 
+    private val _compressProgress = MutableLiveData(0)
+    val compressProgress: LiveData<Int> get() = _compressProgress
+
+    init {
+        calcProgress()
+    }
+
+    private fun calcProgress() {
+        Config.resetStatistics()
+        Config.enableStatisticsCallback {
+            val percentage = (it.time.toFloat() / 10000 * 100).toInt()
+            _compressProgress.postValue(percentage)
+        }
+    }
+
     fun uploadVideo() {
         val text = textContent.value ?: ""
-        if (text.isEmpty()) {
-            _uiState.value = UiState.Failure(Throwable("영상에 맞는 문구를 입력해주세요."))
-            return
+        val progress = _compressProgress.value ?: 0
+
+        when {
+            text.isEmpty() -> {
+                _uiState.value = UiState.Failure(Throwable("영상에 맞는 문구를 입력해주세요."))
+                return
+            }
+            progress < 100 -> {
+                _uiState.value = UiState.Failure(Throwable("영상 처리중입니다. 잠시만 기다려주세요."))
+                return
+            }
         }
+
         infoItem?.let { item ->
             _uiState.value = UiState.Loading
             viewModelScope.launch {
