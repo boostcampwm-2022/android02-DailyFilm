@@ -1,12 +1,14 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
+import com.boostcamp.dailyfilm.data.DailyFilmDB
 import com.boostcamp.dailyfilm.databinding.ActivityCalendarBinding
 import com.boostcamp.dailyfilm.databinding.HeaderCalendarDrawerBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
@@ -117,7 +119,10 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                                 updateMonth(event.month)
                             }
                             is CalendarEvent.Logout -> {
-                                navigateToLogin()
+                                logout()
+                            }
+                            is CalendarEvent.DeleteUser->{
+                                logout()
                             }
                         }
                     }
@@ -162,10 +167,10 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun navigateToLogin() {
-        logout()
         startActivity(
             Intent(this, LoginActivity::class.java)
         )
+        finish()
     }
 
     private fun logout() {
@@ -174,7 +179,9 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
             this, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build()
-        ).signOut()
+        ).signOut().addOnCompleteListener {
+            navigateToLogin()
+        }
     }
 
     companion object {

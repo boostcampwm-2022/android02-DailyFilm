@@ -20,4 +20,7 @@ interface CalendarDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(filmEntity: FilmEntity)
+
+    @Query("DELETE FROM film_entity")
+    suspend fun deleteAll()
 }
