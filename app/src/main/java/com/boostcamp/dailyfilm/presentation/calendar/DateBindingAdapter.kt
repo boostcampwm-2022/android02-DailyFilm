@@ -21,7 +21,7 @@ fun CalendarView.initCalendarView(
         viewModel.calendar
     )
 
-    setOnTouchListener { v, event ->
+    setOnTouchListener { _, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> true
             MotionEvent.ACTION_UP -> {

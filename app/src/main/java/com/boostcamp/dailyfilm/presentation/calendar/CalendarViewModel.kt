@@ -2,25 +2,22 @@ package com.boostcamp.dailyfilm.presentation.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashSet
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() : ViewModel() {
+class CalendarViewModel @Inject constructor(private val calendarRepository: CalendarRepository) :
+    ViewModel() {
 
     private var item: DateModel? = null
     var calendarIndex: Int? = null
@@ -38,7 +35,8 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     private val _calendarEventFlow = MutableSharedFlow<CalendarEvent>()
     val calendarEventFlow: SharedFlow<CalendarEvent> = _calendarEventFlow.asSharedFlow()
 
-    private val _calendarFlow = MutableStateFlow("${localeCalendar.get(Calendar.YEAR)}년 ${localeCalendar.get(Calendar.MONTH) + 1}월")
+    private val _calendarFlow =
+        MutableStateFlow("${localeCalendar.get(Calendar.YEAR)}년 ${localeCalendar.get(Calendar.MONTH) + 1}월")
     val calendarFlow: StateFlow<String> = _calendarFlow.asStateFlow()
 
     private val _isTodayFlow = MutableStateFlow(DateState.TODAY)
@@ -88,8 +86,25 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun logout(){
+    fun logout() {
         event(CalendarEvent.Logout)
+    }
+
+    fun deleteUser() {
+        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                viewModelScope.launch {
+                    calendarRepository.deleteAllData().collectLatest { result->
+                        when(result){
+                            is com.boostcamp.dailyfilm.data.model.Result.Success->{
+                                event(CalendarEvent.DeleteUser)
+                            }
+                            else->{}
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -97,4 +112,5 @@ sealed class CalendarEvent {
     data class UploadSuccess(val dateModel: DateModel?) : CalendarEvent()
     data class UpdateMonth(val month: String) : CalendarEvent()
     object Logout : CalendarEvent()
+    object DeleteUser : CalendarEvent()
 }

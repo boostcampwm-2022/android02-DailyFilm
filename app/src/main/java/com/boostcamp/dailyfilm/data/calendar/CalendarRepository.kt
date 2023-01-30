@@ -1,11 +1,14 @@
 package com.boostcamp.dailyfilm.data.calendar
 
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
+import com.boostcamp.dailyfilm.data.model.Result
+import com.boostcamp.dailyfilm.data.playfilm.local.PlayFilmLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 interface CalendarRepository {
     fun loadFilmInfo(startAt: String, endAt: String): Flow<List<DailyFilmItem?>>
+    fun deleteAllData(): Flow<Result<Unit>>
 }
 
 class CalendarRepositoryImpl(
@@ -18,4 +21,8 @@ class CalendarRepositoryImpl(
                 film?.mapToDailyFilmItem()
             }
         }
+
+    override fun deleteAllData(): Flow<Result<Unit>> =
+        calendarLocalDataSource.deleteAllData()
+
 }
