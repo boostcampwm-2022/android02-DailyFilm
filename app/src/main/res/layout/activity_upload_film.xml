@@ -75,9 +75,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:willBePlayed="@{viewModel.infoItem.uri}"
-            app:compressProgress="@{viewModel.compressProgress}"
-            app:playVideo="@{viewModel.infoItem.uri}"
+            app:originVideo="@{viewModel.beforeItem.uri}"
+            app:videoStartTime="@{viewModel.startTime}"
             app:resize_mode="zoom"
             app:use_controller="false" />
 

@@ -38,8 +38,8 @@ class TrimVideoViewModel @Inject constructor(
         event(TrimVideoEvent.BackButtonResult(infoItem!!.getDateModel()))
     }
 
-    fun moveToUpload(uriString: Uri) {
-        event(TrimVideoEvent.NextButtonResult(DateAndVideoModel(uriString, infoItem!!.uploadDate)))
+    fun moveToUpload(uriString: Uri, startTime: Long) {
+        event(TrimVideoEvent.NextButtonResult(DateAndVideoModel(uriString, infoItem!!.uploadDate), startTime))
     }
 
     fun openTrimActivity(startForResult: ActivityResultLauncher<Intent>,videoWidthAndHeight:IntArray) {
@@ -67,7 +67,7 @@ class TrimVideoViewModel @Inject constructor(
 }
 
 sealed class TrimVideoEvent {
-    data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel) : TrimVideoEvent()
+    data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel, val startTime: Long) : TrimVideoEvent()
     data class BackButtonResult(val dateModel: DateModel) : TrimVideoEvent()
     data class InitOpenTrimVideo(val dateModel: DateAndVideoModel) :TrimVideoEvent()
     data class OpenTrimVideoResult(

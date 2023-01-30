@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import kotlinx.coroutines.*
 
 @BindingAdapter(value = ["updateAnimation", "inputText", "showKeyboard"], requireAll = false)
 fun LottieAnimationView.updateAnimation(
@@ -42,22 +43,29 @@ fun LottieAnimationView.updateAnimation(
     animator.start()
 }
 
-@BindingAdapter(value = ["willBePlayed", "compressProgress"], requireAll = false)
-fun StyledPlayerView.playVideoWhenReady(uri: Uri?, progress: Int) {
+@BindingAdapter(value = ["originVideo", "videoStartTime"], requireAll = false)
+fun StyledPlayerView.playVideoAt(uri: Uri?, startTime: Long) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
             volume = 0.5f
-            playWhenReady = true
             repeatMode = Player.REPEAT_MODE_ONE
         }
     }
 
-    if (progress == 100){
-        uri?.let { videoUri ->
-            val mediaItem = MediaItem.fromUri(videoUri)
-            player?.setMediaItem(mediaItem)
-            player?.prepare()
-            player?.play()
+    uri?.let {
+        val mediaItem = MediaItem.fromUri(it)
+        player?.setMediaItem(mediaItem)
+        player?.prepare()
+        player?.seekTo(startTime) // 시작 지점 정하기
+        player?.play()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            while (true){
+                delay(10000) // 10초 만큼 진행하고
+                player?.seekTo(startTime) // 다시 시작지점으로
+                if (player == null) // 메모리 누수 방지
+                    break
+            }
         }
     }
 }

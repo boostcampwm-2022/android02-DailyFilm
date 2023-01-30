@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.ceil
 
 @HiltViewModel
 class UploadFilmViewModel @Inject constructor(
@@ -26,6 +27,7 @@ class UploadFilmViewModel @Inject constructor(
 ) : ViewModel() {
     val infoItem = savedStateHandle.get<DateAndVideoModel>(SelectVideoActivity.DATE_VIDEO_ITEM)
     val beforeItem = savedStateHandle.get<DateAndVideoModel>(KEY_INFO_ITEM)
+    val startTime = savedStateHandle.get<Long>(KEY_START_TIME) ?: 0L
     private val _uploadResult = MutableSharedFlow<Uri?>()
     val uploadResult: SharedFlow<Uri?> get() = _uploadResult
 
@@ -59,7 +61,7 @@ class UploadFilmViewModel @Inject constructor(
     private fun calcProgress() {
         Config.resetStatistics()
         Config.enableStatisticsCallback {
-            val percentage = (it.time.toFloat() / 10000 * 100).toInt()
+            val percentage = ceil(it.time.toFloat() / 10000 * 100).toInt()
             _compressProgress.postValue(percentage)
         }
     }
@@ -169,5 +171,6 @@ class UploadFilmViewModel @Inject constructor(
 
     companion object {
         const val KEY_INFO_ITEM = "beforeItem"
+        const val KEY_START_TIME = "start_time"
     }
 }
