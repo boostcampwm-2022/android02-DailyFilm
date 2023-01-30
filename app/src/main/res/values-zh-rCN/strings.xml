@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">DailyFilm</string>
+    <string name="sunday">日</string>
+    <string name="monday">月</string>
+    <string name="tuesday">火</string>
+    <string name="wednesday">水</string>
+    <string name="thursday">木</string>
+    <string name="friday">金</string>
+    <string name="saturday">土</string>
+    <string name="text_next">次</string>
+    <string name="text_complete">完成</string>
+    <string name="cancel">取消</string>
+    <string name="accept">接受</string>
+    <string name="date">%s年 %s月 %s日</string>
+    <string name="text_date">日期</string>
+    <string name="text_description">内容</string>
+    <string name="before">前</string>
+    <string name="text_close">靠近</string>
+    <string name="guide_required_permission_title">所需权限指南</string>
+    <string name="guide_required_permission_message">出于以下原因需要权限： \n\n1.视频访问权限\n - 视频注册需要。 \n - 视频注册需要。</string>
+    <string name="text_re_request">再次请求</string>
+    <string name="text_change_setting">更改设置</string>
+    <string name="guide_choice_video">请选择视频</string>
+    <string name="guide_accept_permission">为了顺利使用应用，请设置权限权限。</string>
+    <string name="retry">重试</string>
+    <string name="logout">登出</string>
+    <string name="deleteAccount">删除帐户</string>
+
+</resources>
