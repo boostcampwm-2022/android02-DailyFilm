@@ -35,9 +35,10 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
     private val startForResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val startTime = TrimVideo.getTrimmedStartMilli(result.data)
                 val uri: Uri = Uri.parse(TrimVideo.getTrimmedVideoPath(result.data))
                 val uriString = Uri.parse("file://$uri")
-                viewModel.moveToUpload(uriString)
+                viewModel.moveToUpload(uriString, startTime)
             } else {
                 viewModel.moveToSelectVideo()
             }
@@ -60,7 +61,7 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                             openTrimVideo(result)
                         }
                         is TrimVideoEvent.NextButtonResult -> {
-                            moveToUpload(result.dateAndVideoModelItem)
+                            moveToUpload(result.dateAndVideoModelItem, result.startTime)
 
                         }
                         is TrimVideoEvent.BackButtonResult -> {
@@ -96,12 +97,13 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
             .start(this@TrimVideoActivity, event.startForResult)
     }
 
-    private fun moveToUpload(trimAndVideoModel: DateAndVideoModel) {
+    private fun moveToUpload(trimAndVideoModel: DateAndVideoModel, startTime: Long) {
         startActivity(
             Intent(this, UploadFilmActivity::class.java).apply {
                 putExtra(DATE_VIDEO_ITEM, trimAndVideoModel)
                 putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
                 putExtra(KEY_INFO_ITEM, viewModel.infoItem)
+                putExtra(KEY_START_TIME, startTime)
                 putExtra(KEY_EDIT_FLAG, viewModel.editFlag)
                 putExtra(KEY_DATE_MODEL, viewModel.dateModel)
             }
@@ -123,6 +125,7 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
 
     companion object {
         const val KEY_INFO_ITEM = "beforeItem"
+        const val KEY_START_TIME = "start_time"
         const val KEY_DATE_MODEL = "dateModel"
     }
 }

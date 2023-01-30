@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="activity"
             type="com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity" />
@@ -73,7 +75,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:playVideo="@{viewModel.infoItem.uri}"
+            app:originVideo="@{viewModel.beforeItem.uri}"
+            app:videoStartTime="@{viewModel.startTime}"
             app:resize_mode="zoom"
             app:use_controller="false" />
 
@@ -134,6 +137,21 @@
             android:textColor="@color/white"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
+
+        <ProgressBar
+            android:id="@+id/pbar_compress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:progressTint="@color/white"
+            android:max="100"
+            android:progress="@{viewModel.compressProgress}"
+            android:visibility="@{viewModel.compressProgress &lt; 100 ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
