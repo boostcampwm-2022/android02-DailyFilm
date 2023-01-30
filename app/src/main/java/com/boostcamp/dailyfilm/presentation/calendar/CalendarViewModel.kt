@@ -20,6 +20,7 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
     ViewModel() {
 
     private var item: DateModel? = null
+    var calendarIndex: Int? = null
     private val localeCalendar = Calendar.getInstance(Locale.getDefault()).apply {
         set(Calendar.HOUR_OF_DAY, 12)
         set(Calendar.MINUTE, 0)
@@ -70,8 +71,9 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
         }
     }
 
-    fun changeSelectedItem(item: DateModel?) {
+    fun changeSelectedItem(index: Int?, item: DateModel?) {
         this.item = item
+        this.calendarIndex = index
     }
 
     fun uploadClicked() {

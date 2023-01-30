@@ -197,6 +197,12 @@ class DateViewModel @Inject constructor(
         _dateFlow.value = dateModelList
     }
 
+    fun setVideo(index: Int, dateModel: DateModel) {
+        val tmpList = _dateFlow.value.toMutableList()
+        tmpList[index] = dateModel
+        _dateFlow.value = tmpList
+    }
+
     fun initialDateList(): List<DateModel> {
         val tempCalendar = Calendar.getInstance().apply {
             timeInMillis = prevCalendar.timeInMillis

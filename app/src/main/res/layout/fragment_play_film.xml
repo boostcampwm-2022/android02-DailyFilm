@@ -10,7 +10,6 @@
         <variable
             name="viewModel"
             type="com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmViewModel" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,9 +26,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:resize_mode="zoom"
-            app:surface_type="texture_view"
             app:show_buffering="always"
             app:streamVideo="@{viewModel.videoUri}"
+            app:surface_type="texture_view"
             app:use_artwork="true"
             app:use_controller="false" />
 
@@ -68,6 +67,19 @@
             app:lottie_fileName="sound_lottie.json"
             app:lottie_loop="false"
             app:syncMuteIcon="@{viewModel.isMuted()}" />
+
+        <ImageButton
+            android:id="@+id/ib_menu"
+            android:layout_width="@dimen/normal_175"
+            android:layout_height="@dimen/normal_175"
+            android:layout_marginRight="@dimen/normal_100"
+            android:adjustViewBounds="true"
+            android:alpha="0.5"
+            android:background="@drawable/background_rounded"
+            android:src="@drawable/ic_menu"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
+            app:layout_constraintEnd_toStartOf="@id/btn_sound_control"
+            app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
 
         <TextView
             android:id="@+id/tv_content"

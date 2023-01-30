@@ -18,6 +18,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivitySelectVideoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_DATE_MODEL
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.google.android.material.snackbar.Snackbar
@@ -145,6 +148,9 @@ class SelectVideoActivity :
             startActivity(
                 Intent(this, TrimVideoActivity::class.java).apply {
                     putExtra(DATE_VIDEO_ITEM, item)
+                    putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
+                    putExtra(KEY_EDIT_FLAG, viewModel.editFlag)
+                    putExtra(KEY_DATE_MODEL, viewModel.dateModel)
                 }
             )
             finish()
