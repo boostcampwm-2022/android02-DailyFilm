@@ -26,12 +26,12 @@ class DateImgView constructor(
 
     fun setVideoUrl(dateModel: DateModel) {
         this.dateModel = dateModel
-        load(requestManager, dateModel.videoUrl)
+        load(dateModel.videoUrl)
     }
 
-    private fun load(glide: RequestManager, imageUrl: String?) {
+    private fun load(imageUrl: String?) {
         imageUrl ?: return
-        glide.load(imageUrl)
+        requestManager.load(imageUrl)
             .transition(DrawableTransitionOptions.withCrossFade(factory))
             .placeholder(R.color.gray)
             .transform(CenterCrop(), RoundedCorners(10))

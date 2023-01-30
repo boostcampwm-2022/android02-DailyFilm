@@ -31,6 +31,8 @@ class CalendarView(
     private var selected: Int? = null
     private var currentMonth: Int? = null
 
+    private lateinit var requestManager: RequestManager
+
     private val todayCalendar = Calendar.getInstance(Locale.getDefault()).apply {
         set(Calendar.HOUR_OF_DAY, 24)
     }
@@ -96,30 +98,12 @@ class CalendarView(
         currentCalendar: Calendar,
     ) {
         currentMonth = currentCalendar.get(Calendar.MONTH) + 1
+        this.requestManager = requestManager
 
         dateModelList.forEach { dateModel ->
 
-            val dateTextView = DateTextView(
-                context,
-                tmpHorizontal,
-                textHeight
-            ).apply {
-                text = dateModel.day
-                setTextColor(ContextCompat.getColor(this.context, R.color.OnSurface))
-                textSize = TEXT_SIZE
-                gravity = Gravity.CENTER
-                setPadding(0, TEXT_PADDING_TOP, 0, 0)
-            }
-
-            val dateImgView = DateImgView(
-                context,
-                dateModel,
-                requestManager,
-                tmpHorizontal,
-                tmpVertical - textHeight
-            ).apply {
-                setPadding(IMG_PADDING)
-            }
+            val dateTextView = createDateTextView(dateModel)
+            val dateImgView = createDateImgView(dateModel)
 
             if (isNotCurrentMonth(dateModel)) {
                 dateTextView.apply {
@@ -131,20 +115,47 @@ class CalendarView(
                     setOnClickListener { }
                 }
             }
-
             addView(dateTextView)
             addView(dateImgView)
         }
     }
 
     fun reloadItem(index: Int, dateModel: DateModel, callback: (DateModel) -> (Unit)) {
-        (children.toList()[index * 2 + 1] as DateImgView).apply {
+        val imgIndex = index * 2 + 1
+        if (dateModel.videoUrl == null) {
+            removeViewAt(imgIndex)
+            addView(createDateImgView(dateModel), imgIndex)
+            return
+        }
+        (children.toList()[imgIndex] as DateImgView).apply {
             setVideoUrl(dateModel)
             if (isNotCurrentMonth(dateModel)) return
             setOnClickListener {
                 callback(dateModel)
             }
         }
+    }
+
+    private fun createDateTextView(dateModel: DateModel) = DateTextView(
+        context,
+        tmpHorizontal,
+        textHeight
+    ).apply {
+        text = dateModel.day
+        setTextColor(ContextCompat.getColor(this.context, R.color.OnSurface))
+        textSize = TEXT_SIZE
+        gravity = Gravity.CENTER
+        setPadding(0, TEXT_PADDING_TOP, 0, 0)
+    }
+
+    private fun createDateImgView(dateModel: DateModel) = DateImgView(
+        context,
+        dateModel,
+        requestManager,
+        tmpHorizontal,
+        tmpVertical - textHeight
+    ).apply {
+        setPadding(IMG_PADDING)
     }
 
     fun setSelected(index: Int, changedSelectedItem: (DateModel?) -> Unit) {

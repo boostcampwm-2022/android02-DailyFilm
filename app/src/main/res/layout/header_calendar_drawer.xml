@@ -12,18 +12,17 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingVertical="20dp">
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:text="@{viewModel.userFlow.displayName}"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textSize="40sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,30 +30,39 @@
 
         <TextView
             android:id="@+id/tv_email"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:text="@{viewModel.userFlow.email}"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_logout"
+            android:layout_marginTop="28dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name"
             tools:text="5678@boost.camp" />
 
         <TextView
             android:id="@+id/tv_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:onClick="@{() -> viewModel.logout()}"
             android:text="@string/logout"
             android:textSize="25sp"
-            android:onClick="@{() -> viewModel.logout()}"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_email"
-         />
+            app:layout_constraintTop_toBottomOf="@+id/tv_email" />
+
+        <TextView
+            android:id="@+id/tv_delete_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.deleteUser()}"
+            android:text="@string/deleteAccount"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,8 +1,14 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,7 +18,9 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.FragmentDateBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_FILM_ARRAY
+import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -23,6 +31,22 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
 
     private val viewModel: DateViewModel by viewModels()
     private val activityViewModel: CalendarViewModel by activityViewModels()
+
+    private val startForResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val calendarIndex = result.data?.getIntExtra(KEY_CALENDAR_INDEX, -1)
+                    ?: return@registerForActivityResult
+                val dateModel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    result.data?.getParcelableExtra(KEY_DATE_MODEL, DateModel::class.java)
+                } else {
+                    result.data?.getParcelableExtra(KEY_DATE_MODEL)
+                }
+                dateModel ?: return@registerForActivityResult
+                viewModel.setVideo(calendarIndex, dateModel)
+                reloadItem(calendarIndex, dateModel)
+            }
+        }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView() {
@@ -42,23 +66,7 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
                     }
                     launch {
                         viewModel.reloadFlow.collect {
-                            binding.customCalendarView.reloadItem(
-                                it.first,
-                                it.second
-                            ) { dateModel ->
-                                startActivity(
-                                    Intent(requireContext(), PlayFilmActivity::class.java).apply {
-                                        putExtra(
-                                            KEY_DATE_MODEL_INDEX,
-                                            activityViewModel.filmFlow.value.indexOf(dateModel)
-                                        )
-                                        putParcelableArrayListExtra(
-                                            KEY_FILM_ARRAY,
-                                            ArrayList(activityViewModel.filmFlow.value)
-                                        )
-                                    }
-                                )
-                            }
+                            reloadItem(it.first, it.second)
                         }
                     }
                 }
@@ -72,6 +80,30 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
                     }
                 }
             }
+        }
+    }
+
+    private fun reloadItem(index: Int, dateModel: DateModel) {
+        binding.customCalendarView.reloadItem(
+            index,
+            dateModel
+        ) { dateModel ->
+            startForResult.launch(
+                Intent(requireContext(), PlayFilmActivity::class.java).apply {
+                    putExtra(
+                        KEY_CALENDAR_INDEX,
+                        index
+                    )
+                    putExtra(
+                        KEY_DATE_MODEL_INDEX,
+                        activityViewModel.filmFlow.value.indexOf(dateModel)
+                    )
+                    putParcelableArrayListExtra(
+                        KEY_FILM_ARRAY,
+                        ArrayList(activityViewModel.filmFlow.value)
+                    )
+                }
+            )
         }
     }
 
@@ -90,13 +122,14 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
 
     override fun onPause() {
         binding.customCalendarView.resetBackground()
-        activityViewModel.changeSelectedItem(null)
+        activityViewModel.changeSelectedItem(null, null)
         super.onPause()
     }
 
     companion object {
         const val KEY_CALENDAR = "calendar"
         const val KEY_DATE_MODEL_INDEX = "dateModelIndex"
+        const val KEY_CALENDAR_INDEX = "calendarIndex"
         fun newInstance(calendar: Calendar): DateFragment {
             return DateFragment().apply {
                 arguments = Bundle().apply {

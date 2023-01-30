@@ -21,7 +21,7 @@ fun CalendarView.initCalendarView(
         viewModel.calendar
     )
 
-    setOnTouchListener { v, event ->
+    setOnTouchListener { _, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> true
             MotionEvent.ACTION_UP -> {
@@ -33,7 +33,7 @@ fun CalendarView.initCalendarView(
                 if (childCount <= index) return@setOnTouchListener false
 
                 setSelected(index) {
-                    activityViewModel.changeSelectedItem(it)
+                    activityViewModel.changeSelectedItem(index / 2, it)
                 }
                 true
             }

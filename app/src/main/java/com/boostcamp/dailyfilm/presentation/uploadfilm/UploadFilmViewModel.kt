@@ -5,12 +5,18 @@ import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.util.Log
-import androidx.lifecycle.*
 import com.arthenica.mobileffmpeg.Config
+import androidx.core.net.toUri
+import androidx.lifecycle.*
+import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
-import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
+import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.RoundedBackgroundSpan
 import com.boostcamp.dailyfilm.presentation.util.UiState
@@ -22,16 +28,21 @@ import kotlin.math.ceil
 
 @HiltViewModel
 class UploadFilmViewModel @Inject constructor(
+    private val deleteFilmRepository: DeleteFilmRepository,
     private val uploadFilmRepository: UploadFilmRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val infoItem = savedStateHandle.get<DateAndVideoModel>(SelectVideoActivity.DATE_VIDEO_ITEM)
+    val infoItem = savedStateHandle.get<DateAndVideoModel>(DATE_VIDEO_ITEM)
     val beforeItem = savedStateHandle.get<DateAndVideoModel>(KEY_INFO_ITEM)
     val startTime = savedStateHandle.get<Long>(KEY_START_TIME) ?: 0L
+    val dateModel = savedStateHandle.get<DateModel>(KEY_DATE_MODEL)
+    val calendarIndex = savedStateHandle.get<Int>(KEY_CALENDAR_INDEX)
+    private val editFlag = savedStateHandle.get<Boolean>(KEY_EDIT_FLAG)
+
     private val _uploadResult = MutableSharedFlow<Uri?>()
     val uploadResult: SharedFlow<Uri?> get() = _uploadResult
 
-    private val _uiState = MutableStateFlow<UiState<Unit>>(UiState.Uninitialized)
+    private val _uiState = MutableStateFlow<UiState<DateModel>>(UiState.Uninitialized)
     val uiState = _uiState.asStateFlow()
 
     private val _showedTextContent = MutableLiveData<SpannableString>()
@@ -80,7 +91,17 @@ class UploadFilmViewModel @Inject constructor(
                 return
             }
         }
+        
+        editFlag?.let { flag ->
+            if (flag) {
+                deleteVideo()
+            } else {
+                uploadStorage()
+            }
+        }
+    }
 
+    private fun uploadStorage() {
         infoItem?.let { item ->
             _uiState.value = UiState.Loading
             viewModelScope.launch {
@@ -91,7 +112,7 @@ class UploadFilmViewModel @Inject constructor(
                             is Result.Success -> {
                                 // storage 업로드 성공
                                 // _uploadResult.emit(result.data)
-                                uploadFilmInfo(result.data)
+                                uploadRealtime(result.data)
                             }
                             is Result.Error -> {
                                 // storage 업로드 실패
@@ -105,10 +126,11 @@ class UploadFilmViewModel @Inject constructor(
         }
     }
 
-    private fun uploadFilmInfo(videoUrl: Uri?) {
+    private fun uploadRealtime(videoUrl: Uri?) {
         val uploadDate = infoItem?.uploadDate
         val text = textContent.value ?: ""
 
+        dateModel ?: return
         if (videoUrl != null && uploadDate != null) {
             val filmItem = DailyFilmItem(videoUrl.toString(), text, uploadDate)
             uploadFilmRepository.uploadFilmInfo(
@@ -118,7 +140,15 @@ class UploadFilmViewModel @Inject constructor(
                 when (it) {
                     is Result.Success -> {
                         uploadFilmRepository.insertFilmEntity(filmItem)
-                        _uiState.value = UiState.Success(it.data)
+                        _uiState.value = UiState.Success(
+                            DateModel(
+                                year = dateModel.year,
+                                month = dateModel.month,
+                                day = dateModel.day,
+                                text = text,
+                                videoUrl = videoUrl.toString()
+                            )
+                        )
                     }
                     is Result.Error -> {
                         _uiState.value = UiState.Failure(it.exception)
@@ -145,6 +175,37 @@ class UploadFilmViewModel @Inject constructor(
                 }
             } else {
                 _showedTextContent.value = SpannableString("")
+            }
+        }
+    }
+
+    private fun deleteVideo() {
+        dateModel ?: return
+
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            val updateDate = dateModel.getDate()
+            deleteFilmRepository.deleteFilmInfo(updateDate).collectLatest { remoteResult ->
+                when (remoteResult) {
+                    is Result.Uninitialized -> {}
+                    is Result.Success -> {
+                        val dailyFilmItem = remoteResult.data ?: return@collectLatest
+                        deleteFilmRepository.deleteVideo(
+                            updateDate,
+                            dailyFilmItem.videoUrl.toUri()
+                        )
+                            .collectLatest { result ->
+                                when (result) {
+                                    is Result.Uninitialized -> {}
+                                    is Result.Success -> {
+                                        uploadStorage()
+                                    }
+                                    is Result.Error -> {}
+                                }
+                            }
+                    }
+                    is Result.Error -> {}
+                }
             }
         }
     }
