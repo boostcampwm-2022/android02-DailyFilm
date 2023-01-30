@@ -31,6 +31,8 @@ class PlayFilmRemoteDataSource @Inject constructor(
 
             urlRef.get()
                 .addOnSuccessListener { snapshot ->
+                    snapshot.value ?: return@addOnSuccessListener
+
                     val videoUrl = snapshot.value.toString()
                     val storageReference = storage.getReferenceFromUrl(videoUrl)
                     val file = File(context.filesDir, "$uploadDate.mp4")
