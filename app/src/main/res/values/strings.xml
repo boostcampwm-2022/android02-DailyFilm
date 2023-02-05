@@ -25,9 +25,9 @@
     <string name="retry">재시도</string>
     <string name="logout">로그아웃</string>
     <string name="deleteAccount">탈퇴하기</string>
-    <string name="delete">Delete</string>
-    <string name="re_upload">Re-Upload</string>
-    <string name="edit_text">Edit Text</string>
+    <string name="delete">삭제하기</string>
+    <string name="re_upload">재 업로드</string>
+    <string name="edit_text">텍스트 편집</string>
     <string name="delete_dialog">정말로 삭제 하시겠습니까?</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>

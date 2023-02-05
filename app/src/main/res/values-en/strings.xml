@@ -25,5 +25,10 @@
     <string name="retry">retry</string>
     <string name="logout">Logout</string>
     <string name="deleteAccount">Delete Account</string>
-
+    <string name="delete">delete</string>
+    <string name="re_upload">reUpload</string>
+    <string name="edit_text">Edit Text</string>
+    <string name="delete_dialog">Are you sure you want to delete it?</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
 </resources>

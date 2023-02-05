@@ -26,5 +26,10 @@
     <string name="retry">リトライ</string>
     <string name="logout">ログアウト</string>
     <string name="deleteAccount">アカウントを削除する</string>
-
+    <string name="delete">消去</string>
+    <string name="re_upload">再アップロード</string>
+    <string name="edit_text">テキストの編集</string>
+    <string name="delete_dialog">削除してもよろしいですか？</string>
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
 </resources>
