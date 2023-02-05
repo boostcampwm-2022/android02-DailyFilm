@@ -72,7 +72,7 @@ class UploadFilmViewModel @Inject constructor(
     private fun calcProgress() {
         Config.resetStatistics()
         Config.enableStatisticsCallback {
-            val percentage = ceil(it.time.toFloat() / 10000 * 100).toInt()
+            val percentage = (ceil(it.time.toFloat()) / 10000 * 100).toInt()
             _compressProgress.postValue(percentage)
         }
     }
