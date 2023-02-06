@@ -2,7 +2,6 @@ package com.boostcamp.dailyfilm.presentation.uploadfilm
 
 import android.animation.ValueAnimator
 import android.net.Uri
-import android.util.Log
 import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
@@ -43,8 +42,8 @@ fun LottieAnimationView.updateAnimation(
     animator.start()
 }
 
-@BindingAdapter(value = ["originVideo", "videoStartTime"], requireAll = false)
-fun StyledPlayerView.playVideoAt(uri: Uri?, startTime: Long) {
+@BindingAdapter(value = ["originVideo", "resultVideo", "videoStartTime", "editFlag"], requireAll = false)
+fun StyledPlayerView.playVideoAt(origin: Uri?, result: Uri?, startTime: Long, editFlag: Boolean) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
             volume = 0.5f
@@ -52,20 +51,30 @@ fun StyledPlayerView.playVideoAt(uri: Uri?, startTime: Long) {
         }
     }
 
-    uri?.let {
-        val mediaItem = MediaItem.fromUri(it)
-        player?.setMediaItem(mediaItem)
-        player?.prepare()
-        player?.seekTo(startTime) // 시작 지점 정하기
-        player?.play()
+    lateinit var mediaItem: MediaItem
+    when(editFlag){
+        true -> { // 수정 모드 ->
+            result?.let {
+                mediaItem = MediaItem.fromUri(it)
+            }
+        }
+        false -> {
+            origin?.let {
+                mediaItem = MediaItem.fromUri(it)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            while (true){
-                delay(10000) // 10초 만큼 진행하고
-                player?.seekTo(startTime) // 다시 시작지점으로
-                if (player == null) // 메모리 누수 방지
-                    break
+                CoroutineScope(Dispatchers.Main).launch {
+                    while (true){
+                        player?.seekTo(startTime) // 다시 시작지점으로
+                        delay(10000) // 10초 만큼 진행하고
+                        if (player == null) // 메모리 누수 방지
+                            break
+                    }
+                }
             }
         }
     }
+
+    player?.setMediaItem(mediaItem)
+    player?.prepare()
+    player?.play()
 }

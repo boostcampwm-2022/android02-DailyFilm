@@ -37,7 +37,7 @@ class UploadFilmViewModel @Inject constructor(
     val startTime = savedStateHandle.get<Long>(KEY_START_TIME) ?: 0L
     val dateModel = savedStateHandle.get<DateModel>(KEY_DATE_MODEL)
     val calendarIndex = savedStateHandle.get<Int>(KEY_CALENDAR_INDEX)
-    private val editFlag = savedStateHandle.get<Boolean>(KEY_EDIT_FLAG)
+    val editFlag = savedStateHandle.get<Boolean>(KEY_EDIT_FLAG)
 
     private val _uploadResult = MutableSharedFlow<Uri?>()
     val uploadResult: SharedFlow<Uri?> get() = _uploadResult
@@ -72,7 +72,7 @@ class UploadFilmViewModel @Inject constructor(
     private fun calcProgress() {
         Config.resetStatistics()
         Config.enableStatisticsCallback {
-            val percentage = ceil(it.time.toFloat() / 10000 * 100).toInt()
+            val percentage = (ceil(it.time.toFloat()) / 10000 * 100).toInt()
             _compressProgress.postValue(percentage)
         }
     }
@@ -86,7 +86,7 @@ class UploadFilmViewModel @Inject constructor(
                 _uiState.value = UiState.Failure(Throwable("영상에 맞는 문구를 입력해주세요."))
                 return
             }
-            progress < 100 -> {
+            (editFlag?.not() ?: true) && progress < 100 -> {
                 _uiState.value = UiState.Failure(Throwable("영상 처리중입니다. 잠시만 기다려주세요."))
                 return
             }
