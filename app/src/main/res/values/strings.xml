@@ -35,4 +35,9 @@
     <string name="guide_check_date">날짜를 선택 해주세요</string>
     <string name="guide_not_exisxt_video">영상이 존재 하지 않습니다.</string>
     <string name="guide_camera_error">현재 디바이스에 카메라 기능이 없습니다.</string>
+    <string name="search">검색</string>
+    <string name="thumbnail">썸네일</string>
+    <string name="move_date">날짜로 이동</string>
+    <string name="play_total">한 달 전체 재생</string>
+    <string name="select_date_range">검색 범위 선택</string>
 </resources>
