@@ -12,10 +12,11 @@ import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmRepository
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_STATE
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
+import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.RoundedBackgroundSpan
@@ -37,7 +38,7 @@ class UploadFilmViewModel @Inject constructor(
     val startTime = savedStateHandle.get<Long>(KEY_START_TIME) ?: 0L
     val dateModel = savedStateHandle.get<DateModel>(KEY_DATE_MODEL)
     val calendarIndex = savedStateHandle.get<Int>(KEY_CALENDAR_INDEX)
-    val editFlag = savedStateHandle.get<Boolean>(KEY_EDIT_FLAG)
+    val editState = savedStateHandle.get<EditState>(KEY_EDIT_STATE)
 
     private val _uploadResult = MutableSharedFlow<Uri?>()
     val uploadResult: SharedFlow<Uri?> get() = _uploadResult
@@ -72,10 +73,20 @@ class UploadFilmViewModel @Inject constructor(
     private fun calcProgress() {
         Config.resetStatistics()
         Config.enableStatisticsCallback {
-            val percentage = (ceil(it.time.toFloat()) / 10000 * 100).toInt()
+            val percentage = it.videoFrameNumber
             _compressProgress.postValue(percentage)
+
+            if (isEnded())
+                _compressProgress.postValue(240)
         }
     }
+
+    // 압축이 끝난 시점 -> ffmpeg log의 마지막 줄이 "video:...kB audio:...kB ..." 형태일 때
+    private fun isEnded() =
+        Config.getLastCommandOutput()
+            .split("\n").dropLast(1).last()
+            .substring(0 until 5) == "video"
+
 
     fun uploadVideo() {
         val text = textContent.value ?: ""
@@ -86,17 +97,16 @@ class UploadFilmViewModel @Inject constructor(
                 _uiState.value = UiState.Failure(Throwable("영상에 맞는 문구를 입력해주세요."))
                 return
             }
-            (editFlag?.not() ?: true) && progress < 100 -> {
+            (editState != EditState.EDIT_CONTENT) && progress < 240 -> {
                 _uiState.value = UiState.Failure(Throwable("영상 처리중입니다. 잠시만 기다려주세요."))
                 return
             }
         }
         
-        editFlag?.let { flag ->
-            if (flag) {
-                deleteVideo()
-            } else {
-                uploadStorage()
+        editState?.let { state ->
+            when (state) {
+                EditState.NEW_UPLOAD -> uploadStorage()
+                EditState.EDIT_CONTENT, EditState.RE_UPLOAD -> deleteVideo()
             }
         }
     }
