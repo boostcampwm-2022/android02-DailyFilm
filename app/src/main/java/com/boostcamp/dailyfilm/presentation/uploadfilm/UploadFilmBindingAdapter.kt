@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
+import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -42,8 +43,8 @@ fun LottieAnimationView.updateAnimation(
     animator.start()
 }
 
-@BindingAdapter(value = ["originVideo", "resultVideo", "videoStartTime", "editFlag"], requireAll = false)
-fun StyledPlayerView.playVideoAt(origin: Uri?, result: Uri?, startTime: Long, editFlag: Boolean) {
+@BindingAdapter(value = ["originVideo", "resultVideo", "videoStartTime", "editState"], requireAll = false)
+fun StyledPlayerView.playVideoAt(origin: Uri?, result: Uri?, startTime: Long, editState: EditState) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
             volume = 0.5f
@@ -52,13 +53,13 @@ fun StyledPlayerView.playVideoAt(origin: Uri?, result: Uri?, startTime: Long, ed
     }
 
     lateinit var mediaItem: MediaItem
-    when(editFlag){
-        true -> { // 수정 모드 ->
+    when(editState){
+        EditState.EDIT_CONTENT -> { // 내용 수정 모드 -> 로컬 저장 비디오로 미리보기
             result?.let {
                 mediaItem = MediaItem.fromUri(it)
             }
         }
-        false -> {
+        EditState.NEW_UPLOAD, EditState.RE_UPLOAD -> { // 업로드 혹은 재업로드 -> 원본 영상 + 구간 데이터로 미리보기
             origin?.let {
                 mediaItem = MediaItem.fromUri(it)
 

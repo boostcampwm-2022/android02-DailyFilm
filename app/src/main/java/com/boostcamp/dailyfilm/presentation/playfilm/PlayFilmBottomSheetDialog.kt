@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.DialogBottomSheetBinding
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_STATE
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
 import com.boostcamp.dailyfilm.presentation.playfilm.adapter.PlayFilmBottomSheetAdapter
 import com.boostcamp.dailyfilm.presentation.playfilm.model.BottomSheetModel
+import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
@@ -48,7 +49,7 @@ class PlayFilmBottomSheetDialog(
                     ).apply {
                         putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
                         putExtra(KEY_DATE_MODEL, viewModel.dateModel)
-                        putExtra(KEY_EDIT_FLAG, true)
+                        putExtra(KEY_EDIT_STATE, EditState.RE_UPLOAD)
                         putExtra(
                             DATE_VIDEO_ITEM,
                             DateAndVideoModel(
@@ -71,7 +72,7 @@ class PlayFilmBottomSheetDialog(
                                 viewModel.dateModel.getDate()
                             )
                         )
-                        putExtra(KEY_EDIT_FLAG, true)
+                        putExtra(KEY_EDIT_STATE, EditState.EDIT_CONTENT)
                         putExtra(KEY_DATE_MODEL, viewModel.dateModel)
                     }
                 )

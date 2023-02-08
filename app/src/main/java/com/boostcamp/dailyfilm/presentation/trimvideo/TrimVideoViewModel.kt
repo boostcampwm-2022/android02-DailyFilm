@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.Event
@@ -24,7 +25,7 @@ class TrimVideoViewModel @Inject constructor(
     val infoItem = savedStateHandle.get<DateAndVideoModel>(SelectVideoActivity.DATE_VIDEO_ITEM)
     val dateModel = savedStateHandle.get<DateModel>(CalendarActivity.KEY_DATE_MODEL)
     val calendarIndex = savedStateHandle.get<Int>(DateFragment.KEY_CALENDAR_INDEX)
-    val editFlag = savedStateHandle.get<Boolean>(CalendarActivity.KEY_EDIT_FLAG)
+    val editState = savedStateHandle.get<EditState>(CalendarActivity.KEY_EDIT_STATE)
 
     private val HD_WIDTH = 1280
     private val _eventFlow = MutableSharedFlow<Event<TrimVideoEvent>>(replay = 1)

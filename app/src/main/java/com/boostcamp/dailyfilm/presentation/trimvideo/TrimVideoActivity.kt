@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityTrimViedoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_FLAG
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_STATE
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
@@ -104,7 +104,7 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                 putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
                 putExtra(KEY_INFO_ITEM, viewModel.infoItem)
                 putExtra(KEY_START_TIME, startTime)
-                putExtra(KEY_EDIT_FLAG, viewModel.editFlag)
+                putExtra(KEY_EDIT_STATE, viewModel.editState)
                 putExtra(KEY_DATE_MODEL, viewModel.dateModel)
             }
         )

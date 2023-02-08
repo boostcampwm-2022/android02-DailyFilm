@@ -6,6 +6,7 @@
     <data>
 
         <import type="android.view.View" />
+        <import type="com.boostcamp.dailyfilm.presentation.playfilm.model.EditState"/>
 
         <variable
             name="activity"
@@ -78,7 +79,7 @@
             app:originVideo="@{viewModel.beforeItem.uri}"
             app:resultVideo="@{viewModel.infoItem.uri}"
             app:videoStartTime="@{viewModel.startTime}"
-            app:editFlag="@{viewModel.editFlag}"
+            app:editState="@{viewModel.editState}"
             app:resize_mode="zoom"
             app:use_controller="false" />
 
@@ -148,12 +149,12 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:progressTint="@color/white"
-            android:max="100"
+            android:max="240"
             android:progress="@{viewModel.compressProgress}"
-            android:visibility="@{viewModel.compressProgress &lt; 100 &amp;&amp; !viewModel.editFlag ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.compressProgress &lt; 240 &amp;&amp; viewModel.editState != EditState.EDIT_CONTENT ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
