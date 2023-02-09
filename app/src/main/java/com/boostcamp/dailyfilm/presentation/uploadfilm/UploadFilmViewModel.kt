@@ -4,10 +4,8 @@ package com.boostcamp.dailyfilm.presentation.uploadfilm
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
-import android.util.Log
-import com.arthenica.mobileffmpeg.Config
-import androidx.core.net.toUri
 import androidx.lifecycle.*
+import com.arthenica.mobileffmpeg.Config
 import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
@@ -22,10 +20,12 @@ import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.RoundedBackgroundSpan
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.ceil
 
 @HiltViewModel
 class UploadFilmViewModel @Inject constructor(
@@ -102,11 +102,36 @@ class UploadFilmViewModel @Inject constructor(
                 return
             }
         }
-        
+
         editState?.let { state ->
             when (state) {
                 EditState.NEW_UPLOAD -> uploadStorage()
-                EditState.EDIT_CONTENT, EditState.RE_UPLOAD -> deleteVideo()
+                EditState.EDIT_CONTENT -> uploadEdit()
+                EditState.RE_UPLOAD -> deleteVideo()
+            }
+        }
+    }
+
+    private fun uploadEdit() {
+
+        val text = textContent.value ?: ""
+
+        infoItem?.let { item ->
+            _uiState.value = UiState.Loading
+            viewModelScope.launch {
+                dateModel ?: return@launch
+                val date = item.uploadDate
+                val dailyFilmItem = DailyFilmItem(dateModel.videoUrl.toString(), text, date)
+                when (val result = uploadFilmRepository.uploadEditVideo(date, dailyFilmItem)) {
+                    is Result.Success -> {
+                        _uiState.value = UiState.Success(
+                            dateModel.copy(text = text)
+                        )
+                    }
+                    is Result.Error -> {
+                        _uiState.value = UiState.Failure(result.exception)
+                    }
+                }
             }
         }
     }
@@ -116,22 +141,17 @@ class UploadFilmViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             viewModelScope.launch {
                 // _uploadFilmInfoResult.emit(false)
-                uploadFilmRepository.uploadVideo(item.uploadDate, item.uri)
-                    .collectLatest { result ->
-                        when (result) {
-                            is Result.Success -> {
-                                // storage 업로드 성공
-                                // _uploadResult.emit(result.data)
-                                uploadRealtime(result.data)
-                            }
-                            is Result.Error -> {
-                                // storage 업로드 실패
-                                _uiState.value = UiState.Failure(result.exception)
-                            }
-                            is Result.Uninitialized -> {
-                            }
-                        }
+                when (val result = uploadFilmRepository.uploadVideo(item.uploadDate, item.uri)) {
+                    is Result.Success -> {
+                        // storage 업로드 성공
+                        // _uploadResult.emit(result.data)
+                        uploadRealtime(result.data)
                     }
+                    is Result.Error -> {
+                        // storage 업로드 실패
+                        _uiState.value = UiState.Failure(result.exception)
+                    }
+                }
             }
         }
     }
@@ -143,29 +163,19 @@ class UploadFilmViewModel @Inject constructor(
         dateModel ?: return
         if (videoUrl != null && uploadDate != null) {
             val filmItem = DailyFilmItem(videoUrl.toString(), text, uploadDate)
-            uploadFilmRepository.uploadFilmInfo(
-                uploadDate,
-                filmItem
-            ).onEach {
-                when (it) {
+            viewModelScope.launch {
+                when (val result = uploadFilmRepository.uploadFilmInfo(uploadDate, filmItem)) {
                     is Result.Success -> {
                         uploadFilmRepository.insertFilmEntity(filmItem)
                         _uiState.value = UiState.Success(
-                            DateModel(
-                                year = dateModel.year,
-                                month = dateModel.month,
-                                day = dateModel.day,
-                                text = text,
-                                videoUrl = videoUrl.toString()
-                            )
+                            dateModel.copy(text = text, videoUrl = videoUrl.toString())
                         )
                     }
                     is Result.Error -> {
-                        _uiState.value = UiState.Failure(it.exception)
+                        _uiState.value = UiState.Failure(result.exception)
                     }
-                    is Result.Uninitialized -> {}
                 }
-            }.launchIn(viewModelScope)
+            }
         } else {
             _uiState.value =
                 UiState.Failure(Throwable("userId == null or videoUrl == null or uploadDate or null "))
@@ -195,26 +205,13 @@ class UploadFilmViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             val updateDate = dateModel.getDate()
-            deleteFilmRepository.deleteFilmInfo(updateDate).collectLatest { remoteResult ->
-                when (remoteResult) {
-                    is Result.Uninitialized -> {}
-                    is Result.Success -> {
-                        val dailyFilmItem = remoteResult.data ?: return@collectLatest
-                        deleteFilmRepository.deleteVideo(
-                            updateDate,
-                            dailyFilmItem.videoUrl.toUri()
-                        )
-                            .collectLatest { result ->
-                                when (result) {
-                                    is Result.Uninitialized -> {}
-                                    is Result.Success -> {
-                                        uploadStorage()
-                                    }
-                                    is Result.Error -> {}
-                                }
-                            }
-                    }
-                    is Result.Error -> {}
+
+            when (val result = deleteFilmRepository.delete(updateDate)) {
+                is Result.Success -> {
+                    uploadStorage()
+                }
+                is Result.Error -> {
+                    UiState.Failure(result.exception)
                 }
             }
         }

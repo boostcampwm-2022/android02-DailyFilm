@@ -10,33 +10,33 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class UploadFilmRemoteDataSource : UploadFilmDataSource {
-    override fun uploadVideo(uploadDate: String, videoUri: Uri) = callbackFlow {
-        val reference = storage.reference // File Pointer
-        val videoRef =
-            reference.child("user_videos/${videoUri.lastPathSegment}") // TODO 선택한 날짜값을 이름으로 재구성할 것
-        val metadata = storageMetadata {
-            contentType = "video/mp4"
+    override suspend fun uploadVideo(uploadDate: String, videoUri: Uri): Result<Uri?> =
+        suspendCoroutine { continuation ->
+            val reference = storage.reference // File Pointer
+            val videoRef =
+                reference.child("user_videos/${videoUri.lastPathSegment}") // TODO 선택한 날짜값을 이름으로 재구성할 것
+            val metadata = storageMetadata {
+                contentType = "video/mp4"
+            }
+
+            videoRef.putFile(videoUri, metadata)
+                .continueWithTask {
+                    videoRef.downloadUrl
+                }
+                .addOnSuccessListener { uri ->
+                    continuation.resume(Result.Success(uri))
+                }.addOnFailureListener { exception ->
+                    //  (exception as StorageException).errorCode
+                    continuation.resume(Result.Error(exception))
+                }
         }
 
-        videoRef.putFile(videoUri, metadata)
-            .continueWithTask {
-                videoRef.downloadUrl
-            }
-            .addOnSuccessListener { uri ->
-                trySend(Result.Success(uri))
-            }.addOnFailureListener { exception ->
-                //  (exception as StorageException).errorCode
-                trySend(Result.Error(exception))
-            }
-        awaitClose()
-    }
-
-    fun uploadFilmInfo(uploadDate: String, filmInfo: DailyFilmItem) =
-        callbackFlow {
+    suspend fun uploadFilmInfo(uploadDate: String, filmInfo: DailyFilmItem) =
+        suspendCoroutine { continuation ->
             userId?.let { id ->
                 val reference = database.reference
                     .child(DIRECTORY_USER)
@@ -45,14 +45,12 @@ class UploadFilmRemoteDataSource : UploadFilmDataSource {
 
                 reference.setValue(filmInfo)
                     .addOnSuccessListener {
-                        trySend(Result.Success(Unit))
+                        continuation.resume(Result.Success(Unit))
                     }
                     .addOnFailureListener { exception ->
-                        trySend(Result.Error(exception))
+                        continuation.resume(Result.Error(exception))
                     }
             }
-
-            awaitClose()
         }
 
     companion object {
