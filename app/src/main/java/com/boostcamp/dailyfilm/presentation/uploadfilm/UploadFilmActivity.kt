@@ -17,7 +17,10 @@ import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
+import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KET_EDIT_TEXT
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
+import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
@@ -50,13 +53,25 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                     when (state) {
                         is UiState.Success -> {
                             loadingDialogFragment.hideProgressDialog()
-                            setResult(
-                                RESULT_OK, Intent(
-                                    this@UploadFilmActivity, CalendarActivity::class.java
-                                ).apply {
-                                    putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
-                                    putExtra(KEY_DATE_MODEL, state.item)
-                                })
+                            when(viewModel.editState) {
+                                EditState.EDIT_CONTENT -> {
+                                    setResult(
+                                        RESULT_OK, Intent(
+                                            this@UploadFilmActivity, PlayFilmActivity::class.java
+                                        ).apply {
+                                            putExtra(KET_EDIT_TEXT, state.item.text)
+                                        })
+                                }
+                                else -> {
+                                    setResult(
+                                        RESULT_OK, Intent(
+                                            this@UploadFilmActivity, CalendarActivity::class.java
+                                        ).apply {
+                                            putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
+                                            putExtra(KEY_DATE_MODEL, state.item)
+                                        })
+                                }
+                            }
                             finish()
                         }
                         is UiState.Loading -> {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.databinding.DataBindingUtil
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.DialogBottomSheetBinding
@@ -23,7 +24,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlayFilmBottomSheetDialog(
     val viewModel: PlayFilmViewModel,
-    private val activityViewModel: PlayFilmActivityViewModel
+    private val activityViewModel: PlayFilmActivityViewModel,
+    val startForResult: ActivityResultLauncher<Intent>
 ) : BottomSheetDialogFragment() {
 
     private var _binding: DialogBottomSheetBinding? = null
@@ -62,7 +64,7 @@ class PlayFilmBottomSheetDialog(
                 requireActivity().finish()
             }
             R.string.edit_text -> {
-                startActivity(
+                startForResult.launch(
                     Intent(requireContext(), UploadFilmActivity::class.java).apply {
                         putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
                         putExtra(
@@ -76,7 +78,7 @@ class PlayFilmBottomSheetDialog(
                         putExtra(KEY_DATE_MODEL, viewModel.dateModel)
                     }
                 )
-                requireActivity().finish()
+                dismiss()
             }
         }
     }
