@@ -39,7 +39,7 @@ class SelectVideoViewModel @Inject constructor(
     private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
     override val selectedVideo = _selectedVideo.asStateFlow()
 
-    private var clickSound = true
+    private var clickSound = false
 
     private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
     val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
