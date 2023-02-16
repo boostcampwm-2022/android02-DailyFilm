@@ -28,8 +28,6 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     _uiState.value = UiState.Failure(result.exception)
                 }
-                is Result.Uninitialized -> {
-                }
             }
         }.launchIn(viewModelScope)
     }

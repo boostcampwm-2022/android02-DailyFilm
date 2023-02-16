@@ -64,7 +64,6 @@ class TotalFilmViewModel @Inject constructor(
                 launch {
                     playFilmRepository.checkVideo(updateDate).collectLatest { localResult ->
                         when (localResult) {
-                            is Result.Uninitialized -> return@collectLatest
                             is Result.Success -> {
                                 if (localResult.data != null) {
                                     _downloadedVideoUri.emit(localResult.data)
@@ -72,14 +71,12 @@ class TotalFilmViewModel @Inject constructor(
                                     playFilmRepository.downloadVideo(updateDate)
                                         .collectLatest { remoteResult ->
                                             when (remoteResult) {
-                                                is Result.Uninitialized -> {}
                                                 is Result.Success -> {
                                                     val localUri = remoteResult.data
                                                     _downloadedVideoUri.emit(localUri)
                                                     playFilmRepository.insertVideo(updateDate, localUri.toString())
                                                         .collectLatest { insertResult ->
                                                             when (insertResult) {
-                                                                is Result.Uninitialized -> {}
                                                                 is Result.Success -> {}
                                                                 is Result.Error -> {}
                                                             }

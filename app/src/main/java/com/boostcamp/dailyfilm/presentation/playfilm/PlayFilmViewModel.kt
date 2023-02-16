@@ -2,7 +2,6 @@ package com.boostcamp.dailyfilm.presentation.playfilm
 
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.Result
@@ -22,8 +21,11 @@ class PlayFilmViewModel @Inject constructor(
     private val deleteFilmRepository: DeleteFilmRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val dateModel = savedStateHandle.get<DateModel>(PlayFilmFragment.KEY_DATE_MODEL)
+    var dateModel = savedStateHandle.get<DateModel>(PlayFilmFragment.KEY_DATE_MODEL)
         ?: throw IllegalStateException("PlayFilmViewModel - DateModel is null")
+
+    private val _text = MutableLiveData<String>(dateModel.text)
+    val text: LiveData<String> get() = _text
 
     private val _videoUri = MutableLiveData<Uri?>()
     val videoUri: LiveData<Uri?> get() = _videoUri
@@ -41,6 +43,11 @@ class PlayFilmViewModel @Inject constructor(
         loadVideo()
     }
 
+    fun setDateModel(text: String) {
+        dateModel = dateModel.copy(text = text)
+        _text.value = text
+    }
+
     fun changeShowState() {
         _isContentShowed.value = _isContentShowed.value?.not()
     }
@@ -54,7 +61,6 @@ class PlayFilmViewModel @Inject constructor(
             val updateDate = dateModel.getDate()
             playFilmRepository.checkVideo(updateDate).collectLatest { localResult ->
                 when (localResult) {
-                    is Result.Uninitialized -> return@collectLatest
                     is Result.Success -> {
                         if (localResult.data != null) {
                             Log.d("LoadVideo", "Cached ${localResult.data}")
@@ -63,7 +69,6 @@ class PlayFilmViewModel @Inject constructor(
                             playFilmRepository.downloadVideo(updateDate)
                                 .collectLatest { remoteResult ->
                                     when (remoteResult) {
-                                        is Result.Uninitialized -> {}
                                         is Result.Success -> {
                                             val localUri = remoteResult.data
                                             _videoUri.value = localUri
@@ -72,7 +77,6 @@ class PlayFilmViewModel @Inject constructor(
                                                 localUri.toString()
                                             ).collectLatest { insertResult ->
                                                 when (insertResult) {
-                                                    is Result.Uninitialized -> {}
                                                     is Result.Success -> {}
                                                     is Result.Error -> {}
                                                 }
@@ -92,33 +96,18 @@ class PlayFilmViewModel @Inject constructor(
     fun deleteVideo() {
         viewModelScope.launch {
             val updateDate = dateModel.getDate()
-
-            deleteFilmRepository.deleteFilmInfo(updateDate).collectLatest { remoteResult ->
-                when (remoteResult) {
-                    is Result.Uninitialized -> {}
-                    is Result.Success -> {
-                        val dailyFilmItem = remoteResult.data ?: return@collectLatest
-                        deleteFilmRepository.deleteVideo(
-                            updateDate,
-                            dailyFilmItem.videoUrl.toUri()
+            when (val result = deleteFilmRepository.delete(updateDate)) {
+                is Result.Success -> {
+                    _uiState.value = UiState.Success(
+                        DateModel(
+                            year = dateModel.year,
+                            month = dateModel.month,
+                            day = dateModel.day
                         )
-                            .collectLatest { result ->
-                                when (result) {
-                                    is Result.Uninitialized -> {}
-                                    is Result.Success -> {
-                                        _uiState.value = UiState.Success(
-                                            DateModel(
-                                                year = dateModel.year,
-                                                month = dateModel.month,
-                                                day = dateModel.day
-                                            )
-                                        )
-                                    }
-                                    is Result.Error -> {}
-                                }
-                            }
-                    }
-                    is Result.Error -> {}
+                    )
+                }
+                is Result.Error -> {
+                    UiState.Failure(result.exception)
                 }
             }
         }

@@ -9,26 +9,25 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class DeleteFilmRemoteDataSource : DeleteFilmDataSource {
-    override fun deleteVideo(uploadDate: String, videoUri: Uri): Flow<Result<Unit>> = callbackFlow {
-        val reference = storage.reference
-        val videoRef = reference.child("${videoUri.lastPathSegment}")
+    override suspend fun deleteVideo(uploadDate: String, videoUri: Uri): Result<Unit> =
+        suspendCoroutine { continuation ->
+            val reference = storage.reference
+            val videoRef = reference.child("${videoUri.lastPathSegment}")
 
-        videoRef.delete()
-            .addOnSuccessListener {
-                trySend(Result.Success(Unit))
-            }.addOnFailureListener { exception ->
-                trySend(Result.Error(exception))
-            }
-        awaitClose()
-    }
+            videoRef.delete()
+                .addOnSuccessListener {
+                    continuation.resume(Result.Success(Unit))
+                }.addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
+        }
 
-    fun deleteFilm(uploadDate: String) =
-        callbackFlow {
+    suspend fun deleteFilm(uploadDate: String) =
+        suspendCoroutine { continuation ->
             userId?.let { id ->
                 val reference = database.reference
                     .child(DIRECTORY_USER)
@@ -39,16 +38,15 @@ class DeleteFilmRemoteDataSource : DeleteFilmDataSource {
                     .addOnSuccessListener { snapshot ->
                         reference.removeValue()
                             .addOnSuccessListener {
-                                trySend(Result.Success(snapshot.getValue(DailyFilmItem::class.java)))
+                                continuation.resume(Result.Success(snapshot.getValue(DailyFilmItem::class.java)))
                             }
                             .addOnFailureListener { exception ->
-                                trySend(Result.Error(exception))
+                                continuation.resume(Result.Error(exception))
                             }
                     }.addOnFailureListener { exception ->
-                        trySend(Result.Error(exception))
+                        continuation.resume(Result.Error(exception))
                     }
             }
-            awaitClose()
         }
 
     companion object {

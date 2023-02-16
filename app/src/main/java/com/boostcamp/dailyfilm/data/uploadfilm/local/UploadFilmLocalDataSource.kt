@@ -2,26 +2,21 @@ package com.boostcamp.dailyfilm.data.uploadfilm.local
 
 import android.net.Uri
 import com.boostcamp.dailyfilm.data.model.CachedVideoEntity
-import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmDataSource
 import com.boostcamp.dailyfilm.data.model.Result
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import com.boostcamp.dailyfilm.data.uploadfilm.UploadFilmDataSource
 
 class UploadFilmLocalDataSource(
     private val localUriDao: LocalUriDao
 ) : UploadFilmDataSource {
 
-    override fun uploadVideo(uploadDate: String, videoUri: Uri): Flow<Result<Uri?>> = callbackFlow {
+    override suspend fun uploadVideo(uploadDate: String, videoUri: Uri): Result<Uri?> {
         runCatching {
             localUriDao.insert(CachedVideoEntity(videoUri.toString(), uploadDate.toInt()))
         }.onSuccess {
-            trySend(Result.Success(videoUri))
+            return Result.Success(videoUri)
         }.onFailure { exception ->
-            trySend(Result.Error(exception))
+            return Result.Error(exception)
         }
-
-        awaitClose()
+        return Result.Error(Error())
     }
-
 }
