@@ -22,6 +22,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
+import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
@@ -79,6 +80,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     private lateinit var cameraClose: Animation
     private lateinit var galleryClose: Animation
     private lateinit var item: DateModel
+
     override fun initView() {
         initAnim()
         initViewModel()
@@ -135,6 +137,10 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         startActivity(
                             Intent(this@CalendarActivity, SettingsActivity::class.java)
                         )
+                        true
+                    }
+                    R.id.item_search -> {
+                        startActivity(Intent(this@CalendarActivity, SearchFilmActivity::class.java))
                         true
                     }
                     else -> false
