@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -28,6 +31,9 @@ class SearchFilmViewModel @Inject constructor(
     private val _itemListFlow = MutableStateFlow<List<DailyFilmItem?>>(emptyList())
     val itemListFlow: StateFlow<List<DailyFilmItem?>> = _itemListFlow.asStateFlow()
 
+    private val _eventFlow = MutableSharedFlow<SearchEvent>()
+    val eventFlow: SharedFlow<SearchEvent> = _eventFlow.asSharedFlow()
+
     fun searchDateRange(startAt: Long, endAt: Long) {
         this.startAt = startAt
         this.endAt = endAt
@@ -41,4 +47,26 @@ class SearchFilmViewModel @Inject constructor(
             }
         }
     }
+
+    fun searchKeyword(query: String) {
+        viewModelScope.launch {
+            calendarRepository.loadFilmInfo("19700101", "20991231").collectLatest { itemList ->
+                _itemListFlow.emit(itemList.filter { it?.text?.contains(query) ?: false })
+            }
+        }
+    }
+
+    fun onClickItem(index: Int) {
+        event(SearchEvent.ItemClickEvent(index))
+    }
+
+    private fun event(event: SearchEvent) {
+        viewModelScope.launch {
+            _eventFlow.emit(event)
+        }
+    }
+}
+
+sealed class SearchEvent {
+    data class ItemClickEvent(val index: Int) : SearchEvent()
 }

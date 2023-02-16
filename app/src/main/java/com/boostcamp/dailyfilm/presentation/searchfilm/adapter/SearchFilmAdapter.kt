@@ -11,7 +11,7 @@ import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.databinding.ItemSearchResultBinding
 import com.bumptech.glide.Glide
 
-class SearchFilmAdapter : ListAdapter<DailyFilmItem, SearchFilmAdapter.SearchFilmViewHolder>(diffUtil) {
+class SearchFilmAdapter(private val onClick: (Int) -> Unit) : ListAdapter<DailyFilmItem, SearchFilmAdapter.SearchFilmViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchFilmViewHolder {
         return SearchFilmViewHolder(
@@ -29,6 +29,12 @@ class SearchFilmAdapter : ListAdapter<DailyFilmItem, SearchFilmAdapter.SearchFil
     }
 
     inner class SearchFilmViewHolder(private val binding: ItemSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                onClick(absoluteAdapterPosition)
+            }
+        }
+
         fun bind(item: DailyFilmItem) {
             binding.item = item
             binding.requestManager = Glide.with(itemView)

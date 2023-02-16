@@ -17,10 +17,12 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
 
-@BindingAdapter("itemList", requireAll = true)
-fun RecyclerView.updateAdapter(itemList: List<DailyFilmItem?>) {
+@BindingAdapter("itemList", "viewModel", requireAll = true)
+fun RecyclerView.updateAdapter(itemList: List<DailyFilmItem?>, viewModel: SearchFilmViewModel) {
     if (adapter == null) {
-        adapter = SearchFilmAdapter()
+        adapter = SearchFilmAdapter { index ->
+            viewModel.onClickItem(index)
+        }
     }
 
     findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
