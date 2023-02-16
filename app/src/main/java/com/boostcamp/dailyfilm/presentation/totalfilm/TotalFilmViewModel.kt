@@ -1,6 +1,7 @@
 package com.boostcamp.dailyfilm.presentation.totalfilm
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.playfilm.PlayFilmRepository
@@ -9,6 +10,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,6 +59,7 @@ class TotalFilmViewModel @Inject constructor(
     private fun loadVideos() {
         viewModelScope.launch {
             filmArray?.forEach { dateModel ->
+                yield()
                 val updateDate = dateModel.getDate()
                 launch {
                     playFilmRepository.checkVideo(updateDate).collectLatest { localResult ->
