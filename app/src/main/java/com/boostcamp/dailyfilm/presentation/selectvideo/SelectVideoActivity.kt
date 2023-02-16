@@ -197,6 +197,20 @@ class SelectVideoActivity :
             }.create()
         return builder
     }
+    override fun onResume() {
+        super.onResume()
+        binding.playerView.player?.play()
+    }
+
+    override fun onPause() {
+        binding.playerView.player?.let { player ->
+            if (player.isPlaying) {
+                player.seekTo(0L)
+                player.pause()
+            }
+        }
+        super.onPause()
+    }
 
     override fun onDestroy() {
         binding.playerView.player?.release()

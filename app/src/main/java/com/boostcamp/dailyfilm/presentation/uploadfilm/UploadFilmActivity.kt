@@ -161,6 +161,20 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             }
         }
     }
+    override fun onResume() {
+        super.onResume()
+        binding.backgroundPlayer.player?.play()
+    }
+
+    override fun onPause() {
+        binding.backgroundPlayer.player?.let { player ->
+            if (player.isPlaying) {
+                player.seekTo(0L)
+                player.pause()
+            }
+        }
+        super.onPause()
+    }
 
     override fun onDestroy() {
         binding.backgroundPlayer.player?.release()
