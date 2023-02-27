@@ -28,7 +28,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activity_trim_viedo) {
     private val viewModel: TrimVideoViewModel by viewModels()
@@ -62,7 +61,6 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                         }
                         is TrimVideoEvent.NextButtonResult -> {
                             moveToUpload(result.dateAndVideoModelItem, result.startTime)
-
                         }
                         is TrimVideoEvent.BackButtonResult -> {
                             moveToSelectVideo(result.dateModel)
@@ -114,10 +112,9 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
     private fun moveToSelectVideo(dateModel: DateModel) {
         startActivity(
             Intent(this, SelectVideoActivity::class.java).apply {
-                putExtra(
-                    KEY_DATE_MODEL,
-                    dateModel
-                )
+                putExtra(KEY_DATE_MODEL, dateModel)
+                putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
+                putExtra(KEY_EDIT_STATE, viewModel.editState)
             }
         )
         finish()
