@@ -84,6 +84,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                                     KEY_FILM_ARRAY,
                                     ArrayList(viewModel.filmFlow.value)
                                 )
+                                putExtra(KEY_SPEED, viewModel.userSpeed.ordinal)
                             }
                         )
                         true
@@ -190,6 +191,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         const val KEY_DATE_MODEL = "dateModel"
         const val KEY_FILM_ARRAY = "filmList"
         const val KEY_EDIT_STATE = "editState"
+        const val KEY_SPEED = "speed"
         private const val MESSAGE_SELECT_DATE = "날짜를 선택해주세요"
         private const val NOT_FILM_DATA = "영상이 존재 하지 않습니다."
         private const val DATE_PICKER_TAG = "datePicker"

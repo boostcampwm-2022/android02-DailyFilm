@@ -19,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:changeVolume="@{viewModel.isMuted()}"
+            app:changeSpeed="@{viewModel.isSpeed()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -46,6 +47,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2022년 11월 24일" />
+
+        <ImageButton
+            android:id="@+id/ib_speed"
+            android:layout_width="@dimen/normal_175"
+            android:layout_height="@dimen/normal_175"
+            android:layout_marginRight="@dimen/normal_100"
+            android:adjustViewBounds="true"
+            android:alpha="0.5"
+            android:onClick="@{() -> viewModel.changeSpeedState()}"
+            android:background="@drawable/background_rounded"
+            app:changeBackground="@{viewModel.isSpeed()}"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
+            app:layout_constraintEnd_toStartOf="@id/btn_sound_control"
+            app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/btn_sound_control"
