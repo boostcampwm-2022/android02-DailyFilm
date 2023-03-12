@@ -25,6 +25,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.settings.SettingsActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
@@ -129,6 +130,12 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                                 )
                                 putExtra(KEY_SPEED, viewModel.userSpeed.ordinal)
                             }
+                        )
+                        true
+                    }
+                    R.id.item_settings -> {
+                        startActivity(
+                            Intent(this@CalendarActivity, SettingsActivity::class.java)
                         )
                         true
                     }
