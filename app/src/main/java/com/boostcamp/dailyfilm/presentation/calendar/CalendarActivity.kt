@@ -97,15 +97,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
 
     private fun initViewModel() {
         binding.viewModel = viewModel
-
-        val headerBinding: HeaderCalendarDrawerBinding =
-            DataBindingUtil.inflate(
-                layoutInflater,
-                R.layout.header_calendar_drawer,
-                binding.drawerNavigationView,
-                true
-            )
-        headerBinding.viewModel = viewModel
     }
 
     private fun initAdapter() {
@@ -154,7 +145,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
             }
 
             setNavigationOnClickListener {
-                binding.layoutDrawerCalendar.open()
+                
             }
         }
     }

@@ -14,8 +14,7 @@
             type="com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel" />
     </data>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/layout_drawer_calendar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -146,9 +145,9 @@
                 android:backgroundTint="#BAB7B7"
                 android:onClick="@{() -> viewModel.cameraClicked()}"
                 android:src="@drawable/baseline_photo_camera_24"
+                android:visibility="invisible"
                 app:borderWidth="0dp"
                 app:fabSize="normal"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/fab_upload_button"
                 app:layout_constraintEnd_toEndOf="@+id/fab_upload_button"
                 app:layout_constraintStart_toStartOf="@+id/fab_upload_button"
@@ -164,9 +163,9 @@
                 android:backgroundTint="#BAB7B7"
                 android:onClick="@{() -> viewModel.galleryClicked()}"
                 android:src="@drawable/baseline_picture_in_picture_24"
+                android:visibility="invisible"
                 app:borderWidth="0dp"
                 app:fabSize="normal"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/fab_camera"
                 app:layout_constraintEnd_toEndOf="@+id/fab_camera"
                 app:layout_constraintStart_toStartOf="@+id/fab_camera"
@@ -191,8 +190,17 @@
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/drawer_navigation_view"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start" />
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="2dp"
+            android:onClick="@{() -> viewModel.uploadClicked()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="calendar_floating_button.json"
+            app:lottie_loop="true"
+            tools:ignore="ContentDescription" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
