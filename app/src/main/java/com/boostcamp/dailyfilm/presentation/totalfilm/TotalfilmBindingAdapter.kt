@@ -2,7 +2,6 @@ package com.boostcamp.dailyfilm.presentation.totalfilm
 
 import android.animation.ValueAnimator
 import android.net.Uri
-import android.widget.ImageButton
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.airbnb.lottie.LottieAnimationView
@@ -82,11 +81,6 @@ fun StyledPlayerView.changeVolume(isMuted: Boolean) {
 @BindingAdapter("changeSpeed")
 fun StyledPlayerView.changeSpeed(speed: SpeedState) {
     player?.setPlaybackSpeed(speed.speed)
-}
-
-@BindingAdapter("changeBackground")
-fun ImageButton.changeBackground(speed: SpeedState) {
-    setImageResource(speed.res)
 }
 
 @BindingAdapter("syncMuteIcon")

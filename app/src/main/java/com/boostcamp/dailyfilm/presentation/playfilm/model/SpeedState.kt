@@ -1,13 +1,19 @@
 package com.boostcamp.dailyfilm.presentation.playfilm.model
 
 import android.os.Parcelable
-import androidx.annotation.DrawableRes
-import com.boostcamp.dailyfilm.R
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class SpeedState(val speed: Float, @DrawableRes val res: Int) : Parcelable {
-    NORMAL(1f, R.drawable.ic_fast),
-    FAST_1_5(1.5f, R.drawable.ic_fast),
-    FAST_2(2f, R.drawable.ic_fast)
+enum class SpeedState(val speed: Float) : Parcelable {
+    NORMAL(1f),
+    FAST_1_5(1.5f),
+    FAST_2(2f);
+
+    override fun toString(): String {
+        return when (this) {
+            NORMAL -> "x1.0"
+            FAST_1_5 -> "x1.5"
+            FAST_2 -> "x2.0"
+        }
+    }
 }
