@@ -132,20 +132,14 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         )
                         true
                     }
-                    R.id.item_date_picker -> {
-                        if (datePickerDialog.isAdded) {
-                            return@setOnMenuItemClickListener true
-                        }
-
-                        datePickerDialog.show(supportFragmentManager, DATE_PICKER_TAG)
-                        true
-                    }
                     else -> false
                 }
             }
 
             setNavigationOnClickListener {
-                
+                if (datePickerDialog.isAdded.not()) {
+                    datePickerDialog.show(supportFragmentManager, DATE_PICKER_TAG)
+                }
             }
         }
     }

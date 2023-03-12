@@ -38,10 +38,9 @@
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="0dp"
                     app:menu="@menu/menu_calendar_drawer"
-                    app:navigationIcon="@drawable/ic_drawer_menu"
+                    app:navigationIcon="@drawable/ic_datepicker_month"
                     app:title="@{viewModel.calendarFlow}"
                     tools:title="2022년 11월" />
-
             </com.google.android.material.appbar.AppBarLayout>
 
             <TextView

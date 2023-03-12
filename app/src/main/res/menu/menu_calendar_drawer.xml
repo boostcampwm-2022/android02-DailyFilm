@@ -14,10 +14,4 @@
         android:title=""
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/item_date_picker"
-        android:icon="@drawable/ic_datepicker_month"
-        android:title=""
-        app:showAsAction="ifRoom" />
-
 </menu>
