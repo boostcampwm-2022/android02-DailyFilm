@@ -36,8 +36,6 @@ class CalendarViewModel @Inject constructor(
     var calendar: Calendar = localeCalendar
         private set
 
-    val syncSet = HashSet<Int>()
-
     private val _calendarEventFlow = MutableSharedFlow<CalendarEvent>()
     val calendarEventFlow: SharedFlow<CalendarEvent> = _calendarEventFlow.asSharedFlow()
 

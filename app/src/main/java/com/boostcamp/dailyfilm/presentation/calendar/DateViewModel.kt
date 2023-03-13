@@ -91,6 +91,8 @@ class DateViewModel @Inject constructor(
         }
     }
 
+    fun isSynced(year: Int): Boolean = syncRepository.isSynced(year)
+
     fun syncFilmItem() {
         val year = calendar.get(Calendar.YEAR)
 
@@ -123,6 +125,7 @@ class DateViewModel @Inject constructor(
         }.get(Calendar.DAY_OF_WEEK)
 
         viewModelScope.launch {
+            syncRepository.addSyncedYear(year)
             syncRepository.startSync(
                 userId,
                 getStartAt(getStartCalendar(startPrevCalendar, startPrevMaxDay, startDayOfWeek)),
@@ -149,7 +152,6 @@ class DateViewModel @Inject constructor(
         val currentMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
         for (i in itemList.indices) {
-
             val item = itemList[i]
             val prevItem = _dateFlow.value[i]
             if (item == null) return
