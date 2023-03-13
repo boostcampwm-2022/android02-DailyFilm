@@ -8,10 +8,4 @@
         android:title=""
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/item_datepicker"
-        android:icon="@drawable/ic_datepicker_month"
-        android:title="@string/select_date_range"
-        app:showAsAction="ifRoom" />
 </menu>

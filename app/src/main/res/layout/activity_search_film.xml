@@ -8,10 +8,6 @@
         <variable
             name="viewModel"
             type="com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmViewModel" />
-
-        <variable
-            name="fragmentManager"
-            type="androidx.fragment.app.FragmentManager" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,8 +26,6 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/bar_search"
-                setFragmentManager="@{fragmentManager}"
-                viewModel="@{viewModel}"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="0dp"
@@ -42,18 +36,38 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <TextView
+            android:id="@+id/tv_search_range"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_100"
+            android:background="@drawable/background_rounded"
+            android:backgroundTint="@color/gray"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/normal_100"
+            android:paddingVertical="@dimen/small_50"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            startDate="@{viewModel.startDateFlow}"
+            endDate="@{viewModel.endDateFlow}"
+            android:text="@string/desc_search_range"
+            app:drawableRightCompat="@drawable/ic_datepicker_month"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_bar_search" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_result"
             itemList="@{viewModel.itemListFlow}"
             viewModel="@{viewModel}"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/small_100"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_bar_search"
+            app:layout_constraintTop_toBottomOf="@id/tv_search_range"
             app:layout_constraintVertical_bias="0.0"
             app:spanCount="2"
             tools:itemCount="20"

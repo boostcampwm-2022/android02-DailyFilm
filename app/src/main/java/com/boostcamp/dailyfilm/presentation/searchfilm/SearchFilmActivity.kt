@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.util.Pair
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -18,6 +19,7 @@ import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,12 +48,40 @@ class SearchFilmActivity : BaseActivity<ActivitySearchFilmBinding>(R.layout.acti
 
     override fun initView() {
         binding.viewModel = viewModel
-        binding.fragmentManager = supportFragmentManager
 
-        binding.barSearch.setNavigationOnClickListener { finish() }
-
+        initClickEvent()
         observeEvent()
         handleSearchQuery()
+    }
+
+    private fun initClickEvent() {
+        binding.barSearch.apply {
+            setNavigationOnClickListener { finish() }
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.item_search -> true
+                    else -> false
+                }
+            }
+        }
+
+        binding.tvSearchRange.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("Select Date Range")
+                .apply {
+                    if (viewModel.startAt != null && viewModel.endAt != null) {
+                        setSelection(Pair(viewModel.startAt, viewModel.endAt))
+                    }
+                }
+                .build()
+
+            datePicker.apply {
+                addOnPositiveButtonClickListener { selection ->
+                    viewModel.searchDateRange(selection.first, selection.second)
+                }
+                show(supportFragmentManager, TAG_DATE_PICKER)
+            }
+        }
     }
 
     private fun observeEvent() {
@@ -64,7 +94,7 @@ class SearchFilmActivity : BaseActivity<ActivitySearchFilmBinding>(R.layout.acti
                                 Intent(this@SearchFilmActivity, PlayFilmActivity::class.java).apply {
                                     putExtra(
                                         DateFragment.KEY_CALENDAR_INDEX,
-                                        0 // TODO: ?? 캘린더에서 접근하는 것이 아닐 땐 무슨 값을 넣어야 하나
+                                        0
                                     )
                                     putExtra(
                                         DateFragment.KEY_DATE_MODEL_INDEX,
