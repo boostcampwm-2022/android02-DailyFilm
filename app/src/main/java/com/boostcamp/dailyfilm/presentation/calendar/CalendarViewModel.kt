@@ -20,6 +20,7 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
     ViewModel() {
 
     private var item: DateModel? = null
+    private var floatingOpenFlag = false
     var calendarIndex: Int? = null
     private val localeCalendar = Calendar.getInstance(Locale.getDefault()).apply {
         set(Calendar.HOUR_OF_DAY, 12)
@@ -76,8 +77,23 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
         this.calendarIndex = index
     }
 
+    fun galleryClicked() {
+        event(CalendarEvent.NavigateToGallery(item))
+    }
+
+    fun cameraClicked() {
+        event(CalendarEvent.NavigateToCamera(item))
+    }
+
     fun uploadClicked() {
-        event(CalendarEvent.UploadSuccess(item))
+        if (floatingOpenFlag.not()) {
+            event(CalendarEvent.UploadClickOpenButton)
+            floatingOpenFlag = !floatingOpenFlag
+        } else if (floatingOpenFlag) {
+            event(CalendarEvent.UploadClickCloseButton)
+            floatingOpenFlag = !floatingOpenFlag
+        }
+
     }
 
     private fun event(calendarEvent: CalendarEvent) {
@@ -88,18 +104,30 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
 
     fun logout() {
         event(CalendarEvent.Logout)
+
+        viewModelScope.launch {
+            calendarRepository.deleteAllData().collectLatest { result ->
+                when (result) {
+                    is com.boostcamp.dailyfilm.data.model.Result.Success -> {
+                        event(CalendarEvent.Logout)
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
+
 
     fun deleteUser() {
         FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 viewModelScope.launch {
-                    calendarRepository.deleteAllData().collectLatest { result->
-                        when(result){
-                            is com.boostcamp.dailyfilm.data.model.Result.Success->{
+                    calendarRepository.deleteAllData().collectLatest { result ->
+                        when (result) {
+                            is com.boostcamp.dailyfilm.data.model.Result.Success -> {
                                 event(CalendarEvent.DeleteUser)
                             }
-                            else->{}
+                            else -> {}
                         }
                     }
                 }
@@ -109,8 +137,11 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
 }
 
 sealed class CalendarEvent {
-    data class UploadSuccess(val dateModel: DateModel?) : CalendarEvent()
+    data class NavigateToGallery(val dateModel: DateModel?) : CalendarEvent()
+    data class NavigateToCamera(val dateModel: DateModel?) : CalendarEvent()
     data class UpdateMonth(val month: String) : CalendarEvent()
     object Logout : CalendarEvent()
     object DeleteUser : CalendarEvent()
+    object UploadClickOpenButton : CalendarEvent()
+    object UploadClickCloseButton : CalendarEvent()
 }

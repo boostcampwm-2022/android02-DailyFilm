@@ -18,6 +18,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivitySelectVideoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.FLAG_FROM_VIEW
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_DATE_MODEL
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_STATE
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
@@ -38,6 +40,7 @@ class SelectVideoActivity :
     private lateinit var animator: ValueAnimator
 
     override fun initView() {
+
         binding.viewModel = viewModel
         checkPermission()
         setObserveUserEvent()
@@ -151,6 +154,7 @@ class SelectVideoActivity :
                     putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
                     putExtra(KEY_EDIT_STATE, viewModel.editState)
                     putExtra(KEY_DATE_MODEL, viewModel.dateModel)
+                    putExtra(FLAG_FROM_VIEW, "gallery")
                 }
             )
             finish()

@@ -30,7 +30,7 @@ class SelectVideoViewModel @Inject constructor(
     val calendarIndex = savedStateHandle.get<Int>(DateFragment.KEY_CALENDAR_INDEX)
     val editState = savedStateHandle.get<EditState>(KEY_EDIT_STATE)
 
-    override val viewTreeLifecycleScope: CoroutineScope
+        override val viewTreeLifecycleScope: CoroutineScope
         get() = viewModelScope
 
     private val _videosState = MutableStateFlow<PagingData<VideoItem>>(PagingData.empty())

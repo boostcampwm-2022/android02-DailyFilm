@@ -20,7 +20,7 @@ android {
         applicationId "com.boostcamp.dailyfilm"
         minSdk 24
         targetSdk 33
-        versionCode 1
+        versionCode 4
         versionName "1.0"
         buildConfigField "String", "DATABASE_URL", localProperties["database.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
