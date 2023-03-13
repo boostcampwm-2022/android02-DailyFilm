@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DailyFilm</string>
+    <string name="app_name">Daily Film</string>
     <string name="sunday">sun</string>
     <string name="monday">mon</string>
     <string name="tuesday">tus</string>
@@ -31,4 +31,8 @@
     <string name="delete_dialog">Are you sure you want to delete it?</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
+    <string name="guide_min_size">Minimum recording time is 10 seconds</string>
+    <string name="guide_check_date">Please select a date</string>
+    <string name="guide_not_exisxt_video">Video does not exist</string>
+    <string name="guide_camera_error">Your current device does not have a camera function</string>
 </resources>
