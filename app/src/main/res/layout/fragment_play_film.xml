@@ -35,9 +35,10 @@
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/normal_175"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:gravity="center"
             android:alpha="0.5"
             android:background="@drawable/background_rounded"
             android:bufferType="spannable"
@@ -52,8 +53,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/btn_sound_control"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/normal_175"
+            android:layout_height="@dimen/normal_175"
             android:layout_marginEnd="16dp"
             android:alpha="0.5"
             android:background="@drawable/background_rounded"
@@ -70,8 +71,8 @@
 
         <ImageButton
             android:id="@+id/ib_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/normal_175"
+            android:layout_height="@dimen/normal_175"
             android:layout_marginRight="@dimen/normal_100"
             android:adjustViewBounds="true"
             android:alpha="0.5"
