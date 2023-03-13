@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.io.File
 
 @AndroidEntryPoint
@@ -53,23 +54,29 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                     when (state) {
                         is UiState.Success -> {
                             loadingDialogFragment.hideProgressDialog()
-                            when(viewModel.editState) {
+                            when (viewModel.editState) {
                                 EditState.EDIT_CONTENT -> {
                                     setResult(
-                                        RESULT_OK, Intent(
-                                            this@UploadFilmActivity, PlayFilmActivity::class.java
+                                        RESULT_OK,
+                                        Intent(
+                                            this@UploadFilmActivity,
+                                            PlayFilmActivity::class.java
                                         ).apply {
                                             putExtra(KET_EDIT_TEXT, state.item.text)
-                                        })
+                                        }
+                                    )
                                 }
                                 else -> {
                                     setResult(
-                                        RESULT_OK, Intent(
-                                            this@UploadFilmActivity, CalendarActivity::class.java
+                                        RESULT_OK,
+                                        Intent(
+                                            this@UploadFilmActivity,
+                                            CalendarActivity::class.java
                                         ).apply {
                                             putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
                                             putExtra(KEY_DATE_MODEL, state.item)
-                                        })
+                                        }
+                                    )
                                 }
                             }
                             finish()
@@ -82,7 +89,6 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                             state.throwable.message?.let { showSnackBarMessage(it) }
                         }
                         is UiState.Uninitialized -> {
-
                         }
                     }
                 }
@@ -90,13 +96,24 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
         }
     }
 
+    private fun detectKeyboardState(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            detectKeyboardStateGreaterEqualThan30()
+        else
+            detectKeyboardStateLessThan30()
+    }
+
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun detectKeyboardState() {
+    private fun detectKeyboardStateGreaterEqualThan30() {
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             viewModel.updateIsWriting(imeVisible)
             insets
         }
+    }
+
+    private fun detectKeyboardStateLessThan30() {
+        KeyboardVisibilityEvent.setEventListener(this) { viewModel.updateIsWriting(it) }
     }
 
     fun showKeyboard() {
@@ -121,10 +138,10 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                                     this@UploadFilmActivity,
                                     TrimVideoActivity::class.java
                                 ).apply {
-                                    putExtra(
-                                        SelectVideoActivity.DATE_VIDEO_ITEM,
-                                        viewModel.beforeItem
-                                    )
+                                    putExtra(SelectVideoActivity.DATE_VIDEO_ITEM, viewModel.beforeItem)
+                                    putExtra(TrimVideoActivity.KEY_DATE_MODEL, viewModel.dateModel)
+                                    putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
+                                    putExtra(CalendarActivity.KEY_EDIT_STATE, viewModel.editState)
                                 }
                             )
                         }
@@ -147,7 +164,6 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                                 it.animatedValue as Float
                         }
                         animator.start()
-
                     } else {
                         binding.backgroundPlayer.player?.volume = 0.0f
                         val animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500)
@@ -161,6 +177,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         binding.backgroundPlayer.player?.play()
@@ -185,5 +202,4 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
     private fun showSnackBarMessage(message: String) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
     }
-
 }

@@ -19,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:changeVolume="@{viewModel.isMuted()}"
+            app:changeSpeed="@{viewModel.isSpeed()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -32,10 +33,11 @@
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/normal_175"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:alpha="0.5"
+            android:gravity="center"
             android:background="@drawable/background_rounded"
             android:bufferType="spannable"
             android:paddingStart="8dp"
@@ -46,6 +48,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2022년 11월 24일" />
+
+        <TextView
+            android:id="@+id/tv_speed"
+            android:layout_width="@dimen/large_150"
+            android:layout_height="@dimen/normal_175"
+            android:layout_marginRight="@dimen/normal_100"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:gravity="center"
+            android:alpha="0.5"
+            android:textColor="@color/white"
+            android:background="@drawable/background_rounded"
+            app:layout_constraintTop_toTopOf="@id/btn_sound_control"
+            app:layout_constraintEnd_toEndOf="@id/btn_sound_control"
+            app:layout_constraintEnd_toStartOf="@id/btn_sound_control"
+            android:textSize="15sp"
+            android:text="@{viewModel.isSpeed().toString()}"
+            tools:text="x1.0"/>
+
+        <ImageButton
+            android:id="@+id/ib_speed"
+            android:layout_width="@dimen/normal_175"
+            android:layout_height="@dimen/normal_175"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="@dimen/small_50"
+            android:alpha="0.5"
+            android:scaleType="fitCenter"
+            android:onClick="@{() -> viewModel.changeSpeedState()}"
+            android:background="@drawable/background_rounded"
+            android:src="@drawable/ic_fast"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sound_control"
+            app:layout_constraintEnd_toStartOf="@id/tv_speed"
+            app:layout_constraintTop_toTopOf="@id/btn_sound_control" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/btn_sound_control"

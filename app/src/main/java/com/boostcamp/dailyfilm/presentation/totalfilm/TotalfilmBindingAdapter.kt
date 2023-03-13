@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.airbnb.lottie.LottieAnimationView
+import com.boostcamp.dailyfilm.presentation.playfilm.model.SpeedState
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -17,7 +18,7 @@ fun StyledPlayerView.playTotalVideo(viewModel: TotalFilmViewModel) {
     if (player == null) {
         player = ExoPlayer.Builder(context).build().apply {
             volume = 0.5f
-            setPlaybackSpeed(2.0f)
+            setPlaybackSpeed(viewModel.isSpeed.value?.speed ?: SpeedState.FAST_2.speed)
         }
     }
 
@@ -75,6 +76,11 @@ fun StyledPlayerView.changeVolume(isMuted: Boolean) {
                 0.5f
             }
         }
+}
+
+@BindingAdapter("changeSpeed")
+fun StyledPlayerView.changeSpeed(speed: SpeedState) {
+    player?.setPlaybackSpeed(speed.speed)
 }
 
 @BindingAdapter("syncMuteIcon")

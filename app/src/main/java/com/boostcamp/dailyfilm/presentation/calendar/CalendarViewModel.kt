@@ -3,9 +3,11 @@ package com.boostcamp.dailyfilm.presentation.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
+import com.boostcamp.dailyfilm.data.dataStore.UserPreferencesRepository
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
+import com.boostcamp.dailyfilm.presentation.playfilm.model.SpeedState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,15 +15,18 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashSet
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor(private val calendarRepository: CalendarRepository) :
+class CalendarViewModel @Inject constructor(
+    private val preferencesRepository: UserPreferencesRepository,
+    private val calendarRepository: CalendarRepository
+) :
     ViewModel() {
 
     private var item: DateModel? = null
     private var floatingOpenFlag = false
     var calendarIndex: Int? = null
+    var userSpeed: SpeedState = SpeedState.NORMAL
     private val localeCalendar = Calendar.getInstance(Locale.getDefault()).apply {
         set(Calendar.HOUR_OF_DAY, 12)
         set(Calendar.MINUTE, 0)
@@ -48,6 +53,22 @@ class CalendarViewModel @Inject constructor(private val calendarRepository: Cale
 
     private val _filmFlow = MutableStateFlow<List<DateModel>>(emptyList())
     val filmFlow: StateFlow<List<DateModel>> = _filmFlow.asStateFlow()
+
+    init {
+        getSpeed()
+    }
+
+    private fun getSpeed() {
+        viewModelScope.launch {
+            preferencesRepository.userFastFlow.collect { index ->
+                userSpeed = if (index == null) {
+                    SpeedState.NORMAL
+                }else {
+                    SpeedState.values()[index]
+                }
+            }
+        }
+    }
 
     fun emitFilm(filmList: List<DateModel>) {
         _filmFlow.value = filmList
