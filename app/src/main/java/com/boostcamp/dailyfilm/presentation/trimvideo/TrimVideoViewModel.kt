@@ -26,6 +26,7 @@ class TrimVideoViewModel @Inject constructor(
     val dateModel = savedStateHandle.get<DateModel>(CalendarActivity.KEY_DATE_MODEL)
     val calendarIndex = savedStateHandle.get<Int>(DateFragment.KEY_CALENDAR_INDEX)
     val editState = savedStateHandle.get<EditState>(CalendarActivity.KEY_EDIT_STATE)
+    val entryView = savedStateHandle.get<String>(CalendarActivity.FLAG_FROM_VIEW)
 
     private val HD_WIDTH = 1280
     private val _eventFlow = MutableSharedFlow<Event<TrimVideoEvent>>(replay = 1)
@@ -41,19 +42,35 @@ class TrimVideoViewModel @Inject constructor(
         event(TrimVideoEvent.InitOpenTrimVideo(infoItem!!))
     }
 
-    fun moveToSelectVideo() {
-        event(TrimVideoEvent.BackButtonResult(infoItem!!.getDateModel()))
+    fun moveToBackView() {
+        when (entryView) {
+            "gallery" -> {
+                event(TrimVideoEvent.BackToSelectVideo(infoItem!!.getDateModel()))
+            }
+            "camera" -> {
+                event(TrimVideoEvent.BackToCalendar)
+            }
+            else -> {}
+        }
     }
 
     fun moveToUpload(uriString: Uri, startTime: Long) {
-        event(TrimVideoEvent.NextButtonResult(DateAndVideoModel(uriString, infoItem!!.uploadDate), startTime))
+        event(
+            TrimVideoEvent.NextButtonResult(
+                DateAndVideoModel(uriString, infoItem!!.uploadDate),
+                startTime
+            )
+        )
     }
 
-    fun openTrimActivity(startForResult: ActivityResultLauncher<Intent>,videoWidthAndHeight:IntArray) {
+    fun openTrimActivity(
+        startForResult: ActivityResultLauncher<Intent>,
+        videoWidthAndHeight: IntArray
+    ) {
         val videoWidth = videoWidthAndHeight.first()
         val videoHeight = videoWidthAndHeight.last()
         val (newWidth, newHeight) = getCompressedWidthAndHeight(videoWidth, videoHeight)
-        event(TrimVideoEvent.OpenTrimVideoResult(infoItem!!,startForResult,newWidth,newHeight))
+        event(TrimVideoEvent.OpenTrimVideoResult(infoItem!!, startForResult, newWidth, newHeight))
     }
 
     private fun getCompressedWidthAndHeight(videoWidth: Int, videoHeight: Int): IntArray {
@@ -74,13 +91,16 @@ class TrimVideoViewModel @Inject constructor(
 }
 
 sealed class TrimVideoEvent {
-    data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel, val startTime: Long) : TrimVideoEvent()
-    data class BackButtonResult(val dateModel: DateModel) : TrimVideoEvent()
-    data class InitOpenTrimVideo(val dateModel: DateAndVideoModel) :TrimVideoEvent()
+    data class NextButtonResult(val dateAndVideoModelItem: DateAndVideoModel, val startTime: Long) :
+        TrimVideoEvent()
+
+    data class BackToSelectVideo(val dateModel: DateModel) : TrimVideoEvent()
+    object BackToCalendar : TrimVideoEvent()
+    data class InitOpenTrimVideo(val dateModel: DateAndVideoModel) : TrimVideoEvent()
     data class OpenTrimVideoResult(
         val dateModel: DateAndVideoModel,
         val startForResult: ActivityResultLauncher<Intent>,
         val newWidth: Int,
-        val newHeight : Int
+        val newHeight: Int
     ) : TrimVideoEvent()
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DailyFilm</string>
+    <string name="app_name">Daily Film</string>
     <string name="sunday">일</string>
     <string name="monday">월</string>
     <string name="tuesday">화</string>
@@ -31,4 +31,8 @@
     <string name="delete_dialog">정말로 삭제 하시겠습니까?</string>
     <string name="yes">예</string>
     <string name="no">아니오</string>
+    <string name="guide_min_size">최소 촬영시간은 10초입니다.</string>
+    <string name="guide_check_date">날짜를 선택 해주세요</string>
+    <string name="guide_not_exisxt_video">영상이 존재 하지 않습니다.</string>
+    <string name="guide_camera_error">현재 디바이스에 카메라 기능이 없습니다.</string>
 </resources>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DailyFilm</string>
+    <string name="app_name">Daily Film</string>
     <string name="sunday">日</string>
     <string name="monday">月</string>
     <string name="tuesday">火</string>
@@ -32,4 +32,8 @@
     <string name="delete_dialog">削除してもよろしいですか？</string>
     <string name="yes">はい</string>
     <string name="no">いいえ</string>
+    <string name="guide_min_size">最短録音時間は10秒</string>
+    <string name="guide_check_date">日付を選択してください</string>
+    <string name="guide_not_exisxt_video">ビデオが存在しません</string>
+    <string name="guide_camera_error">現在お使いのデバイスにはカメラ機能がありません。</string>
 </resources>

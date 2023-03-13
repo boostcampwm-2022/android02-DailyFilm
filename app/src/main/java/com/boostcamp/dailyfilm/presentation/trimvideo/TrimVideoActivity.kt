@@ -39,7 +39,7 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                 val uriString = Uri.parse("file://$uri")
                 viewModel.moveToUpload(uriString, startTime)
             } else {
-                viewModel.moveToSelectVideo()
+                viewModel.moveToBackView()
             }
         }
 
@@ -62,8 +62,11 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
                         is TrimVideoEvent.NextButtonResult -> {
                             moveToUpload(result.dateAndVideoModelItem, result.startTime)
                         }
-                        is TrimVideoEvent.BackButtonResult -> {
+                        is TrimVideoEvent.BackToSelectVideo -> {
                             moveToSelectVideo(result.dateModel)
+                        }
+                        is TrimVideoEvent.BackToCalendar -> {
+                            finish()
                         }
                         else -> {}
                     }

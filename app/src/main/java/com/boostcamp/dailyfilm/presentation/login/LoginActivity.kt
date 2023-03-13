@@ -2,8 +2,6 @@ package com.boostcamp.dailyfilm.presentation.login
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,7 +18,6 @@ import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.SignInButton.ColorScheme
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint

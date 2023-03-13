@@ -4,6 +4,7 @@ package com.boostcamp.dailyfilm.presentation.uploadfilm
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.lifecycle.*
 import com.arthenica.mobileffmpeg.Config
 import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
@@ -140,15 +141,11 @@ class UploadFilmViewModel @Inject constructor(
         infoItem?.let { item ->
             _uiState.value = UiState.Loading
             viewModelScope.launch {
-                // _uploadFilmInfoResult.emit(false)
                 when (val result = uploadFilmRepository.uploadVideo(item.uploadDate, item.uri)) {
                     is Result.Success -> {
-                        // storage 업로드 성공
-                        // _uploadResult.emit(result.data)
                         uploadRealtime(result.data)
                     }
                     is Result.Error -> {
-                        // storage 업로드 실패
                         _uiState.value = UiState.Failure(result.exception)
                     }
                 }
@@ -159,8 +156,10 @@ class UploadFilmViewModel @Inject constructor(
     private fun uploadRealtime(videoUrl: Uri?) {
         val uploadDate = infoItem?.uploadDate
         val text = textContent.value ?: ""
-
-        dateModel ?: return
+        if (dateModel ==null){
+            _uiState.value = UiState.Failure(Throwable("dateModel Fail"))
+            return
+        }
         if (videoUrl != null && uploadDate != null) {
             val filmItem = DailyFilmItem(videoUrl.toString(), text, uploadDate)
             viewModelScope.launch {
