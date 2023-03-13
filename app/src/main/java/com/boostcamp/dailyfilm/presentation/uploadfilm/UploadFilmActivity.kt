@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.io.File
 
 @AndroidEntryPoint
@@ -95,13 +96,24 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
         }
     }
 
+    private fun detectKeyboardState(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            detectKeyboardStateGreaterEqualThan30()
+        else
+            detectKeyboardStateLessThan30()
+    }
+
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun detectKeyboardState() {
+    private fun detectKeyboardStateGreaterEqualThan30() {
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             viewModel.updateIsWriting(imeVisible)
             insets
         }
+    }
+
+    private fun detectKeyboardStateLessThan30() {
+        KeyboardVisibilityEvent.setEventListener(this) { viewModel.updateIsWriting(it) }
     }
 
     fun showKeyboard() {
