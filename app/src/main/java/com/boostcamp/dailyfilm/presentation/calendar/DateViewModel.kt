@@ -8,7 +8,6 @@ import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.sync.SyncRepository
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,6 +19,7 @@ import javax.inject.Inject
 class DateViewModel @Inject constructor(
     calendarRepository: CalendarRepository,
     private val syncRepository: SyncRepository,
+    private val userId: String,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -40,8 +40,6 @@ class DateViewModel @Inject constructor(
     private val prevMaxDay = prevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: error("Unknown User")
 
     private val _dateFlow = MutableStateFlow(initialDateList())
     val dateFlow: StateFlow<List<DateModel>> = _dateFlow.asStateFlow()
@@ -74,7 +72,8 @@ class DateViewModel @Inject constructor(
         return dateFormat.format(startCalendar.time)
     }
 
-    private fun getStartCalendar(
+    // ex) 2023-02-15, 28, 4 -> 2023-02-26
+    fun getStartCalendar(
         prevCalendar: Calendar,
         prevMaxDay: Int,
         dayOfWeek: Int
@@ -92,8 +91,12 @@ class DateViewModel @Inject constructor(
     }
 
     fun syncFilmItem() {
+        // ex) 2023-03-17
         val year = calendar.get(Calendar.YEAR)
 
+        // startPrevCalendar
+        //  - 0년일 경우 예외 >> 0-01-xx
+        //  - 작년 12월 , 2022-12-17
         val startPrevCalendar = if (year == 0) {
             Calendar.getInstance(Locale.getDefault()).apply {
                 set(Calendar.YEAR, year)
@@ -105,17 +108,24 @@ class DateViewModel @Inject constructor(
                 set(Calendar.MONTH, 11)
             }
         }
+        // 31
         val startPrevMaxDay = startPrevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        // 현재 년도의 시작 요일, 2023-01-01, startDayOfWeek = 1
         val startDayOfWeek = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.DAY_OF_YEAR, 1)
         }.get(Calendar.DAY_OF_WEEK)
 
+        // 현재 년도의 11월, 2023-11-xx
         val endPrevCalendar = Calendar.getInstance(Locale.getDefault()).apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, 10)
         }
+        // 30
         val endPrevMaxDay = endPrevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        // 12월의 마지막 요일, 6
         val endDayOfWeek = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, 11)
