@@ -10,13 +10,11 @@ import android.view.animation.AnimationUtils
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityCalendarBinding
-import com.boostcamp.dailyfilm.databinding.HeaderCalendarDrawerBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
@@ -165,12 +163,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                             }
                             is CalendarEvent.UpdateMonth -> {
                                 updateMonth(event.month)
-                            }
-                            is CalendarEvent.Logout -> {
-                                logout()
-                            }
-                            is CalendarEvent.DeleteUser -> {
-                                logout()
                             }
                             is CalendarEvent.UploadClickOpenButton -> {
                                 openFloatingButton()

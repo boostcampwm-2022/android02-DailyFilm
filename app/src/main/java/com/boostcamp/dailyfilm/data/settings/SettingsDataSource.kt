@@ -1,6 +1,6 @@
 package com.boostcamp.dailyfilm.data.settings
 
-import com.boostcamp.dailyfilm.data.calendar.CalendarDao
+
 import com.boostcamp.dailyfilm.data.model.Result
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -13,12 +13,12 @@ interface SettingsDataSource {
 }
 
 class SettingsLocalDataSource(
-    private val calendarDao: CalendarDao
+    private val settingsDao: SettingsDao
 ) : SettingsDataSource {
 
     override fun deleteAllData(): Flow<Result<Unit>> = callbackFlow {
         runCatching {
-            calendarDao.deleteAll()
+            settingsDao.deleteAll()
         }.onSuccess {
             trySend(Result.Success(Unit))
         }.onFailure { exception ->

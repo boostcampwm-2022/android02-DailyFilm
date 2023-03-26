@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.di
 import android.content.Context
 import com.boostcamp.dailyfilm.data.DailyFilmDB
 import com.boostcamp.dailyfilm.data.calendar.CalendarDao
+import com.boostcamp.dailyfilm.data.settings.SettingsDao
 import com.boostcamp.dailyfilm.data.uploadfilm.local.LocalUriDao
 import dagger.Module
 import dagger.Provides
@@ -32,5 +33,11 @@ object DailyFilmDBModule {
     fun provideLocalUriDao(
         dailyFilmDB: DailyFilmDB
     ): LocalUriDao = dailyFilmDB.localUriDao()
+
+    @Provides
+    @Singleton
+    fun provideSettingsDao(
+        dailyFilmDB: DailyFilmDB
+    ): SettingsDao = dailyFilmDB.settingsDao()
 
 }

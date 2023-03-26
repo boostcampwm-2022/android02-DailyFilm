@@ -23,6 +23,7 @@ class SettingsViewModel @Inject constructor(
     private val _settingsEventFlow = MutableSharedFlow<SettingsEvent>()
     val settingsEventFlow: SharedFlow<SettingsEvent> = _settingsEventFlow.asSharedFlow()
 
+    fun backToPrevious() = event(SettingsEvent.Back)
 
     fun logout() = event(SettingsEvent.Logout)
 
@@ -50,6 +51,8 @@ class SettingsViewModel @Inject constructor(
 }
 
 sealed class SettingsEvent {
+
+    object Back : SettingsEvent()
     object Logout : SettingsEvent()
     object DeleteUser : SettingsEvent()
 }

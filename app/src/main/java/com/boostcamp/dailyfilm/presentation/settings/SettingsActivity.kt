@@ -8,6 +8,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivitySettingsBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -22,7 +23,13 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(R.layout.activity
     override fun initView() {
         initViewModel()
         collectFlow()
+        initListener()
+    }
 
+    private fun initListener() {
+        binding.toolbar.setNavigationOnClickListener {
+            viewModel.backToPrevious()
+        }
     }
 
     private fun initViewModel() {
@@ -36,6 +43,7 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(R.layout.activity
                     viewModel.settingsEventFlow.collect { event ->
                         when (event) {
                             is SettingsEvent.Logout, SettingsEvent.DeleteUser -> logout()
+                            is SettingsEvent.Back -> backToPrevious()
                         }
                     }
                 }
@@ -57,6 +65,10 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(R.layout.activity
     private fun navigateToLogin() {
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
+    }
+
+    private fun backToPrevious() {
+        startActivity(Intent(this, CalendarActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
     }
 
 }
