@@ -25,7 +25,20 @@ class SettingsViewModel @Inject constructor(
 
     fun backToPrevious() = event(SettingsEvent.Back)
 
-    fun logout() = event(SettingsEvent.Logout)
+    fun logout() {
+        event(SettingsEvent.Logout)
+
+        viewModelScope.launch {
+            settingsRepository.deleteAllData().collectLatest { result ->
+                when (result) {
+                    is Result.Success -> {
+                        event(SettingsEvent.Logout)
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
 
     fun deleteUser() {
 

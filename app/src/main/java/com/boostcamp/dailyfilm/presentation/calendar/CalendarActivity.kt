@@ -248,17 +248,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         finish()
     }
 
-    private fun logout() {
-        FirebaseAuth.getInstance().signOut()
-        GoogleSignIn.getClient(
-            this, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build()
-        ).signOut().addOnCompleteListener {
-            navigateToLogin()
-        }
-    }
-
     private fun dispatchTakeVideoIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         activityResultLauncher.launch(takePictureIntent)
