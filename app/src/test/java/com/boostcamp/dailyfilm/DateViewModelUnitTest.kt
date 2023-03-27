@@ -5,6 +5,7 @@ import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.sync.SyncRepository
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR
 import com.boostcamp.dailyfilm.presentation.calendar.DateViewModel
+import com.boostcamp.dailyfilm.presentation.util.getStartCalendar
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -44,7 +45,7 @@ class DateViewModelUnitTest {
         val maxDay = 28
         val dayOfWeek = 4
 
-        val startCalendar = dateViewModel.getStartCalendar(calendar, maxDay, dayOfWeek)
+        val startCalendar = getStartCalendar(calendar, maxDay, dayOfWeek)
         val formatCalendar = dateFormat.format(startCalendar.time)
         assertEquals(formatCalendar, "20230226")
     }
@@ -59,7 +60,7 @@ class DateViewModelUnitTest {
         val maxDay = 30
         val dayOfWeek = 6
 
-        val startCalendar = dateViewModel.getStartCalendar(calendar, maxDay, dayOfWeek)
+        val startCalendar = getStartCalendar(calendar, maxDay, dayOfWeek)
         val formatCalendar = dateFormat.format(startCalendar.time)
         assertEquals(formatCalendar, "20231126")
     }
