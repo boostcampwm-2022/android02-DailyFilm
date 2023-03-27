@@ -63,12 +63,15 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(R.layout.activity
     }
 
     private fun navigateToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+        startActivity(
+            Intent(
+                this,
+                LoginActivity::class.java
+            ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
     private fun backToPrevious() {
-        startActivity(Intent(this, CalendarActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
+        finish()
     }
 
 }
