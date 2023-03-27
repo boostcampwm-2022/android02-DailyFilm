@@ -12,7 +12,6 @@ interface CalendarDataSource {
     suspend fun insertFilm(film: FilmEntity)
 
     suspend fun insertAllFilm(filmList: List<FilmEntity>)
-    fun deleteAllData() : Flow<Result<Unit>>
 }
 
 class CalendarLocalDataSource(
@@ -30,17 +29,4 @@ class CalendarLocalDataSource(
         calendarDao.insertAll(filmList)
     }
 
-
-     override fun deleteAllData() = callbackFlow {
-
-        runCatching {
-            calendarDao.deleteAll()
-        }.onSuccess {
-            trySend(Result.Success(Unit))
-        }.onFailure { exception ->
-            trySend(Result.Error(exception))
-        }
-
-        awaitClose()
-    }
 }

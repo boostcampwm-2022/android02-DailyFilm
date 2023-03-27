@@ -14,8 +14,7 @@
             type="com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel" />
     </data>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/layout_drawer_calendar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -39,10 +38,9 @@
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="0dp"
                     app:menu="@menu/menu_calendar_drawer"
-                    app:navigationIcon="@drawable/ic_drawer_menu"
+                    app:navigationIcon="@drawable/ic_datepicker_month"
                     app:title="@{viewModel.calendarFlow}"
                     tools:title="2022년 11월" />
-
             </com.google.android.material.appbar.AppBarLayout>
 
             <TextView
@@ -146,9 +144,9 @@
                 android:backgroundTint="#BAB7B7"
                 android:onClick="@{() -> viewModel.cameraClicked()}"
                 android:src="@drawable/baseline_photo_camera_24"
+                android:visibility="invisible"
                 app:borderWidth="0dp"
                 app:fabSize="normal"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/fab_upload_button"
                 app:layout_constraintEnd_toEndOf="@+id/fab_upload_button"
                 app:layout_constraintStart_toStartOf="@+id/fab_upload_button"
@@ -164,9 +162,9 @@
                 android:backgroundTint="#BAB7B7"
                 android:onClick="@{() -> viewModel.galleryClicked()}"
                 android:src="@drawable/baseline_picture_in_picture_24"
+                android:visibility="invisible"
                 app:borderWidth="0dp"
                 app:fabSize="normal"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/fab_camera"
                 app:layout_constraintEnd_toEndOf="@+id/fab_camera"
                 app:layout_constraintStart_toStartOf="@+id/fab_camera"
@@ -187,12 +185,6 @@
                 app:layout_constraintStart_toStartOf="@+id/fab_upload_button"
                 app:layout_constraintTop_toTopOf="@+id/fab_upload_button" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/drawer_navigation_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start" />
-
-    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

@@ -123,46 +123,14 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
-        event(CalendarEvent.Logout)
-
-        viewModelScope.launch {
-            calendarRepository.deleteAllData().collectLatest { result ->
-                when (result) {
-                    is com.boostcamp.dailyfilm.data.model.Result.Success -> {
-                        event(CalendarEvent.Logout)
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
-
-
-    fun deleteUser() {
-        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                viewModelScope.launch {
-                    calendarRepository.deleteAllData().collectLatest { result ->
-                        when (result) {
-                            is com.boostcamp.dailyfilm.data.model.Result.Success -> {
-                                event(CalendarEvent.DeleteUser)
-                            }
-                            else -> {}
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 sealed class CalendarEvent {
     data class NavigateToGallery(val dateModel: DateModel?) : CalendarEvent()
     data class NavigateToCamera(val dateModel: DateModel?) : CalendarEvent()
     data class UpdateMonth(val month: String) : CalendarEvent()
-    object Logout : CalendarEvent()
-    object DeleteUser : CalendarEvent()
+
     object UploadClickOpenButton : CalendarEvent()
     object UploadClickCloseButton : CalendarEvent()
+
 }

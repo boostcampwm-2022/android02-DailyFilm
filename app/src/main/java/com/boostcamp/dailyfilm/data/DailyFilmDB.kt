@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.boostcamp.dailyfilm.data.calendar.CalendarDao
 import com.boostcamp.dailyfilm.data.model.CachedVideoEntity
 import com.boostcamp.dailyfilm.data.model.FilmEntity
+import com.boostcamp.dailyfilm.data.settings.SettingsDao
 import com.boostcamp.dailyfilm.data.uploadfilm.local.LocalUriDao
 
 @Database(
@@ -27,4 +28,6 @@ abstract class DailyFilmDB : RoomDatabase() {
     abstract fun calendarDao(): CalendarDao
 
     abstract fun localUriDao(): LocalUriDao
+
+    abstract fun settingsDao(): SettingsDao
 }
