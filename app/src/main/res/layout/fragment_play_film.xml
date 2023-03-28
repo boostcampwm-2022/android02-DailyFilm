@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/tv_date"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/normal_175"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
