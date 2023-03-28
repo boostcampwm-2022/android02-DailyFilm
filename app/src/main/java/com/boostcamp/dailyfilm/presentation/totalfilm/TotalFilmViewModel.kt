@@ -66,6 +66,7 @@ class TotalFilmViewModel @Inject constructor(
         _isSpeed.value = when (isSpeed.value) {
             SpeedState.NORMAL -> SpeedState.FAST_1_5
             SpeedState.FAST_1_5 -> SpeedState.FAST_2
+            SpeedState.FAST_2 -> SpeedState.FAST_3
             else -> SpeedState.NORMAL
         }
         viewModelScope.launch {

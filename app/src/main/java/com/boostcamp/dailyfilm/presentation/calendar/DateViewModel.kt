@@ -8,6 +8,7 @@ import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.sync.SyncRepository
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -26,20 +27,10 @@ class DateViewModel @Inject constructor(
     val calendar = savedStateHandle.get<Calendar>(KEY_CALENDAR)
         ?: throw IllegalStateException("CalendarViewModel - calendar is null")
 
-    private val dayOfWeek = Calendar.getInstance().apply {
-        set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-        set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-        set(Calendar.DAY_OF_MONTH, 1)
-    }.get(Calendar.DAY_OF_WEEK)
-
-    private val prevCalendar = Calendar.getInstance().apply {
-        set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-        set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
-    }
-
-    private val prevMaxDay = prevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+    private val dayOfWeek = createCalendar(calendar, day = 1).dayOfWeek()
+    private val prevCalendar = createCalendar(calendar, month = calendar.month() - 1)
+    private val prevMaxDay = prevCalendar.maximum()
 
     private val _dateFlow = MutableStateFlow(initialDateList())
     val dateFlow: StateFlow<List<DateModel>> = _dateFlow.asStateFlow()
@@ -47,48 +38,13 @@ class DateViewModel @Inject constructor(
     val itemFlow: Flow<List<DailyFilmItem?>> = calendarRepository.loadFilmInfo(
         getStartAt(getStartCalendar(prevCalendar, prevMaxDay, dayOfWeek)),
         getEndAt(
-            calendar.get(Calendar.MONTH),
+            calendar.month(),
             getStartCalendar(prevCalendar, prevMaxDay, dayOfWeek)
         )
     )
 
     private val _reloadFlow = MutableSharedFlow<Pair<Int, DateModel>>()
     val reloadFlow: SharedFlow<Pair<Int, DateModel>> = _reloadFlow.asSharedFlow()
-
-    private fun getStartAt(startCalendar: Calendar): String {
-        return dateFormat.format(startCalendar.time)
-    }
-
-    private fun getEndAt(currentMonth: Int, startCalendar: Calendar): String {
-        val startMonth = startCalendar.get(Calendar.MONTH)
-        startCalendar.add(Calendar.DAY_OF_MONTH, 34)
-        if (currentMonth != startMonth) {
-            val maxDay = startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-            val currentDay = startCalendar.get(Calendar.DAY_OF_MONTH)
-            if (currentMonth == startCalendar.get(Calendar.MONTH) && maxDay != currentDay) {
-                startCalendar.add(Calendar.DAY_OF_MONTH, 7)
-            }
-        }
-        return dateFormat.format(startCalendar.time)
-    }
-
-    // ex) 2023-02-15, 28, 4 -> 2023-02-26
-    fun getStartCalendar(
-        prevCalendar: Calendar,
-        prevMaxDay: Int,
-        dayOfWeek: Int
-    ): Calendar {
-        return Calendar.getInstance().apply {
-            timeInMillis = prevCalendar.timeInMillis
-            val day = if (dayOfWeek == 1) {
-                add(Calendar.MONTH, 1)
-                1
-            } else {
-                prevMaxDay - (dayOfWeek - 2)
-            }
-            set(Calendar.DAY_OF_MONTH, day)
-        }
-    }
 
     fun syncFilmItem() {
         // ex) 2023-03-17
@@ -97,40 +53,26 @@ class DateViewModel @Inject constructor(
         // startPrevCalendar
         //  - 0년일 경우 예외 >> 0-01-xx
         //  - 작년 12월 , 2022-12-17
-        val startPrevCalendar = if (year == 0) {
-            Calendar.getInstance(Locale.getDefault()).apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, 0)
-            }
-        } else {
-            Calendar.getInstance(Locale.getDefault()).apply {
-                set(Calendar.YEAR, year - 1)
-                set(Calendar.MONTH, 11)
+        val startPrevCalendar = createCalendar(Locale.getDefault()).apply {
+            if (year == 0) {
+                setDate(year, 1)
+            } else {
+                setDate(year - 1, 12)
             }
         }
         // 31
-        val startPrevMaxDay = startPrevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val startPrevMaxDay = startPrevCalendar.maximum()
 
         // 현재 년도의 시작 요일, 2023-01-01, startDayOfWeek = 1
-        val startDayOfWeek = Calendar.getInstance().apply {
-            set(Calendar.YEAR, year)
-            set(Calendar.DAY_OF_YEAR, 1)
-        }.get(Calendar.DAY_OF_WEEK)
+        val startDayOfWeek = createCalendar(year, 1, 1).dayOfWeek()
 
         // 현재 년도의 11월, 2023-11-xx
-        val endPrevCalendar = Calendar.getInstance(Locale.getDefault()).apply {
-            set(Calendar.YEAR, year)
-            set(Calendar.MONTH, 10)
-        }
+        val endPrevCalendar = createCalendar(year, 11, 1)
         // 30
-        val endPrevMaxDay = endPrevCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val endPrevMaxDay = endPrevCalendar.maximum()
 
-        // 12월의 마지막 요일, 6
-        val endDayOfWeek = Calendar.getInstance().apply {
-            set(Calendar.YEAR, year)
-            set(Calendar.MONTH, 11)
-            set(Calendar.DAY_OF_MONTH, 1)
-        }.get(Calendar.DAY_OF_WEEK)
+        // 12월의 첫 번째 요일, 6
+        val endDayOfWeek = createCalendar(year, 12, 1).dayOfWeek()
 
         viewModelScope.launch {
             syncRepository.startSync(
@@ -142,21 +84,16 @@ class DateViewModel @Inject constructor(
     }
 
     fun reloadCalendar(itemList: List<DailyFilmItem?>) {
-        val tempCalendar = Calendar.getInstance().apply {
-            timeInMillis = prevCalendar.timeInMillis
-            set(Calendar.DAY_OF_MONTH, prevMaxDay - (dayOfWeek - 2))
-        }
-
+        val tempCalendar = createCalendar(prevCalendar, day = prevMaxDay - (dayOfWeek - 2))
         val dateModelList = _dateFlow.value.toMutableList()
-        val prevDay = tempCalendar.get(Calendar.DAY_OF_MONTH)
+        val prevDay = tempCalendar.day()
         val prevCnt = if (dayOfWeek == 1) {
             -1
         } else {
             prevMaxDay - prevDay
         }
-
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val currentMonth = calendar.month()
+        val currentMaxDay = calendar.maximum()
 
         for (i in itemList.indices) {
 
@@ -165,13 +102,11 @@ class DateViewModel @Inject constructor(
             if (item == null) return
 
             val itemDate = dateFormat.parse(item.updateDate) ?: return
-            val itemCalendar = Calendar.getInstance().apply {
-                time = itemDate
-            }
+            val itemCalendar = createCalendar(itemDate)
 
-            val itemMonth = itemCalendar.get(Calendar.MONTH)
-            val itemDay = itemCalendar.get(Calendar.DAY_OF_MONTH)
-            val itemYear = itemCalendar.get(Calendar.YEAR)
+            val itemMonth = itemCalendar.month()
+            val itemDay = itemCalendar.day()
+            val itemYear = itemCalendar.year()
 
             val index = if (currentMonth > itemMonth) {
                 itemDay - prevDay
@@ -183,7 +118,7 @@ class DateViewModel @Inject constructor(
 
             val currentItem = DateModel(
                 itemYear.toString(),
-                (itemMonth + 1).toString(),
+                itemMonth.toString(),
                 itemDay.toString(),
                 item.text,
                 item.videoUrl
@@ -197,7 +132,7 @@ class DateViewModel @Inject constructor(
 
             dateModelList[index] = DateModel(
                 itemYear.toString(),
-                (itemMonth + 1).toString(),
+                itemMonth.toString(),
                 itemDay.toString(),
                 item.text,
                 item.videoUrl
@@ -214,19 +149,15 @@ class DateViewModel @Inject constructor(
     }
 
     fun initialDateList(): List<DateModel> {
-        val tempCalendar = Calendar.getInstance().apply {
-            timeInMillis = prevCalendar.timeInMillis
-            set(Calendar.DAY_OF_MONTH, prevMaxDay - (dayOfWeek - 2))
-        }
-
+        val tempCalendar = createCalendar(prevCalendar, day = prevMaxDay - (dayOfWeek - 2))
         val dateModelList = mutableListOf<DateModel>()
 
         for (i in 0 until 42) {
-            val year = tempCalendar.get(Calendar.YEAR)
-            val month = tempCalendar.get(Calendar.MONTH) + 1
-            val dayOfMonth = tempCalendar.get(Calendar.DAY_OF_MONTH)
+            val year = tempCalendar.year()
+            val month = tempCalendar.month()
+            val day = tempCalendar.day()
 
-            if (i == 35 && calendar.get(Calendar.MONTH) + 1 != month) {
+            if (i == 35 && calendar.month() != month) {
                 break
             }
 
@@ -234,10 +165,10 @@ class DateViewModel @Inject constructor(
                 DateModel(
                     year.toString(),
                     month.toString(),
-                    dayOfMonth.toString()
+                    day.toString()
                 )
             )
-            tempCalendar.add(Calendar.DAY_OF_MONTH, 1)
+            tempCalendar.addDay(1)
         }
 
         return dateModelList

@@ -7,13 +7,15 @@ import kotlinx.parcelize.Parcelize
 enum class SpeedState(val speed: Float) : Parcelable {
     NORMAL(1f),
     FAST_1_5(1.5f),
-    FAST_2(2f);
+    FAST_2(2f),
+    FAST_3(3f);
 
     override fun toString(): String {
         return when (this) {
             NORMAL -> "x1.0"
             FAST_1_5 -> "x1.5"
             FAST_2 -> "x2.0"
+            FAST_3 -> "x3.0"
         }
     }
 }
