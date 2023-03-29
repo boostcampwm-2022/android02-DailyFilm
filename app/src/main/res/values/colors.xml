@@ -7,6 +7,7 @@
     <color name="blue">#0022FF</color>
     <color name="gray">#CFCFCF</color>
     <color name="light_gray">#E1E1E1</color>
+    <color name="dark_gray">#646464</color>
     <color name="divider_gray">#BBBBBB</color>
 
     <color name="Primary">#202022</color>
