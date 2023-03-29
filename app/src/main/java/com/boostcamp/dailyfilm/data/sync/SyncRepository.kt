@@ -1,6 +1,5 @@
 package com.boostcamp.dailyfilm.data.sync
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -19,8 +18,9 @@ interface SyncRepository {
 
     suspend fun addSyncedYear(year: Int)
 
-    suspend fun saveSyncedYear() {
-    }
+    suspend fun saveSyncedYear()
+
+    suspend fun clearSyncedYear()
 }
 
 class SyncRepositoryImpl(
@@ -37,8 +37,6 @@ class SyncRepositoryImpl(
                 it[CACHED_YEAR_KEY] ?: setOf()
             }.collectLatest {
                 syncedYearSet.addAll(it)
-                Log.d("SearchList", "Synced: $it")
-                Log.d("SearchList", "Synced: $syncedYearSet")
             }
         }
     }
@@ -60,5 +58,10 @@ class SyncRepositoryImpl(
 
     override suspend fun saveSyncedYear() {
         dataStore.edit { it[CACHED_YEAR_KEY] = syncedYearSet.toSet() }
+    }
+
+    override suspend fun clearSyncedYear() {
+        syncedYearSet.clear()
+        dataStore.edit { it[CACHED_YEAR_KEY] = emptySet() }
     }
 }
