@@ -1,36 +1,64 @@
 package com.boostcamp.dailyfilm.data.sync
 
+import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.boostcamp.dailyfilm.data.calendar.CalendarDataSource
+import com.boostcamp.dailyfilm.data.dataStore.PreferencesKeys.CACHED_YEAR_KEY
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 interface SyncRepository {
     suspend fun startSync(userId: String, startAt: String, endAt: String)
 
     fun isSynced(year: Int): Boolean
 
-    fun addSyncedYear(year: Int)
+    suspend fun addSyncedYear(year: Int)
+
+    suspend fun saveSyncedYear() {
+    }
 }
 
 class SyncRepositoryImpl(
     private val syncDataSource: SyncDataSource,
-    private val calendarDataSource: CalendarDataSource
+    private val calendarDataSource: CalendarDataSource,
+    private val dataStore: DataStore<Preferences>
 ) : SyncRepository {
 
-    private val syncedYearSet = HashSet<Int>()
+    private val syncedYearSet = mutableSetOf<String>()
 
-    override suspend fun startSync(userId: String, startAt: String, endAt: String) {
-        syncDataSource.loadFilmInfo(userId, startAt, endAt).collect { filmItemList ->
-            if (filmItemList == null) return@collect
-            calendarDataSource.insertAllFilm(
-                filmItemList.filterNotNull().map { filmItem ->
-                    filmItem.mapToFilmEntity()
-                }
-            )
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            dataStore.data.map {
+                it[CACHED_YEAR_KEY] ?: setOf()
+            }.collectLatest {
+                syncedYearSet.addAll(it)
+                Log.d("SearchList", "Synced: $it")
+                Log.d("SearchList", "Synced: $syncedYearSet")
+            }
         }
     }
 
-    override fun isSynced(year: Int): Boolean = syncedYearSet.contains(year)
+    override suspend fun startSync(userId: String, startAt: String, endAt: String) {
+        val filmItemList = syncDataSource.loadFilmInfo(userId, startAt, endAt) ?: return
+        calendarDataSource.insertAllFilm(
+            filmItemList.filterNotNull().map { filmItem ->
+                filmItem.mapToFilmEntity()
+            }
+        )
+    }
 
-    override fun addSyncedYear(year: Int) {
-        syncedYearSet.add(year)
+    override fun isSynced(year: Int): Boolean = syncedYearSet.contains(year.toString())
+
+    override suspend fun addSyncedYear(year: Int) {
+        syncedYearSet.add(year.toString())
+    }
+
+    override suspend fun saveSyncedYear() {
+        dataStore.edit { it[CACHED_YEAR_KEY] = syncedYearSet.toSet() }
     }
 }

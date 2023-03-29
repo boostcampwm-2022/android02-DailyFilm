@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -58,32 +57,26 @@ class SearchFilmViewModel @Inject constructor(
             val startYear = start.substring(0, 4).toInt()
             val endYear = end.substring(0, 4).toInt()
 
-            if (syncRepository.isSynced(startYear).not()) {
-                val startDate = "${startYear}0101"
-                val endDate = "${startYear}1231"
-                syncRepository.addSyncedYear(startYear)
-                syncRepository.startSync(userId, startDate, endDate)
-            }
-            if (syncRepository.isSynced(endYear).not()) {
-                val startDate = "${endYear}0101"
-                val endDate = "${endYear}1231"
-                syncRepository.addSyncedYear(endYear)
-                syncRepository.startSync(userId, startDate, endDate)
+            for (year in startYear..endYear) {
+                if (syncRepository.isSynced(year).not()) {
+                    val startDate = "${year}0101"
+                    val endDate = "${year}1231"
+                    syncRepository.addSyncedYear(year)
+                    syncRepository.startSync(userId, startDate, endDate)
+                }
             }
 
-            calendarRepository.loadFilmInfo(start, end).collectLatest { itemList ->
-                _itemListFlow.emit(itemList)
-            }
+            _itemListFlow.emit(calendarRepository.loadFilm(start, end))
         }
     }
 
     fun searchKeyword(query: String) {
         viewModelScope.launch {
             if (startAt != null && endAt != null) {
-                calendarRepository.loadFilmInfo(dateFormat.format(startAt), dateFormat.format(endAt))
-                    .collectLatest { itemList ->
-                        _itemListFlow.emit(itemList.filter { it?.text?.contains(query) ?: false })
-                    }
+                _itemListFlow.emit(
+                    calendarRepository.loadFilm(dateFormat.format(startAt), dateFormat.format(endAt))
+                        .filter { it?.text?.contains(query) ?: false }
+                )
             }
         }
     }

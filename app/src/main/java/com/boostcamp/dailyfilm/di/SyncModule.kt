@@ -1,5 +1,7 @@
 package com.boostcamp.dailyfilm.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.boostcamp.dailyfilm.data.calendar.CalendarDataSource
 import com.boostcamp.dailyfilm.data.sync.SyncDataSource
 import com.boostcamp.dailyfilm.data.sync.SyncRemoteDataSource
@@ -17,8 +19,11 @@ object SyncModule {
 
     @Provides
     @Singleton
-    fun provideSyncRepository(syncDataSource: SyncDataSource, calendarDataSource: CalendarDataSource): SyncRepository =
-        SyncRepositoryImpl(syncDataSource, calendarDataSource)
+    fun provideSyncRepository(
+        syncDataSource: SyncDataSource,
+        calendarDataSource: CalendarDataSource,
+        dataStore: DataStore<Preferences>
+    ): SyncRepository = SyncRepositoryImpl(syncDataSource, calendarDataSource, dataStore)
 
     @Provides
     @Singleton

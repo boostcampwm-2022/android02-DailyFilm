@@ -63,7 +63,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         putExtra(KEY_EDIT_STATE, EditState.NEW_UPLOAD)
                         putExtra(KEY_DATE_MODEL, item)
                         putExtra(FLAG_FROM_VIEW, "camera")
-
                     }
                 )
             } catch (e: ApiException) {
@@ -119,7 +118,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                     }
                     R.id.item_play_month -> {
                         if (viewModel.filmFlow.value.isEmpty()) {
-                            Snackbar.make(this, context.getString(R.string.guide_not_exisxt_video), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(
+                                this,
+                                context.getString(R.string.guide_not_exisxt_video),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                             return@setOnMenuItemClickListener true
                         }
                         startActivity(
@@ -233,7 +236,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun uploadFilmByCamera(item: DateModel?) {
-
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY).not()) {
             Snackbar.make(binding.root, this.getString(R.string.guide_camera_error), Snackbar.LENGTH_SHORT).show()
             return
@@ -271,6 +273,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         }
         cursor.close()
         return duration
+    }
+
+    override fun onDestroy() {
+        viewModel.saveSyncedYear()
+        super.onDestroy()
     }
 
     companion object {

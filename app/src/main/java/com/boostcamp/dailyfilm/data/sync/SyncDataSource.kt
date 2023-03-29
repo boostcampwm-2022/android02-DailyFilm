@@ -4,21 +4,20 @@ import com.boostcamp.dailyfilm.BuildConfig
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 interface SyncDataSource {
-    fun loadFilmInfo(userId: String, startAt: String, endAt: String): Flow<List<DailyFilmItem?>?>
+    suspend fun loadFilmInfo(userId: String, startAt: String, endAt: String): List<DailyFilmItem?>?
 }
 
 class SyncRemoteDataSource : SyncDataSource {
 
-    override fun loadFilmInfo(
+    override suspend fun loadFilmInfo(
         userId: String,
         startAt: String,
         endAt: String
-    ): Flow<List<DailyFilmItem?>?> = callbackFlow {
+    ): List<DailyFilmItem?>? = suspendCoroutine { continuation ->
         database.reference
             .child(DIRECTORY_USER)
             .child(userId)
@@ -27,16 +26,15 @@ class SyncRemoteDataSource : SyncDataSource {
             .endAt(endAt)
             .get()
             .addOnSuccessListener { snapshot ->
-                trySend(
+                continuation.resume(
                     snapshot.children.map {
                         it.getValue(DailyFilmItem::class.java)
                     }
                 )
             }
             .addOnFailureListener {
-                trySend(null)
+                continuation.resume(null)
             }
-        awaitClose()
     }
 
     companion object {

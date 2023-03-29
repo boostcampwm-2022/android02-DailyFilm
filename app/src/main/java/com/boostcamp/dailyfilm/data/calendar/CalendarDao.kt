@@ -13,7 +13,13 @@ interface CalendarDao {
         "SELECT * FROM film_entity " +
             "WHERE updateDate BETWEEN :startAt AND :endAt "
     )
-    fun loadFilm(startAt: Int, endAt: Int): Flow<List<FilmEntity?>>
+    fun loadFilmFlow(startAt: Int, endAt: Int): Flow<List<FilmEntity?>>
+
+    @Query(
+        "SELECT * FROM film_entity " +
+            "WHERE updateDate BETWEEN :startAt AND :endAt "
+    )
+    suspend fun loadFilm(startAt: Int, endAt: Int): List<FilmEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(filmEntityList: List<FilmEntity?>)
