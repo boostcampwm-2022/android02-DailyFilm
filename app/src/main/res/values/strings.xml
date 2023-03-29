@@ -41,4 +41,5 @@
     <string name="play_total">한 달 전체 재생</string>
     <string name="select_date_range">검색 범위 선택</string>
     <string name="desc_search_range">검색 범위를 설정하세요.</string>
+    <string name="setting">설정</string>
 </resources>
