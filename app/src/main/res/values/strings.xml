@@ -35,4 +35,5 @@
     <string name="guide_check_date">날짜를 선택 해주세요</string>
     <string name="guide_not_exisxt_video">영상이 존재 하지 않습니다.</string>
     <string name="guide_camera_error">현재 디바이스에 카메라 기능이 없습니다.</string>
+    <string name="connect_network">네트워크 연결을 확인해주세요.</string>
 </resources>

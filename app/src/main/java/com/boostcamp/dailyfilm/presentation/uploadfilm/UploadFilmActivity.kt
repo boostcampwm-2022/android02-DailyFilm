@@ -24,7 +24,11 @@ import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import com.boostcamp.dailyfilm.presentation.util.UiState
+import com.boostcamp.dailyfilm.presentation.util.network.networkAlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -38,13 +42,27 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
     private val viewModel: UploadFilmViewModel by viewModels()
 
     override fun initView() {
-        binding.viewModel = viewModel
-        binding.activity = this
-
+        initBinding()
+        setOnClickListener()
         detectKeyboardState()
         cancelUploadResult()
         setObserveVideoUploadResult()
         soundControl()
+    }
+
+    private fun setOnClickListener() {
+        binding.ivSelectVideoNext.setOnClickListener {
+            if (NetworkManager.checkNetwork() == NetworkState.LOST) {
+                MaterialAlertDialogBuilder(this).networkAlertDialog(resources).show()
+                return@setOnClickListener
+            }
+            viewModel.uploadVideo()
+        }
+    }
+
+    private fun initBinding() {
+        binding.viewModel = viewModel
+        binding.activity = this
     }
 
     private fun setObserveVideoUploadResult() {
