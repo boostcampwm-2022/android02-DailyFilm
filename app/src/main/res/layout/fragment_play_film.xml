@@ -14,7 +14,26 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:id="@+id/tv_network"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/small_25"
+            android:paddingBottom="@dimen/small_25"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            android:background="@color/gray"
+            android:textColor="@color/white"
+            networkViewState="@{viewModel.networkState}"
+            playState="@{viewModel.playState}"
+            tools:visibility="visible"
+            android:textSize="13sp"
+            android:text="@string/connect_network"/>
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
             android:id="@+id/backgroundPlayer"
@@ -24,10 +43,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_network"
             app:resize_mode="zoom"
             app:show_buffering="always"
             app:streamVideo="@{viewModel.videoUri}"
+            app:viewModel="@{viewModel}"
             app:surface_type="texture_view"
             app:use_artwork="true"
             app:use_controller="false" />
@@ -36,30 +56,30 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/normal_175"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/normal_100"
+            android:layout_marginTop="@dimen/normal_100"
             android:gravity="center"
             android:alpha="0.5"
             android:background="@drawable/background_rounded"
             android:bufferType="spannable"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:paddingStart="@dimen/small_100"
+            android:paddingEnd="@dimen/small_100"
             android:text="@{@string/date(viewModel.dateModel.year, viewModel.dateModel.month, viewModel.dateModel.day)}"
             android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_network"
             tools:text="2022년 11월 24일" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/btn_sound_control"
             android:layout_width="@dimen/normal_175"
             android:layout_height="@dimen/normal_175"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/normal_100"
             android:alpha="0.5"
             android:background="@drawable/background_rounded"
             android:onClick="@{() -> viewModel.changeMuteState()}"
-            android:padding="8dp"
+            android:padding="@dimen/small_100"
             android:scaleType="fitStart"
             app:layout_constraintBottom_toBottomOf="@+id/tv_date"
             app:layout_constraintEnd_toEndOf="@+id/backgroundPlayer"
@@ -101,6 +121,17 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_date"
             app:spannableText='@{viewModel.text ?? ""}'
             app:visibilityAnimation="@{viewModel.isContentShowed()}" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            playState="@{viewModel.playState}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieAnimationView"
