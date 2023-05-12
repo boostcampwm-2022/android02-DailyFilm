@@ -12,13 +12,11 @@ import android.view.animation.AnimationUtils
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityCalendarBinding
-import com.boostcamp.dailyfilm.databinding.HeaderCalendarDrawerBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
@@ -26,7 +24,9 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
+import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.settings.SettingsActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
@@ -71,7 +71,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         putExtra(KEY_EDIT_STATE, EditState.NEW_UPLOAD)
                         putExtra(KEY_DATE_MODEL, item)
                         putExtra(FLAG_FROM_VIEW, "camera")
-
                     }
                 )
             } catch (e: ApiException) {
@@ -118,15 +117,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
 
     private fun initViewModel() {
         binding.viewModel = viewModel
-
-        val headerBinding: HeaderCalendarDrawerBinding =
-            DataBindingUtil.inflate(
-                layoutInflater,
-                R.layout.header_calendar_drawer,
-                binding.drawerNavigationView,
-                true
-            )
-        headerBinding.viewModel = viewModel
     }
 
     private fun initAdapter() {
@@ -166,12 +156,14 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         )
                         true
                     }
-                    R.id.item_date_picker -> {
-                        if (datePickerDialog.isAdded) {
-                            return@setOnMenuItemClickListener true
-                        }
-
-                        datePickerDialog.show(supportFragmentManager, DATE_PICKER_TAG)
+                    R.id.item_settings -> {
+                        startActivity(
+                            Intent(this@CalendarActivity, SettingsActivity::class.java)
+                        )
+                        true
+                    }
+                    R.id.item_search -> {
+                        startActivity(Intent(this@CalendarActivity, SearchFilmActivity::class.java))
                         true
                     }
                     else -> false
@@ -179,7 +171,9 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
             }
 
             setNavigationOnClickListener {
-                binding.layoutDrawerCalendar.open()
+                if (datePickerDialog.isAdded.not()) {
+                    datePickerDialog.show(supportFragmentManager, DATE_PICKER_TAG)
+                }
             }
         }
     }
@@ -198,12 +192,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                             }
                             is CalendarEvent.UpdateMonth -> {
                                 updateMonth(event.month)
-                            }
-                            is CalendarEvent.Logout -> {
-                                logout()
-                            }
-                            is CalendarEvent.DeleteUser -> {
-                                logout()
                             }
                             is CalendarEvent.UploadClickOpenButton -> {
                                 openFloatingButton()
@@ -272,7 +260,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun uploadFilmByCamera(item: DateModel?) {
-
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY).not()) {
             Snackbar.make(
                 binding.root,
@@ -301,17 +288,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         finish()
     }
 
-    private fun logout() {
-        FirebaseAuth.getInstance().signOut()
-        GoogleSignIn.getClient(
-            this, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build()
-        ).signOut().addOnCompleteListener {
-            navigateToLogin()
-        }
-    }
-
     private fun dispatchTakeVideoIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         activityResultLauncher.launch(takePictureIntent)
@@ -331,6 +307,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         return duration
     }
 
+
     override fun onStart() {
         super.onStart()
         NetworkManager.registerNetworkCallback(networkCallback)
@@ -344,6 +321,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     override fun onStop() {
         super.onStop()
         NetworkManager.terminateNetworkCallback(networkCallback)
+    }
+    
+    override fun onDestroy() {
+        viewModel.saveSyncedYear()
+        super.onDestroy()
     }
 
     companion object {

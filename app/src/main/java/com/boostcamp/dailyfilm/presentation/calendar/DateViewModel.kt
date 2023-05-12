@@ -63,8 +63,14 @@ class DateViewModel @Inject constructor(
         // 31
         val startPrevMaxDay = startPrevCalendar.maximum()
 
+
         // 현재 년도의 시작 요일, 2023-01-01, startDayOfWeek = 1
         val startDayOfWeek = createCalendar(year, 1, 1).dayOfWeek()
+
+    fun isSynced(year: Int): Boolean = syncRepository.isSynced(year)
+
+    fun syncFilmItem() {
+        val year = calendar.get(Calendar.YEAR)
 
         // 현재 년도의 11월, 2023-11-xx
         val endPrevCalendar = createCalendar(year, 11, 1)
@@ -75,6 +81,7 @@ class DateViewModel @Inject constructor(
         val endDayOfWeek = createCalendar(year, 12, 1).dayOfWeek()
 
         viewModelScope.launch {
+            syncRepository.addSyncedYear(year)
             syncRepository.startSync(
                 userId,
                 getStartAt(getStartCalendar(startPrevCalendar, startPrevMaxDay, startDayOfWeek)),
@@ -96,7 +103,6 @@ class DateViewModel @Inject constructor(
         val currentMaxDay = calendar.maximum()
 
         for (i in itemList.indices) {
-
             val item = itemList[i]
             val prevItem = _dateFlow.value[i]
             if (item == null) return

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.dataStore.UserPreferencesRepository
+import com.boostcamp.dailyfilm.data.model.Result
+import com.boostcamp.dailyfilm.data.sync.SyncRepository
 import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
@@ -15,6 +17,8 @@ import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -23,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val preferencesRepository: UserPreferencesRepository,
-    private val calendarRepository: CalendarRepository
+    private val calendarRepository: CalendarRepository,
+    private val syncRepository: SyncRepository
 ) :
     ViewModel() {
 
@@ -39,8 +44,6 @@ class CalendarViewModel @Inject constructor(
     }
     var calendar: Calendar = localeCalendar
         private set
-
-    val syncSet = HashSet<Int>()
 
     private val _calendarEventFlow = MutableSharedFlow<CalendarEvent>()
     val calendarEventFlow: SharedFlow<CalendarEvent> = _calendarEventFlow.asSharedFlow()
@@ -75,7 +78,7 @@ class CalendarViewModel @Inject constructor(
             preferencesRepository.userFastFlow.collect { index ->
                 userSpeed = if (index == null) {
                     SpeedState.NORMAL
-                }else {
+                } else {
                     SpeedState.values()[index]
                 }
             }
@@ -126,7 +129,6 @@ class CalendarViewModel @Inject constructor(
             event(CalendarEvent.UploadClickCloseButton)
             floatingOpenFlag = !floatingOpenFlag
         }
-
     }
 
     private fun event(calendarEvent: CalendarEvent) {
@@ -135,36 +137,9 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
-        event(CalendarEvent.Logout)
-
-        viewModelScope.launch {
-            calendarRepository.deleteAllData().collectLatest { result ->
-                when (result) {
-                    is com.boostcamp.dailyfilm.data.model.Result.Success -> {
-                        event(CalendarEvent.Logout)
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
-
-
-    fun deleteUser() {
-        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                viewModelScope.launch {
-                    calendarRepository.deleteAllData().collectLatest { result ->
-                        when (result) {
-                            is com.boostcamp.dailyfilm.data.model.Result.Success -> {
-                                event(CalendarEvent.DeleteUser)
-                            }
-                            else -> {}
-                        }
-                    }
-                }
-            }
+    fun saveSyncedYear() {
+        CoroutineScope(Dispatchers.Main).launch {
+            syncRepository.saveSyncedYear()
         }
     }
 
@@ -179,8 +154,6 @@ sealed class CalendarEvent {
     data class NavigateToGallery(val dateModel: DateModel?) : CalendarEvent()
     data class NavigateToCamera(val dateModel: DateModel?) : CalendarEvent()
     data class UpdateMonth(val month: String) : CalendarEvent()
-    object Logout : CalendarEvent()
-    object DeleteUser : CalendarEvent()
     object UploadClickOpenButton : CalendarEvent()
     object UploadClickCloseButton : CalendarEvent()
 }

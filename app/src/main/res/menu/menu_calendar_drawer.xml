@@ -5,19 +5,25 @@
     <item
         android:id="@+id/item_go_today"
         android:icon="@drawable/ic_double_arrow_left"
-        android:title=""
+        android:title="@string/before"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/item_play_month"
         android:icon="@drawable/ic_play_circle"
-        android:title=""
+        android:title="@string/play_total"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/item_date_picker"
-        android:icon="@drawable/ic_datepicker_month"
-        android:title=""
+        android:id="@+id/item_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/item_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/setting"
+        app:showAsAction="ifRoom"/>
 
 </menu>
