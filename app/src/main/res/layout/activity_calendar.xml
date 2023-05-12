@@ -37,7 +37,7 @@
                 android:gravity="center"
                 android:background="@color/gray"
                 android:textColor="@color/white"
-                android:visibility="@{viewModel.networkState.booleanValue() ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.networkState.booleanValue() ? View.GONE : View.VISIBLE}"
                 tools:visibility="visible"
                 android:textSize="13sp"
                 android:text="@string/connect_network"/>
