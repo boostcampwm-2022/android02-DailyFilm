@@ -46,6 +46,8 @@ class DateViewModel @Inject constructor(
     private val _reloadFlow = MutableSharedFlow<Pair<Int, DateModel>>()
     val reloadFlow: SharedFlow<Pair<Int, DateModel>> = _reloadFlow.asSharedFlow()
 
+    fun isSynced(year: Int): Boolean = syncRepository.isSynced(year)
+
     fun syncFilmItem() {
         // ex) 2023-03-17
         val year = calendar.get(Calendar.YEAR)
@@ -63,14 +65,8 @@ class DateViewModel @Inject constructor(
         // 31
         val startPrevMaxDay = startPrevCalendar.maximum()
 
-
         // 현재 년도의 시작 요일, 2023-01-01, startDayOfWeek = 1
         val startDayOfWeek = createCalendar(year, 1, 1).dayOfWeek()
-
-    fun isSynced(year: Int): Boolean = syncRepository.isSynced(year)
-
-    fun syncFilmItem() {
-        val year = calendar.get(Calendar.YEAR)
 
         // 현재 년도의 11월, 2023-11-xx
         val endPrevCalendar = createCalendar(year, 11, 1)
