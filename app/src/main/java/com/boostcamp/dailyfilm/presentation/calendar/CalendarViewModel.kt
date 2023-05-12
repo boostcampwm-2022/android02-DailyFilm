@@ -61,7 +61,7 @@ class CalendarViewModel @Inject constructor(
     private val _filmFlow = MutableStateFlow<List<DateModel>>(emptyList())
     val filmFlow: StateFlow<List<DateModel>> = _filmFlow.asStateFlow()
 
-    private val _networkState = MutableLiveData(false)
+    private val _networkState = MutableLiveData(true)
     val networkState: LiveData<Boolean> get() = _networkState
 
     init {
