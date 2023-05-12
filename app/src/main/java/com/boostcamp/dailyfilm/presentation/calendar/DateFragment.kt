@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -114,9 +113,8 @@ class DateFragment : BaseFragment<FragmentDateBinding>(R.layout.fragment_date) {
     }
 
     private fun initSync() {
-        if (activityViewModel.syncSet.contains(viewModel.calendar.get(Calendar.YEAR)).not()) {
+        if (viewModel.isSynced(viewModel.calendar.get(Calendar.YEAR)).not()) {
             viewModel.syncFilmItem()
-            activityViewModel.syncSet.add(viewModel.calendar.get(Calendar.YEAR))
         }
     }
 

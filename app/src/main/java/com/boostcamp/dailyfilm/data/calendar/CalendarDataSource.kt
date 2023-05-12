@@ -2,24 +2,33 @@ package com.boostcamp.dailyfilm.data.calendar
 
 import com.boostcamp.dailyfilm.data.model.FilmEntity
 import com.boostcamp.dailyfilm.data.model.Result
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 interface CalendarDataSource {
-    fun loadFilm(startAt: Int, endAt: Int): Flow<List<FilmEntity?>>
+    fun loadFilmFlow(startAt: Int, endAt: Int): Flow<List<FilmEntity?>>
+
+    suspend fun loadFilm(startAt: Int, endAt: Int): List<FilmEntity?>
 
     suspend fun insertFilm(film: FilmEntity)
 
     suspend fun insertAllFilm(filmList: List<FilmEntity>)
-    fun deleteAllData() : Flow<Result<Unit>>
+
+    suspend fun deleteAllData(): Result<Unit>
 }
 
 class CalendarLocalDataSource(
     private val calendarDao: CalendarDao
 ) : CalendarDataSource {
 
-    override fun loadFilm(startAt: Int, endAt: Int): Flow<List<FilmEntity?>> =
+    override fun loadFilmFlow(startAt: Int, endAt: Int): Flow<List<FilmEntity?>> =
+        calendarDao.loadFilmFlow(startAt, endAt)
+
+    override suspend fun loadFilm(startAt: Int, endAt: Int): List<FilmEntity?> =
         calendarDao.loadFilm(startAt, endAt)
 
     override suspend fun insertFilm(film: FilmEntity) {
@@ -30,17 +39,15 @@ class CalendarLocalDataSource(
         calendarDao.insertAll(filmList)
     }
 
-
-     override fun deleteAllData() = callbackFlow {
-
-        runCatching {
-            calendarDao.deleteAll()
-        }.onSuccess {
-            trySend(Result.Success(Unit))
-        }.onFailure { exception ->
-            trySend(Result.Error(exception))
+    override suspend fun deleteAllData() = suspendCoroutine { continuation ->
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                calendarDao.deleteAll()
+            }.onSuccess {
+                continuation.resume(Result.Success(Unit))
+            }.onFailure { exception ->
+                continuation.resume(Result.Error(exception))
+            }
         }
-
-        awaitClose()
     }
 }
