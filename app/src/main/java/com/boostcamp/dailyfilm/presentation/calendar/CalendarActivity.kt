@@ -22,6 +22,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
+import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
@@ -62,7 +63,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         putExtra(KEY_EDIT_STATE, EditState.NEW_UPLOAD)
                         putExtra(KEY_DATE_MODEL, item)
                         putExtra(FLAG_FROM_VIEW, "camera")
-
                     }
                 )
             } catch (e: ApiException) {
@@ -79,6 +79,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     private lateinit var cameraClose: Animation
     private lateinit var galleryClose: Animation
     private lateinit var item: DateModel
+
     override fun initView() {
         initAnim()
         initViewModel()
@@ -117,7 +118,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                     }
                     R.id.item_play_month -> {
                         if (viewModel.filmFlow.value.isEmpty()) {
-                            Snackbar.make(this, context.getString(R.string.guide_not_exisxt_video), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(
+                                this,
+                                context.getString(R.string.guide_not_exisxt_video),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                             return@setOnMenuItemClickListener true
                         }
                         startActivity(
@@ -135,6 +140,10 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         startActivity(
                             Intent(this@CalendarActivity, SettingsActivity::class.java)
                         )
+                        true
+                    }
+                    R.id.item_search -> {
+                        startActivity(Intent(this@CalendarActivity, SearchFilmActivity::class.java))
                         true
                     }
                     else -> false
@@ -227,7 +236,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     }
 
     private fun uploadFilmByCamera(item: DateModel?) {
-
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY).not()) {
             Snackbar.make(binding.root, this.getString(R.string.guide_camera_error), Snackbar.LENGTH_SHORT).show()
             return
@@ -265,6 +273,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         }
         cursor.close()
         return duration
+    }
+
+    override fun onDestroy() {
+        viewModel.saveSyncedYear()
+        super.onDestroy()
     }
 
     companion object {
