@@ -19,19 +19,26 @@ import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
+import com.boostcamp.dailyfilm.presentation.util.network.networkAlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlayFilmBottomSheetDialog(
     val viewModel: PlayFilmViewModel,
     private val activityViewModel: PlayFilmActivityViewModel,
-    val startForResult: ActivityResultLauncher<Intent>
+    private val startForResult: ActivityResultLauncher<Intent>
 ) : BottomSheetDialogFragment() {
 
     private var _binding: DialogBottomSheetBinding? = null
     private val binding get() = _binding ?: error("Binding is null")
 
     private val adapter = PlayFilmBottomSheetAdapter { resId ->
+        if (viewModel.networkState.value == NetworkState.LOST) {
+            MaterialAlertDialogBuilder(requireContext()).networkAlertDialog(resources).show()
+            return@PlayFilmBottomSheetAdapter
+        }
+
         when (resId) {
             R.string.delete -> {
                 MaterialAlertDialogBuilder(requireContext())

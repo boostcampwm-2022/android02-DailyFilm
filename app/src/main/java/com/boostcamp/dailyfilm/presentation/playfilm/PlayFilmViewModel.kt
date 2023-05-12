@@ -7,10 +7,11 @@ import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.playfilm.PlayFilmRepository
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
+import com.boostcamp.dailyfilm.presentation.util.PlayState
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,11 +37,24 @@ class PlayFilmViewModel @Inject constructor(
     private val _isMuted = MutableLiveData(false)
     val isMuted: LiveData<Boolean> get() = _isMuted
 
-    private val _uiState = MutableStateFlow<UiState<DateModel>>(UiState.Uninitialized)
-    val uiState = _uiState.asStateFlow()
+    private val _playState = MutableLiveData<PlayState>(PlayState.Uninitialized)
+    val playState: LiveData<PlayState> get() = _playState
+
+    private val _networkState = MutableLiveData(NetworkManager.checkNetwork())
+    val networkState: LiveData<NetworkState> get() = _networkState
+
+    private val _isNetworkConnectShowed = MutableLiveData(true)
+    val isNetworkConnectShowed: LiveData<Boolean> get() = _isNetworkConnectShowed
+
+    private val _isProgressed = MutableLiveData(false)
+    val isProgressed: LiveData<Boolean> get() = _isProgressed
 
     init {
         loadVideo()
+    }
+
+    private fun checkNetwork() {
+        _networkState.value = NetworkManager.checkNetwork()
     }
 
     fun setDateModel(text: String) {
@@ -56,38 +70,76 @@ class PlayFilmViewModel @Inject constructor(
         _isMuted.value = _isMuted.value?.not()
     }
 
+    fun setNetworkState(state: NetworkState) {
+        viewModelScope.launch {
+            // isNetworkConnected 는 연결 여부를 떠나 Playing 중이면 보여 주지 않는다.
+            _networkState.value = state
+            _isNetworkConnectShowed.value = _playState.value != PlayState.Playing && !state.value
+        }
+    }
+
+    /**
+     *  local uri 확인
+     *   - uri 가 존재 하지 않다면 서버에서 가져 오기
+     */
     private fun loadVideo() {
         viewModelScope.launch {
-            val updateDate = dateModel.getDate()
-            playFilmRepository.checkVideo(updateDate).collectLatest { localResult ->
+            _playState.value = PlayState.Loading
+
+            playFilmRepository.checkVideo(dateModel.getDate()).collectLatest { localResult ->
                 when (localResult) {
                     is Result.Success -> {
                         if (localResult.data != null) {
-                            Log.d("LoadVideo", "Cached ${localResult.data}")
+                            Log.d(
+                                "LoadVideo",
+                                "date: ${dateModel.day} localResult.data: ${localResult.data} "
+                            )
                             _videoUri.value = localResult.data
-                        } else { // 다운로드 해야됨
-                            playFilmRepository.downloadVideo(updateDate)
-                                .collectLatest { remoteResult ->
-                                    when (remoteResult) {
-                                        is Result.Success -> {
-                                            val localUri = remoteResult.data
-                                            _videoUri.value = localUri
-                                            playFilmRepository.insertVideo(
-                                                updateDate,
-                                                localUri.toString()
-                                            ).collectLatest { insertResult ->
-                                                when (insertResult) {
-                                                    is Result.Success -> {}
-                                                    is Result.Error -> {}
-                                                }
-                                            }
-                                        }
-                                        is Result.Error -> {}
-                                    }
-                                }
+                            _playState.value = PlayState.Playing
+                        } else {
+                            checkNetwork()
+                            downloadVideo()
                         }
                     }
-                    is Result.Error -> {}
+                    is Result.Error -> {
+                        checkNetwork()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun downloadVideo() {
+        viewModelScope.launch {
+            playFilmRepository.downloadVideo(dateModel.getDate())
+                .collectLatest { remoteResult ->
+                    when (remoteResult) {
+                        is Result.Success -> {
+                            val localUri = remoteResult.data
+                            _videoUri.value = localUri
+                            cacheVideo(localUri.toString())
+                        }
+                        is Result.Error -> {
+                            checkNetwork()
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun cacheVideo(uri: String) {
+        viewModelScope.launch {
+            playFilmRepository.insertVideo(
+                dateModel.getDate(),
+                uri
+            ).collectLatest { insertResult ->
+                when (insertResult) {
+                    is Result.Success -> {
+                        _playState.value = PlayState.Playing
+                    }
+                    is Result.Error -> {
+                        checkNetwork()
+                    }
                 }
             }
         }
@@ -95,10 +147,9 @@ class PlayFilmViewModel @Inject constructor(
 
     fun deleteVideo() {
         viewModelScope.launch {
-            val updateDate = dateModel.getDate()
-            when (val result = deleteFilmRepository.delete(updateDate)) {
+            when (val result = deleteFilmRepository.delete(dateModel.getDate())) {
                 is Result.Success -> {
-                    _uiState.value = UiState.Success(
+                    _playState.value = PlayState.Deleted(
                         DateModel(
                             year = dateModel.year,
                             month = dateModel.month,

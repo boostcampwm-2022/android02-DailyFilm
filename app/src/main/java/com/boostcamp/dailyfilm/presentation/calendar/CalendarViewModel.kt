@@ -1,5 +1,7 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
@@ -10,6 +12,8 @@ import com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapte
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.playfilm.model.SpeedState
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,8 +61,16 @@ class CalendarViewModel @Inject constructor(
     private val _filmFlow = MutableStateFlow<List<DateModel>>(emptyList())
     val filmFlow: StateFlow<List<DateModel>> = _filmFlow.asStateFlow()
 
+    private val _networkState = MutableLiveData(false)
+    val networkState: LiveData<Boolean> get() = _networkState
+
     init {
         getSpeed()
+        checkNetwork()
+    }
+
+    fun checkNetwork() {
+        _networkState.value = !NetworkManager.checkNetwork().value
     }
 
     private fun getSpeed() {
@@ -128,6 +140,12 @@ class CalendarViewModel @Inject constructor(
     fun saveSyncedYear() {
         CoroutineScope(Dispatchers.Main).launch {
             syncRepository.saveSyncedYear()
+        }
+    }
+
+    fun setNetworkState(state: NetworkState) {
+        viewModelScope.launch {
+            _networkState.value = state.value
         }
     }
 }

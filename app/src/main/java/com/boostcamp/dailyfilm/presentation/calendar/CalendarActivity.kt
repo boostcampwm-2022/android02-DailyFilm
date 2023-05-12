@@ -2,6 +2,8 @@ package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
 import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
@@ -28,6 +30,8 @@ import com.boostcamp.dailyfilm.presentation.settings.SettingsActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -49,7 +53,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
             val videoUri: Uri? = result.data!!.data
             try {
                 if (getVideoDuration(videoUri) < MINIMUM_VIDEO_DURATION_MS) {
-                    Snackbar.make(binding.root, getString(R.string.guide_min_size), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.guide_min_size),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                     return@registerForActivityResult
                 }
 
@@ -79,6 +87,18 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
     private lateinit var cameraClose: Animation
     private lateinit var galleryClose: Animation
     private lateinit var item: DateModel
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            viewModel.setNetworkState(NetworkState.AVAILABLE)
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            viewModel.setNetworkState(NetworkState.LOST)
+        }
+    }
 
     override fun initView() {
         initAnim()
@@ -231,13 +251,21 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                 }
             )
         } else {
-            Snackbar.make(binding.root, this.getString(R.string.guide_check_date), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                binding.root,
+                this.getString(R.string.guide_check_date),
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
     private fun uploadFilmByCamera(item: DateModel?) {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY).not()) {
-            Snackbar.make(binding.root, this.getString(R.string.guide_camera_error), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                binding.root,
+                this.getString(R.string.guide_camera_error),
+                Snackbar.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -245,7 +273,11 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
             this.item = item
             dispatchTakeVideoIntent()
         } else {
-            Snackbar.make(binding.root, this.getString(R.string.guide_check_date), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                binding.root,
+                this.getString(R.string.guide_check_date),
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -275,6 +307,22 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         return duration
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        NetworkManager.registerNetworkCallback(networkCallback)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkNetwork()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        NetworkManager.terminateNetworkCallback(networkCallback)
+    }
+    
     override fun onDestroy() {
         viewModel.saveSyncedYear()
         super.onDestroy()
@@ -286,8 +334,6 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
         const val KEY_FILM_ARRAY = "filmList"
         const val KEY_EDIT_STATE = "editState"
         const val KEY_SPEED = "speed"
-        private const val MESSAGE_SELECT_DATE = "날짜를 선택해주세요"
-        private const val NOT_FILM_DATA = "영상이 존재 하지 않습니다."
         private const val DATE_PICKER_TAG = "datePicker"
     }
 }

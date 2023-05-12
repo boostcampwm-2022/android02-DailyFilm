@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -13,6 +14,9 @@ class DailyFilmApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        initNetwork()
+
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 Log.d(TAG, "onActivityCreated: ${activity.localClassName}")
@@ -42,5 +46,9 @@ class DailyFilmApplication : Application() {
                 Log.d(TAG, "onActivityDestroyed: ${activity.localClassName}")
             }
         })
+    }
+
+    private fun initNetwork() {
+        NetworkManager.initNetwork(applicationContext)
     }
 }

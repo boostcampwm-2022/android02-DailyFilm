@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="adapter"
             type="com.boostcamp.dailyfilm.presentation.calendar.adpater.CalendarPagerAdapter" />
@@ -20,7 +22,25 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:id="@+id/tv_network"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/small_25"
+                android:paddingBottom="@dimen/small_25"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                android:background="@color/gray"
+                android:textColor="@color/white"
+                android:visibility="@{viewModel.networkState.booleanValue() ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible"
+                android:textSize="13sp"
+                android:text="@string/connect_network"/>
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/layout_bar_calendar"
@@ -30,7 +50,7 @@
                 android:fitsSystemWindows="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/tv_network">
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/bar_calendar"
@@ -40,7 +60,10 @@
                     app:menu="@menu/menu_calendar_drawer"
                     app:navigationIcon="@drawable/ic_datepicker_month"
                     app:title="@{viewModel.calendarFlow}"
-                    tools:title="2022년 11월" />
+                    tools:title="2022년 11월" >
+
+                </com.google.android.material.appbar.MaterialToolbar>
+
             </com.google.android.material.appbar.AppBarLayout>
 
             <TextView
