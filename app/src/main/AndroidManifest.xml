@@ -42,7 +42,7 @@
             android:name=".presentation.uploadfilm.UploadFilmActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.login.LoginActivity"
+            android:name=".presentation.login.LoginComposeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
