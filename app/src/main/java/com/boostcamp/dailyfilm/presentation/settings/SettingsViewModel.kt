@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.settings
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +9,9 @@ import com.boostcamp.dailyfilm.data.settings.SettingsRepository
 import com.boostcamp.dailyfilm.data.sync.SyncRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,14 +23,13 @@ class SettingsViewModel @Inject constructor(
     private val syncRepository: SyncRepository
 ) : ViewModel() {
 
-    private val _settingsEventFlow = MutableSharedFlow<SettingsEvent>()
-    val settingsEventFlow: SharedFlow<SettingsEvent> = _settingsEventFlow.asSharedFlow()
+    private val _settingsEventFlow = MutableStateFlow<SettingsEvent>(SettingsEvent.Initialized)
+    val settingsEventFlow: StateFlow<SettingsEvent> = _settingsEventFlow.asStateFlow()
 
     fun backToPrevious() = event(SettingsEvent.Back)
 
     fun logout() {
-        event(SettingsEvent.Logout)
-
+        Log.d("Logout", "SettingsViewModel")
         viewModelScope.launch {
             settingsRepository.deleteAllData().collectLatest { result ->
                 when (result) {
@@ -62,10 +62,11 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun event(settingsEvent: SettingsEvent) =
-        viewModelScope.launch { _settingsEventFlow.emit(settingsEvent) }
+        viewModelScope.launch { _settingsEventFlow.value = settingsEvent }
 }
 
 sealed class SettingsEvent {
+    object Initialized : SettingsEvent()
     object Back : SettingsEvent()
     object Logout : SettingsEvent()
     object DeleteUser : SettingsEvent()
