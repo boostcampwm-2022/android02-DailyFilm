@@ -43,4 +43,6 @@
     <string name="select_date_range">검색 범위 선택</string>
     <string name="desc_search_range">검색 범위를 설정하세요.</string>
     <string name="setting">설정</string>
+    <string name="confirm">확인</string>
+    <string name="dismiss">취소</string>
 </resources>
