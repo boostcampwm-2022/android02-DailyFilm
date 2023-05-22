@@ -26,11 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsEvent
 import com.boostcamp.dailyfilm.presentation.settings.SettingsViewModel
@@ -84,7 +86,7 @@ fun SettingView(viewModel: SettingsViewModel) {
         exit = { deleteDialog = true })
 
     if (logOutDialog) {
-        SettingDialog(text = "정말 로그아웃 하시겠습니까?",
+        SettingDialog(text = stringResource(id = R.string.logOut_description),
             onDismiss = {
                 logOutDialog = false
             }, confirm = {
@@ -93,7 +95,7 @@ fun SettingView(viewModel: SettingsViewModel) {
     }
 
     if (deleteDialog) {
-        SettingDialog(text = "정말 탈퇴하시겠습니까?",
+        SettingDialog(text = stringResource(id = R.string.delete_user_description),
             onDismiss = {
                 deleteDialog = false
             }, confirm = {
@@ -111,14 +113,14 @@ fun SettingView(modifier: Modifier = Modifier, logOut: () -> Unit, exit: () -> U
     ) {
         SettingColumn {
             Text(
-                text = "계정",
+                text = stringResource(id = R.string.account),
                 modifier = Modifier.padding(16.dp),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onPrimary
             )
-            SettingTextView("로그아웃", onClick = logOut)
-            SettingTextView("탈퇴", onClick = exit)
+            SettingTextView(stringResource(id = R.string.logout), onClick = logOut)
+            SettingTextView(stringResource(id = R.string.deleteAccount), onClick = exit)
         }
     }
 }
@@ -184,13 +186,13 @@ fun SettingDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
                     .padding(12.dp)
             ) {
                 Text(
-                    text = "취소",
+                    text = stringResource(id = R.string.dismiss),
                     modifier = Modifier
                         .padding(end = 20.dp)
                         .clickable(onClick = onDismiss)
                 )
                 Text(
-                    text = "확인",
+                    text = stringResource(id = R.string.confirm),
                     modifier = Modifier
                         .clickable(onClick = confirm)
                 )
@@ -202,7 +204,7 @@ fun SettingDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
 @Preview
 @Composable
 fun PreviewSettingDialog() {
-    SettingDialog("정말 ??", {}, {})
+    SettingDialog("PreviewSettingDialog", {}, {})
 }
 
 @Composable

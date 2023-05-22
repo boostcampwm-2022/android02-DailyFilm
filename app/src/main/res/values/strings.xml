@@ -45,4 +45,7 @@
     <string name="setting">설정</string>
     <string name="confirm">확인</string>
     <string name="dismiss">취소</string>
+    <string name="logOut_description">정말 로그아웃 하시겠습니까?</string>
+    <string name="delete_user_description">정말 탈퇴 하시겠습니까?</string>
+    <string name="account">계정</string>
 </resources>
