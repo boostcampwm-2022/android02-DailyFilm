@@ -11,7 +11,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -36,6 +43,7 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsEvent
 import com.boostcamp.dailyfilm.presentation.settings.SettingsViewModel
+import com.boostcamp.dailyfilm.presentation.ui.theme.ComposeApplicationTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -50,7 +58,9 @@ class SettingComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Screen(viewModel)
+            ComposeApplicationTheme {
+                Screen(viewModel)
+            }
         }
     }
 }
@@ -117,7 +127,7 @@ fun SettingView(modifier: Modifier = Modifier, logOut: () -> Unit, exit: () -> U
                 modifier = Modifier.padding(16.dp),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.primary
             )
             SettingTextView(stringResource(id = R.string.logout), onClick = logOut)
             SettingTextView(stringResource(id = R.string.deleteAccount), onClick = exit)
@@ -132,7 +142,7 @@ fun SettingColumn(content: @Composable ColumnScope.() -> Unit) {
             .fillMaxWidth()
             .padding(5.dp)
             .border(
-                border = BorderStroke(1.dp, MaterialTheme.colors.onPrimary),
+                border = BorderStroke(1.dp, MaterialTheme.colors.primary),
                 shape = RoundedCornerShape(8.dp)
             ),
         content = content
@@ -147,18 +157,20 @@ fun SettingTextView(name: String, onClick: () -> Unit) {
         modifier = Modifier
             .padding(16.dp)
             .clickable(onClick = onClick),
-        color = MaterialTheme.colors.onPrimary
+        color = MaterialTheme.colors.primary
     )
 }
 
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun PreviewSettingView() {
-    SettingView(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxSize(1f), {}, {}
-    )
+    ComposeApplicationTheme {
+        SettingView(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxSize(1f), {}, {}
+        )
+    }
 }
 
 @Composable
@@ -176,25 +188,27 @@ fun SettingDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .padding(horizontal = 24.dp),
-                text = text
+                text = text,
+                color = Color.Black
             )
             Row(
                 modifier = Modifier
                     .padding(12.dp)
                     .align(Alignment.End)
-                    .clickable(onClick = confirm)
                     .padding(12.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.dismiss),
                     modifier = Modifier
                         .padding(end = 20.dp)
-                        .clickable(onClick = onDismiss)
+                        .clickable(onClick = onDismiss),
+                    color = Color.Black
                 )
                 Text(
                     text = stringResource(id = R.string.confirm),
                     modifier = Modifier
-                        .clickable(onClick = confirm)
+                        .clickable(onClick = confirm),
+                    color = Color.Black
                 )
             }
         }
@@ -204,7 +218,9 @@ fun SettingDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
 @Preview
 @Composable
 fun PreviewSettingDialog() {
-    SettingDialog("PreviewSettingDialog", {}, {})
+    ComposeApplicationTheme {
+        SettingDialog("PreviewSettingDialog", {}, {})
+    }
 }
 
 @Composable
