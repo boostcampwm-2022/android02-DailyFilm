@@ -3,8 +3,8 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
@@ -70,10 +70,8 @@ class SelectVideoViewModel @Inject constructor(
         event(SelectVideoEvent.BackButtonResult(true))
     }
 
-    fun loadVideo() {
-        selectVideoRepository.loadVideo().cachedIn(viewModelScope).onEach { pagingData ->
-            _videosState.value = pagingData
-        }.launchIn(viewModelScope)
+    fun loadVideo(): Pager<Int, VideoItem> {
+        return selectVideoRepository.loadVideo()
     }
 
     private fun event(event: SelectVideoEvent) {
