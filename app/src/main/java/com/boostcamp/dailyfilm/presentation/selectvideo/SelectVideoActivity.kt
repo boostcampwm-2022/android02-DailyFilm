@@ -43,8 +43,7 @@ class SelectVideoActivity :
         binding.viewModel = viewModel
         binding.mediaListCompose.setContent {
             VideoLists(
-                viewModel = viewModel,
-                pager = viewModel.loadVideo()
+                viewModel = viewModel
             )
         }
         checkPermission()
