@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -20,8 +21,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -70,7 +77,25 @@ fun Screen(viewModel: SettingsViewModel) {
     val state = viewModel.settingsEventFlow.collectAsState().value
     val activity = LocalContext.current as Activity
 
-    SettingView(viewModel)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "설정 화면")
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        activity.finish()
+                    }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            Log.d("esfse", "Screen: $paddingValues")
+            SettingView(viewModel)
+        })
 
     when (state) {
         is SettingsEvent.Logout, SettingsEvent.DeleteUser -> {
@@ -127,7 +152,6 @@ fun SettingView(modifier: Modifier = Modifier, logOut: () -> Unit, exit: () -> U
                 modifier = Modifier.padding(16.dp),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.primary
             )
             SettingTextView(stringResource(id = R.string.logout), onClick = logOut)
             SettingTextView(stringResource(id = R.string.deleteAccount), onClick = exit)
@@ -157,7 +181,6 @@ fun SettingTextView(name: String, onClick: () -> Unit) {
         modifier = Modifier
             .padding(16.dp)
             .clickable(onClick = onClick),
-        color = MaterialTheme.colors.primary
     )
 }
 
