@@ -100,14 +100,11 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_media"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/media_list_compose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            app:setVideoSelectListener="@{viewModel}"
-            app:updateAdapter="@{viewModel.videosState}"
-            tools:listitem="@layout/item_select_video" />
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
