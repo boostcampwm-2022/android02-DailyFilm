@@ -10,15 +10,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
@@ -127,7 +125,6 @@ class LoginComposeActivity : ComponentActivity() {
 
 @Composable
 fun Logo() {
-    //Spacer(modifier = Modifier.height(30.dp))
     Image(
         painter = painterResource(id = R.mipmap.img_logo),
         contentDescription = "DailyFilm Logo",
@@ -147,16 +144,16 @@ fun Login(activityResultLauncher: ActivityResultLauncher<Intent>, client: Google
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp),
+            .padding(start = 48.dp, end = 48.dp),
         shape = RoundedCornerShape(6.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Black,
+            contentColorFor(backgroundColor = Color.White),
             contentColor = Color.White
         )
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_logo_google),
-            contentDescription = ""
+            contentDescription = "Google logo"
         )
         Text(text = "Sign in with Google", modifier = Modifier.padding(6.dp))
     }
