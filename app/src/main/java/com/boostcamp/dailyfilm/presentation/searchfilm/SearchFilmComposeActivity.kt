@@ -7,10 +7,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +30,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -40,8 +43,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -146,7 +149,11 @@ class SearchFilmComposeActivity : FragmentActivity() {
     }
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalUnitApi::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalLifecycleComposeApi::class,
+    ExperimentalUnitApi::class,
+    ExperimentalFoundationApi::class,
+)
 @Composable
 fun SearchView(viewModel: SearchFilmViewModel) {
     val activity = LocalContext.current as FragmentActivity
@@ -180,6 +187,11 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                                     viewModel.searchKeyword(searchText)
                                     focusManager.clearFocus()
                                 }),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    backgroundColor = colorResource(R.color.Background),
+                                    focusedIndicatorColor = colorResource(R.color.Background),
+                                    unfocusedIndicatorColor = colorResource(R.color.Background),
+                                ),
                             )
                         }
                     },
@@ -188,18 +200,20 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                     },
                     actions = {
                         if (titleVisibility) {
-                            IconButton(onClick = { titleVisibility = !titleVisibility }) {
-                                Icon(
-                                    Icons.Filled.Search,
-                                    null,
-                                )
-                            }
+                            IconButton(
+                                onClick = {
+                                    focusManager.moveFocus(FocusDirection.Next)
+                                    titleVisibility = !titleVisibility
+                                },
+                            ) { Icon(Icons.Filled.Search, null) }
                         } else {
-                            IconButton(onClick = {
-                                titleVisibility = !titleVisibility
-                                searchText = ""
-                                viewModel.searchKeyword("")
-                            }) { Icon(Icons.Filled.Close, null) }
+                            IconButton(
+                                onClick = {
+                                    titleVisibility = !titleVisibility
+                                    searchText = ""
+                                    viewModel.searchKeyword("")
+                                },
+                            ) { Icon(Icons.Filled.Close, null) }
                         }
                     },
                     backgroundColor = colorResource(R.color.Background),
@@ -250,8 +264,15 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                     )
                 }
                 LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = it) {
-                    itemsIndexed(list) { index, item ->
-                        item?.let { FilmCard(it, requestManager, factory) { viewModel.onClickItem(index) } }
+                    itemsIndexed(
+                        items = list,
+                        key = { i, item -> item?.videoUrl ?: i },
+                    ) { index, item ->
+                        item?.let {
+                            Row(modifier = Modifier.animateItemPlacement()) {
+                                FilmCard(it, requestManager, factory) { viewModel.onClickItem(index) }
+                            }
+                        }
                     }
                 }
             }
@@ -259,7 +280,11 @@ fun SearchView(viewModel: SearchFilmViewModel) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
+@OptIn(
+    ExperimentalGlideComposeApi::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalUnitApi::class,
+)
 @Composable
 fun FilmCard(
     item: DailyFilmItem,
