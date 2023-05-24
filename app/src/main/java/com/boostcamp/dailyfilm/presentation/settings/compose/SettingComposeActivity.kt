@@ -30,11 +30,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsEvent
@@ -74,8 +70,10 @@ class SettingComposeActivity : ComponentActivity() {
 
 @Composable
 fun Screen(viewModel: SettingsViewModel) {
-    val state = viewModel.settingsEventFlow.collectAsState().value
     val activity = LocalContext.current as Activity
+    val state = viewModel.settingsEventFlow.collectAsStateWithLifecycle().value
+    val logOutDialog = viewModel.logOutDialog.collectAsStateWithLifecycle().value
+    val deleteDialog = viewModel.deleteDialog.collectAsStateWithLifecycle().value
 
     Scaffold(
         topBar = {
@@ -99,7 +97,7 @@ fun Screen(viewModel: SettingsViewModel) {
         },
         content = { paddingValues ->
             Log.d("esfse", "Screen: $paddingValues")
-            SettingView(viewModel)
+            SettingView(viewModel, logOutDialog, deleteDialog)
         })
 
     when (state) {
@@ -116,19 +114,16 @@ fun Screen(viewModel: SettingsViewModel) {
 }
 
 @Composable
-fun SettingView(viewModel: SettingsViewModel) {
-
-    var logOutDialog by remember { mutableStateOf(false) }
-    var deleteDialog by remember { mutableStateOf(false) }
+fun SettingView(viewModel: SettingsViewModel, logOutDialog: Boolean, deleteDialog: Boolean) {
 
     SettingView(
-        logOut = { logOutDialog = true },
-        exit = { deleteDialog = true })
+        logOut = { viewModel.openLogOutDialog() },
+        exit = { viewModel.openDeleteDialog() })
 
     if (logOutDialog) {
         SettingDialog(text = stringResource(id = R.string.logOut_description),
             onDismiss = {
-                logOutDialog = false
+                viewModel.closeLogOutDialog()
             }, confirm = {
                 viewModel.logout()
             })
@@ -137,7 +132,7 @@ fun SettingView(viewModel: SettingsViewModel) {
     if (deleteDialog) {
         SettingDialog(text = stringResource(id = R.string.delete_user_description),
             onDismiss = {
-                deleteDialog = false
+                viewModel.closeDeleteDialog()
             }, confirm = {
                 viewModel.deleteUser()
             })

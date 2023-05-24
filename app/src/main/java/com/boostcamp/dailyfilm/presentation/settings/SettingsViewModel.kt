@@ -26,6 +26,26 @@ class SettingsViewModel @Inject constructor(
     private val _settingsEventFlow = MutableStateFlow<SettingsEvent>(SettingsEvent.Initialized)
     val settingsEventFlow: StateFlow<SettingsEvent> = _settingsEventFlow.asStateFlow()
 
+    private val _logOutDialog = MutableStateFlow(false)
+    val logOutDialog : StateFlow<Boolean> get() = _logOutDialog
+
+    private val _deleteDialog = MutableStateFlow(false)
+    val deleteDialog : StateFlow<Boolean> get() = _deleteDialog
+
+    fun openLogOutDialog() {
+        _logOutDialog.value = true
+    }
+    fun closeLogOutDialog() {
+        _logOutDialog.value = false
+    }
+
+    fun openDeleteDialog() {
+        _deleteDialog.value = true
+    }
+    fun closeDeleteDialog() {
+        _deleteDialog.value = false
+    }
+
     fun backToPrevious() = event(SettingsEvent.Back)
 
     fun logout() {
