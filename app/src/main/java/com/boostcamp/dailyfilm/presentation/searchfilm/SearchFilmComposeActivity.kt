@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -69,7 +70,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
 import com.boostcamp.dailyfilm.presentation.searchfilm.ui.theme.DailyFilmTheme
-import com.boostcamp.dailyfilm.presentation.searchfilm.ui.theme.LightestGray
+import com.boostcamp.dailyfilm.presentation.searchfilm.ui.theme.lightGray
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -187,7 +188,12 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                     },
                     actions = {
                         if (titleVisibility) {
-                            IconButton(onClick = { titleVisibility = !titleVisibility }) { Icon(Icons.Filled.Search, null) }
+                            IconButton(onClick = { titleVisibility = !titleVisibility }) {
+                                Icon(
+                                    Icons.Filled.Search,
+                                    null,
+                                )
+                            }
                         } else {
                             IconButton(onClick = {
                                 titleVisibility = !titleVisibility
@@ -196,8 +202,8 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                             }) { Icon(Icons.Filled.Close, null) }
                         }
                     },
-                    backgroundColor = Color.Transparent,
-                    elevation = 1.dp,
+                    backgroundColor = colorResource(R.color.Background),
+                    elevation = 4.dp,
                 )
             },
         ) {
@@ -206,10 +212,11 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .background(LightestGray, RoundedCornerShape(4.dp))
+                        .background(lightGray, RoundedCornerShape(4.dp))
                         .padding(0.dp, 4.dp)
                         .clickable {
-                            val datePicker = MaterialDatePicker.Builder.dateRangePicker()
+                            val datePicker = MaterialDatePicker.Builder
+                                .dateRangePicker()
                                 .setTitleText("Select Date Range")
                                 .apply {
                                     if (viewModel.startAt != null && viewModel.endAt != null) {
@@ -221,13 +228,15 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                             datePicker.apply {
                                 addOnPositiveButtonClickListener { selection ->
                                     viewModel.searchDateRange(selection.first, selection.second)
-                                    dateRange = "${dottedDateFormat.format(selection.first)} ~ ${dottedDateFormat.format(selection.second)}"
+                                    dateRange = "${dottedDateFormat.format(selection.first)} ~ ${
+                                        dottedDateFormat.format(selection.second)
+                                    }"
                                 }
                                 show(activity.supportFragmentManager, SearchFilmActivity.TAG_DATE_PICKER)
                             }
                         },
                 ) {
-                    Icon(Icons.Filled.DateRange, null, modifier = Modifier.padding(4.dp))
+                    Icon(Icons.Filled.DateRange, null, modifier = Modifier.padding(4.dp), tint = Color.Black)
                     Text(
                         text = dateRange,
                         modifier = Modifier.align(Alignment.Center),
@@ -252,18 +261,27 @@ fun SearchView(viewModel: SearchFilmViewModel) {
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
 @Composable
-fun FilmCard(item: DailyFilmItem, requestManager: RequestManager, factory: DrawableCrossFadeFactory, onClickItem: () -> Unit) {
+fun FilmCard(
+    item: DailyFilmItem,
+    requestManager: RequestManager,
+    factory: DrawableCrossFadeFactory,
+    onClickItem: () -> Unit,
+) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         elevation = 4.dp,
-        backgroundColor = LightestGray,
+        backgroundColor = lightGray,
         onClick = { onClickItem() },
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             GlideImage(
                 model = item.videoUrl,
                 contentDescription = "thumbnail",
-                modifier = Modifier.fillMaxWidth().aspectRatio(3 / 4F),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(3 / 4F),
                 contentScale = ContentScale.FillWidth,
             ) {
                 it.thumbnail(
@@ -276,8 +294,15 @@ fun FilmCard(item: DailyFilmItem, requestManager: RequestManager, factory: Drawa
                 )
             }
             Text(
-                text = "${item.updateDate.substring(0, 4)}년 ${item.updateDate.substring(4, 6)}월 ${item.updateDate.substring(6)}일",
-                modifier = Modifier.fillMaxWidth().padding(0.dp, 8.dp, 0.dp, 0.dp),
+                text = "${item.updateDate.substring(0, 4)}년 ${
+                    item.updateDate.substring(
+                        4,
+                        6,
+                    )
+                }월 ${item.updateDate.substring(6)}일",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 8.dp, 0.dp, 0.dp),
                 color = Color.Black,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -294,30 +319,7 @@ fun FilmCard(item: DailyFilmItem, requestManager: RequestManager, factory: Drawa
     }
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .background(LightestGray, RoundedCornerShape(4.dp))
-            .padding(0.dp, 4.dp)
-            .clickable {
-            },
-    ) {
-        Text(
-            text = "날짜를 선택하세요",
-            modifier = Modifier.align(Alignment.Center),
-            color = Color.Black,
-            maxLines = 1,
-            style = TextStyle(
-                textAlign = TextAlign.Center,
-                fontSize = TextUnit(20F, TextUnitType.Sp),
-                fontWeight = FontWeight.Bold,
-            ),
-        )
-        Icon(Icons.Filled.DateRange, null, modifier = Modifier.padding(4.dp))
-    }
 }
