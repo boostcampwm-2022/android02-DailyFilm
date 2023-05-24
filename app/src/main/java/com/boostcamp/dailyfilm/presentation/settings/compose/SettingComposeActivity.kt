@@ -81,15 +81,20 @@ fun Screen(viewModel: SettingsViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "설정 화면")
+                    Text(text = "설정 화면", color = MaterialTheme.colors.onBackground)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
                         activity.finish()
                     }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Go Back",
+                            tint = MaterialTheme.colors.onBackground
+                        )
                     }
-                }
+                },
+                backgroundColor = MaterialTheme.colors.background
             )
         },
         content = { paddingValues ->
