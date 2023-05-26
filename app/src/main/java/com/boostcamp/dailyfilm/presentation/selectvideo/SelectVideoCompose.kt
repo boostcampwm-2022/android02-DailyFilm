@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.boostcamp.dailyfilm.R
@@ -36,7 +37,7 @@ fun VideoLists(
     modifier: Modifier = Modifier,
     viewModel: SelectVideoViewModel
 ) {
-    val selectedVideo = viewModel.selectedVideo.collectAsState()
+    val selectedVideo = viewModel.selectedVideo.collectAsStateWithLifecycle()
     val nestedScrollInterop = rememberNestedScrollInteropConnection()
     val lazyPagingItems = viewModel.videoItems.collectAsLazyPagingItems()
 
