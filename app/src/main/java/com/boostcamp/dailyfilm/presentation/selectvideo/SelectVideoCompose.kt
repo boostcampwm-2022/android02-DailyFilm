@@ -38,8 +38,7 @@ fun VideoLists(
 ) {
     val selectedVideo = viewModel.selectedVideo.collectAsState()
     val nestedScrollInterop = rememberNestedScrollInteropConnection()
-    val pager = remember { viewModel.loadVideo() }
-    val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
+    val lazyPagingItems = viewModel.videoItems.collectAsLazyPagingItems()
 
     if (lazyPagingItems.itemCount > 0) {
         LaunchedEffect(selectedVideo.value == null) {
