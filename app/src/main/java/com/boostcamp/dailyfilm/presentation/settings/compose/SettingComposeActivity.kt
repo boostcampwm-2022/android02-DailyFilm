@@ -9,16 +9,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,23 +26,20 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsEvent
 import com.boostcamp.dailyfilm.presentation.settings.SettingsViewModel
 import com.boostcamp.dailyfilm.presentation.ui.theme.ComposeApplicationTheme
+import com.boostcamp.dailyfilm.presentation.util.dialog.CustomDialog
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -179,7 +173,7 @@ fun DialogUI(viewModel: SettingsViewModel) {
     val openDialog = viewModel.openDialog.collectAsStateWithLifecycle().value
 
     if (openDialog.openDialog) {
-        SettingDialog(
+        CustomDialog(
             text = openDialog.content,
             onDismiss = {
                 viewModel.closeDialog()
@@ -194,56 +188,6 @@ fun DialogUI(viewModel: SettingsViewModel) {
 fun PreviewSettingView() {
     ComposeApplicationTheme {
         ContentView({}, {})
-    }
-}
-
-@Composable
-fun SettingDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
-
-    Dialog(onDismissRequest = onDismiss) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(12.dp))
-                .background(color = Color.White)
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .padding(horizontal = 24.dp),
-                text = text,
-                color = Color.Black
-            )
-            Row(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .align(Alignment.End)
-                    .padding(12.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.dismiss),
-                    modifier = Modifier
-                        .padding(end = 20.dp)
-                        .clickable(onClick = onDismiss),
-                    color = Color.Black
-                )
-                Text(
-                    text = stringResource(id = R.string.confirm),
-                    modifier = Modifier
-                        .clickable(onClick = confirm),
-                    color = Color.Black
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewSettingDialog() {
-    ComposeApplicationTheme {
-        SettingDialog("PreviewSettingDialog", {}, {})
     }
 }
 
