@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -62,99 +61,81 @@ class SettingComposeActivity : ComponentActivity() {
 
         setContent {
             ComposeApplicationTheme {
-                Screen(viewModel)
+                SettingUI(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun Screen(viewModel: SettingsViewModel) {
+fun SettingUI(viewModel: SettingsViewModel) {
     val activity = LocalContext.current as Activity
-    val state = viewModel.settingsEventFlow.collectAsStateWithLifecycle().value
-    val logOutDialog = viewModel.logOutDialog.collectAsStateWithLifecycle().value
-    val deleteDialog = viewModel.deleteDialog.collectAsStateWithLifecycle().value
+    when (viewModel.settingsEventFlow.collectAsStateWithLifecycle().value) {
+        is SettingsEvent.Logout, SettingsEvent.DeleteUser -> Logout(activity)
+        is SettingsEvent.Back -> activity.finish()
+        is SettingsEvent.Initialized -> SettingView(viewModel = viewModel, activity)
+    }
+}
 
+@Composable
+fun SettingView(viewModel: SettingsViewModel, activity: Activity) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "설정 화면", color = MaterialTheme.colors.onBackground)
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        activity.finish()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Go Back",
-                            tint = MaterialTheme.colors.onBackground
-                        )
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.background
-            )
+            SettingTopAppBar(activity)
         },
         content = { paddingValues ->
-            Log.d("esfse", "Screen: $paddingValues")
-            SettingView(viewModel, logOutDialog, deleteDialog)
+            // paddingValues 처리 ??
+            Log.d("Not Solved", "Screen: $paddingValues")
+
+            val logOutDes = stringResource(id = R.string.logOut_description)
+            val deleteUserDes = stringResource(id = R.string.delete_user_description)
+
+            DialogUI(viewModel)
+
+            ContentView(
+                logOut = {
+                    viewModel.openDialog(logOutDes) { viewModel.logout() }
+                },
+                delete = {
+                    viewModel.openDialog(deleteUserDes) { viewModel.deleteUser() }
+                })
         })
-
-    when (state) {
-        is SettingsEvent.Logout, SettingsEvent.DeleteUser -> {
-            Logout(activity)
-        }
-
-        is SettingsEvent.Back -> {
-            activity.finish()
-        }
-
-        is SettingsEvent.Initialized -> {}
-    }
 }
 
 @Composable
-fun SettingView(viewModel: SettingsViewModel, logOutDialog: Boolean, deleteDialog: Boolean) {
-
-    SettingView(
-        logOut = { viewModel.openLogOutDialog() },
-        exit = { viewModel.openDeleteDialog() })
-
-    if (logOutDialog) {
-        SettingDialog(text = stringResource(id = R.string.logOut_description),
-            onDismiss = {
-                viewModel.closeLogOutDialog()
-            }, confirm = {
-                viewModel.logout()
-            })
-    }
-
-    if (deleteDialog) {
-        SettingDialog(text = stringResource(id = R.string.delete_user_description),
-            onDismiss = {
-                viewModel.closeDeleteDialog()
-            }, confirm = {
-                viewModel.deleteUser()
-            })
-    }
+fun SettingTopAppBar(activity: Activity) {
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(R.string.setting_toolbar_title),
+                color = MaterialTheme.colors.onBackground
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {
+                activity.finish()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Go Back",
+                    tint = MaterialTheme.colors.onBackground
+                )
+            }
+        },
+        backgroundColor = MaterialTheme.colors.background
+    )
 }
 
 @Composable
-fun SettingView(modifier: Modifier = Modifier, logOut: () -> Unit, exit: () -> Unit) {
+fun ContentView(logOut: () -> Unit, delete: () -> Unit) {
 
     Column(
-        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         SettingColumn {
-            Text(
-                text = stringResource(id = R.string.account),
-                modifier = Modifier.padding(16.dp),
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            SettingTextView(stringResource(id = R.string.logout), onClick = logOut)
-            SettingTextView(stringResource(id = R.string.deleteAccount), onClick = exit)
+            SettingTitleTextView(stringResource(id = R.string.account))
+            SettingTextView(stringResource(id = R.string.logout), logOut)
+            SettingTextView(stringResource(id = R.string.delete), delete)
         }
     }
 }
@@ -174,25 +155,45 @@ fun SettingColumn(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-fun SettingTextView(name: String, onClick: () -> Unit) {
-
+fun SettingTitleTextView(name: String) {
     Text(
         text = name,
+        modifier = Modifier.padding(16.dp),
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Bold,
+    )
+}
+
+@Composable
+fun SettingTextView(text: String, onClick: () -> Unit) {
+    Text(
+        text = text,
         modifier = Modifier
             .padding(16.dp)
             .clickable(onClick = onClick),
     )
 }
 
+@Composable
+fun DialogUI(viewModel: SettingsViewModel) {
+    val openDialog = viewModel.openDialog.collectAsStateWithLifecycle().value
+
+    if (openDialog.openDialog) {
+        SettingDialog(
+            text = openDialog.content,
+            onDismiss = {
+                viewModel.closeDialog()
+            }, confirm = openDialog.execution
+        )
+    }
+}
+
+
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun PreviewSettingView() {
     ComposeApplicationTheme {
-        SettingView(
-            modifier = Modifier
-                .padding(4.dp)
-                .fillMaxSize(1f), {}, {}
-        )
+        ContentView({}, {})
     }
 }
 
