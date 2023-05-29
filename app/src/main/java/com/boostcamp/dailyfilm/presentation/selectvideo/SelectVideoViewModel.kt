@@ -3,6 +3,7 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.VideoItem
@@ -12,10 +13,8 @@ import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
-import com.boostcamp.dailyfilm.presentation.selectvideo.adapter.VideoSelectListener
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,25 +23,22 @@ import javax.inject.Inject
 class SelectVideoViewModel @Inject constructor(
     private val selectVideoRepository: GalleryVideoRepository,
     savedStateHandle: SavedStateHandle
-) : ViewModel(), VideoSelectListener {
+) : ViewModel() {
 
     val dateModel = savedStateHandle.get<DateModel>(CalendarActivity.KEY_DATE_MODEL)
     val calendarIndex = savedStateHandle.get<Int>(DateFragment.KEY_CALENDAR_INDEX)
     val editState = savedStateHandle.get<EditState>(KEY_EDIT_STATE)
 
-        override val viewTreeLifecycleScope: CoroutineScope
-        get() = viewModelScope
-
-    private val _videosState = MutableStateFlow<PagingData<VideoItem>>(PagingData.empty())
-    val videosState: StateFlow<PagingData<VideoItem>> get() = _videosState
-
     private val _selectedVideo = MutableStateFlow<VideoItem?>(null)
-    override val selectedVideo = _selectedVideo.asStateFlow()
+    val selectedVideo = _selectedVideo.asStateFlow()
 
     private var clickSound = false
 
     private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
     val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
+
+    private val _videoItems = MutableStateFlow<PagingData<VideoItem>>(PagingData.empty())
+    val videoItems: StateFlow<PagingData<VideoItem>> get() = _videoItems
 
     fun navigateToUpload() {
         viewModelScope.launch {
@@ -72,7 +68,7 @@ class SelectVideoViewModel @Inject constructor(
 
     fun loadVideo() {
         selectVideoRepository.loadVideo().cachedIn(viewModelScope).onEach { pagingData ->
-            _videosState.value = pagingData
+            _videoItems.value = pagingData
         }.launchIn(viewModelScope)
     }
 
@@ -82,7 +78,7 @@ class SelectVideoViewModel @Inject constructor(
         }
     }
 
-    override fun chooseVideo(videoItem: VideoItem?) {
+    fun chooseVideo(videoItem: VideoItem?) {
         viewModelScope.launch {
             _selectedVideo.emit(videoItem)
         }
