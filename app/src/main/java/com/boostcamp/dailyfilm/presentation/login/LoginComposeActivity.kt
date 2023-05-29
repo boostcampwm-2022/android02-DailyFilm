@@ -8,7 +8,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,12 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -67,12 +69,27 @@ class LoginComposeActivity : ComponentActivity() {
             }
         }
         setContent {
-            Column {
-                Logo()
-                Login(activityResultLauncher, client)
-            }
+            LoginView(client)
         }
         setObserveLoginResult()
+    }
+
+    @Composable
+    private fun LoginView(client: GoogleSignInClient) {
+        val backgroundColor = if (isSystemInDarkTheme()) {
+            Color(0xFF4285F4)
+        } else {
+            Color(0xFFFFFFFF)
+        }
+        val contentsColor = if (isSystemInDarkTheme()) {
+            Color(0xFFFFFFFF)
+        } else {
+            Color(0xFF454647)
+        }
+        Column {
+            Logo()
+            LoginButton(activityResultLauncher, client, backgroundColor, contentsColor)
+        }
     }
 
     override fun onStart() {
@@ -126,8 +143,8 @@ class LoginComposeActivity : ComponentActivity() {
 @Composable
 fun Logo() {
     Image(
-        painter = painterResource(id = R.mipmap.img_logo),
-        contentDescription = "DailyFilm Logo",
+        painter = painterResource(id = R.mipmap.app_logo),
+        contentDescription = stringResource(R.string.dailyfilm_logo),
         modifier = Modifier
             .fillMaxWidth()
             .height(350.dp),
@@ -137,7 +154,12 @@ fun Logo() {
 }
 
 @Composable
-fun Login(activityResultLauncher: ActivityResultLauncher<Intent>, client: GoogleSignInClient) {
+fun LoginButton(
+    activityResultLauncher: ActivityResultLauncher<Intent>,
+    client: GoogleSignInClient,
+    backgroundColor: Color,
+    contentColor: Color
+) {
     Button(
         onClick = {
             activityResultLauncher.launch(client.signInIntent)
@@ -147,14 +169,16 @@ fun Login(activityResultLauncher: ActivityResultLauncher<Intent>, client: Google
             .padding(start = 48.dp, end = 48.dp),
         shape = RoundedCornerShape(6.dp),
         colors = ButtonDefaults.buttonColors(
-            contentColorFor(backgroundColor = Color.White),
-            contentColor = Color.White
-        )
+            containerColor = backgroundColor,
+            contentColor = contentColor
+        ),
+        border = BorderStroke(2.dp, Color(0xC1494747)),
+        elevation = ButtonDefaults.buttonElevation()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_logo_google),
-            contentDescription = "Google logo"
+            painter = painterResource(id = R.drawable.btn_google_login),
+            contentDescription = stringResource(R.string.google_logo)
         )
-        Text(text = "Sign in with Google", modifier = Modifier.padding(6.dp))
+        Text(text = stringResource(R.string.sign_in_with_google), modifier = Modifier.padding(6.dp))
     }
 }

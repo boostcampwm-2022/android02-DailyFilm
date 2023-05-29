@@ -43,4 +43,7 @@
     <string name="select_date_range">검색 범위 선택</string>
     <string name="desc_search_range">검색 범위를 설정하세요.</string>
     <string name="setting">설정</string>
+    <string name="dailyfilm_logo">데일리필름 로고</string>
+    <string name="google_logo">구글 로고</string>
+    <string name="sign_in_with_google">구글계정으로 로그인하기</string>
 </resources>
