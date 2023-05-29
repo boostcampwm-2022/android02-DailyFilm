@@ -70,8 +70,8 @@ import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
-import com.boostcamp.dailyfilm.presentation.searchfilm.ui.theme.DailyFilmTheme
-import com.boostcamp.dailyfilm.presentation.searchfilm.ui.theme.lightGray
+import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
+import com.boostcamp.dailyfilm.presentation.ui.theme.lightGray
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi

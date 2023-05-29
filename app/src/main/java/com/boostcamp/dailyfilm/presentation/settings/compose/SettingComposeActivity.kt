@@ -38,7 +38,7 @@ import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsEvent
 import com.boostcamp.dailyfilm.presentation.settings.SettingsViewModel
-import com.boostcamp.dailyfilm.presentation.ui.theme.ComposeApplicationTheme
+import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
 import com.boostcamp.dailyfilm.presentation.util.dialog.CustomDialog
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -54,7 +54,7 @@ class SettingComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            ComposeApplicationTheme {
+            DailyFilmTheme {
                 SettingUI(viewModel)
             }
         }
@@ -92,8 +92,10 @@ fun SettingView(viewModel: SettingsViewModel, activity: Activity) {
                 },
                 delete = {
                     viewModel.openDialog(deleteUserDes) { viewModel.deleteUser() }
-                })
-        })
+                },
+            )
+        },
+    )
 }
 
 @Composable
@@ -102,7 +104,7 @@ fun SettingTopAppBar(activity: Activity) {
         title = {
             Text(
                 text = stringResource(R.string.setting_toolbar_title),
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colors.onBackground,
             )
         },
         navigationIcon = {
@@ -112,19 +114,18 @@ fun SettingTopAppBar(activity: Activity) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Go Back",
-                    tint = MaterialTheme.colors.onBackground
+                    tint = MaterialTheme.colors.onBackground,
                 )
             }
         },
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = MaterialTheme.colors.background,
     )
 }
 
 @Composable
 fun ContentView(logOut: () -> Unit, delete: () -> Unit) {
-
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         SettingColumn {
             SettingTitleTextView(stringResource(id = R.string.account))
@@ -142,9 +143,9 @@ fun SettingColumn(content: @Composable ColumnScope.() -> Unit) {
             .padding(5.dp)
             .border(
                 border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
             ),
-        content = content
+        content = content,
     )
 }
 
@@ -177,31 +178,31 @@ fun DialogUI(viewModel: SettingsViewModel) {
             text = openDialog.content,
             onDismiss = {
                 viewModel.closeDialog()
-            }, confirm = openDialog.execution
+            },
+            confirm = openDialog.execution,
         )
     }
 }
 
-
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun PreviewSettingView() {
-    ComposeApplicationTheme {
+    DailyFilmTheme {
         ContentView({}, {})
     }
 }
 
 @Composable
 fun Logout(activity: Activity) {
-
     val context = LocalContext.current
 
     FirebaseAuth.getInstance().signOut()
 
     GoogleSignIn.getClient(
-        activity, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        activity,
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .build()
+            .build(),
     ).signOut().addOnCompleteListener {
         navigateToLogin(context)
     }
@@ -211,9 +212,9 @@ fun navigateToLogin(context: Context) {
     context.startActivity(
         Intent(
             context,
-            LoginActivity::class.java
+            LoginActivity::class.java,
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
+        },
     )
 }
