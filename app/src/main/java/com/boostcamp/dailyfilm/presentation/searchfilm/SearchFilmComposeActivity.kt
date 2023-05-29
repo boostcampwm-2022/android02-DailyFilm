@@ -56,14 +56,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -150,7 +148,6 @@ class SearchFilmComposeActivity : FragmentActivity() {
 }
 
 @OptIn(
-    ExperimentalLifecycleComposeApi::class,
     ExperimentalFoundationApi::class,
 )
 @Composable
@@ -277,7 +274,6 @@ fun SearchAppBar(
     )
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun SearchRangeTextBox(dateRange: String, onClickTextBox: () -> Unit) {
     Box(
@@ -306,7 +302,6 @@ fun SearchRangeTextBox(dateRange: String, onClickTextBox: () -> Unit) {
 @OptIn(
     ExperimentalGlideComposeApi::class,
     ExperimentalMaterialApi::class,
-    ExperimentalUnitApi::class,
 )
 @Composable
 fun FilmCard(
