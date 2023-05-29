@@ -25,6 +25,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmActivity
+import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.settings.compose.SettingComposeActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
@@ -161,7 +162,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         true
                     }
                     R.id.item_search -> {
-                        startActivity(Intent(this@CalendarActivity, SearchFilmActivity::class.java))
+                        startActivity(Intent(this@CalendarActivity, SearchFilmComposeActivity::class.java))
                         true
                     }
                     else -> false
