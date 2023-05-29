@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.VideoItem
 import com.boostcamp.dailyfilm.data.selectvideo.GalleryVideoRepository
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
@@ -35,6 +37,9 @@ class SelectVideoViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<SelectVideoEvent>()
     val eventFlow: SharedFlow<SelectVideoEvent> = _eventFlow.asSharedFlow()
 
+    private val _videoItems = MutableStateFlow<PagingData<VideoItem>>(PagingData.empty())
+    val videoItems: StateFlow<PagingData<VideoItem>> get() = _videoItems
+
     fun navigateToUpload() {
         viewModelScope.launch {
             selectedVideo.value?.let { selectedVideoItem ->
@@ -61,8 +66,10 @@ class SelectVideoViewModel @Inject constructor(
         event(SelectVideoEvent.BackButtonResult(true))
     }
 
-    fun loadVideo(): Pager<Int, VideoItem> {
-        return selectVideoRepository.loadVideo()
+    fun loadVideo() {
+        selectVideoRepository.loadVideo().cachedIn(viewModelScope).onEach { pagingData ->
+            _videoItems.value = pagingData
+        }.launchIn(viewModelScope)
     }
 
     private fun event(event: SelectVideoEvent) {

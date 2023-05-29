@@ -78,6 +78,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
     // Optional - Integration with LiveData
     implementation 'androidx.compose.runtime:runtime-livedata'
+    // collectAsStateWithLifecycle()
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
 
 
     // Navigation
