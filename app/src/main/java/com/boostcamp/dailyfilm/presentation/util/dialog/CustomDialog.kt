@@ -19,44 +19,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.boostcamp.dailyfilm.R
-import com.boostcamp.dailyfilm.presentation.ui.theme.ComposeApplicationTheme
+import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
 
 @Composable
 fun CustomDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
-
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .clip(RoundedCornerShape(12.dp))
-                .background(color = Color.White)
+                .background(color = Color.White),
         ) {
             Text(
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .padding(horizontal = 24.dp),
                 text = text,
-                color = Color.Black
+                color = Color.Black,
             )
             Row(
                 modifier = Modifier
                     .padding(12.dp)
                     .align(Alignment.End)
-                    .padding(12.dp)
+                    .padding(12.dp),
             ) {
                 Text(
                     text = stringResource(id = R.string.dismiss),
                     modifier = Modifier
                         .padding(end = 20.dp)
                         .clickable(onClick = onDismiss),
-                    color = Color.Black
+                    color = Color.Black,
                 )
                 Text(
                     text = stringResource(id = R.string.confirm),
                     modifier = Modifier
                         .clickable(onClick = confirm),
-                    color = Color.Black
+                    color = Color.Black,
                 )
             }
         }
@@ -66,7 +65,7 @@ fun CustomDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
 @Preview
 @Composable
 fun PreviewSettingDialog() {
-    ComposeApplicationTheme {
+    DailyFilmTheme {
         CustomDialog("PreviewSettingDialog", {}, {})
     }
 }

@@ -1,38 +1,44 @@
 package com.boostcamp.dailyfilm.presentation.ui.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import com.example.composeapplication.ui.theme.Shapes
-import com.example.composeapplication.ui.theme.Typography
-import com.example.composeapplication.ui.theme.black
-import com.example.composeapplication.ui.theme.lightBlack
-import com.example.composeapplication.ui.theme.white
-
-private val DarkColorPalette = darkColors(
-    surface = lightBlack,
-    onSurface = white,
-    primary = black,
-    onPrimary = black,
-    background = lightBlack,
-    onBackground = white
-)
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val LightColorPalette = lightColors(
-    surface = white,
-    onSurface = black,
-    primary = black,
-    onPrimary = white,
-    background = white,
-    onBackground = black
+    primary = primary,
+    primaryVariant = primaryVariant,
+    background = background,
+    surface = surface,
+    error = error,
+    onPrimary = onPrimary,
+    onBackground = onBackground,
+    onSurface = onSurface,
+    onError = onError,
+)
+
+private val DarkColorPalette = darkColors(
+    primary = darkPrimary,
+    primaryVariant = darkPrimaryVariant,
+    background = darkBackground,
+    surface = darkSurface,
+    error = darkError,
+    onPrimary = darkOnPrimary,
+    onBackground = darkOnBackground,
+    onSurface = darkOnSurface,
+    onError = darkOnError,
 )
 
 @Composable
-fun ComposeApplicationTheme(
+fun DailyFilmTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colors = if (darkTheme) {
         DarkColorPalette
@@ -40,10 +46,19 @@ fun ComposeApplicationTheme(
         LightColorPalette
     }
 
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colors.primaryVariant.toArgb()
+            window.navigationBarColor = colors.primaryVariant.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme.not()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme.not()
+        }
+    }
+
     MaterialTheme(
         colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
+        content = content,
     )
 }
