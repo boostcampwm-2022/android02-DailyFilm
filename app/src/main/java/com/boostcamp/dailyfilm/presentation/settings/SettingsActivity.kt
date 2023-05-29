@@ -8,7 +8,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivitySettingsBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -44,6 +43,7 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(R.layout.activity
                         when (event) {
                             is SettingsEvent.Logout, SettingsEvent.DeleteUser -> logout()
                             is SettingsEvent.Back -> backToPrevious()
+                            else -> {}
                         }
                     }
                 }

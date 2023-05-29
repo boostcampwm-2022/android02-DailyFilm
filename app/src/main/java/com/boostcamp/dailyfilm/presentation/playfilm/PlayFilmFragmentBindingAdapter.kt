@@ -111,14 +111,14 @@ fun View.startVisibilityAnimation(showFlag: Boolean) {
         }
     }
 }
-@BindingAdapter(value = ["networkViewState", "playState"], requireAll = false)
+/*@BindingAdapter(value = ["networkViewState", "playState"], requireAll = false)
 fun TextView.setVisibility(networkState: NetworkState, playState: PlayState) {
     visibility = if(playState != PlayState.Playing && networkState == NetworkState.LOST) {
         View.VISIBLE
     } else {
         View.GONE
     }
-}
+}*/
 
 
 @BindingAdapter(value = ["playState"], requireAll = false)

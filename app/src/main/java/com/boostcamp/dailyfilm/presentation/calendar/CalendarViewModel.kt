@@ -70,7 +70,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun checkNetwork() {
-        _networkState.value = !NetworkManager.checkNetwork().value
+        _networkState.value = NetworkManager.checkNetwork().value
     }
 
     private fun getSpeed() {
