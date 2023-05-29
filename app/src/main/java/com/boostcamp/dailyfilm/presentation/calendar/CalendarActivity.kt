@@ -27,20 +27,18 @@ import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmActivity
 import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
-import com.boostcamp.dailyfilm.presentation.settings.SettingsActivity
+import com.boostcamp.dailyfilm.presentation.settings.compose.SettingComposeActivity
 import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 private val MINIMUM_VIDEO_DURATION_MS = 10000 // 최소 촬영 시간을 10초(ms)로 지정
 
@@ -159,7 +157,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                     }
                     R.id.item_settings -> {
                         startActivity(
-                            Intent(this@CalendarActivity, SettingsActivity::class.java)
+                            Intent(this@CalendarActivity, SettingComposeActivity::class.java)
                         )
                         true
                     }

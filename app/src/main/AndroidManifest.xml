@@ -64,6 +64,8 @@
         <activity
             android:name=".presentation.trimvideo.TrimVideoActivity"
             android:exported="false" />
+        <activity android:name=".presentation.settings.compose.SettingComposeActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
