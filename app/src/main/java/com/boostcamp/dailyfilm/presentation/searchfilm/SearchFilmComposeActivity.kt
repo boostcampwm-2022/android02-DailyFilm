@@ -44,7 +44,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -151,7 +151,6 @@ class SearchFilmComposeActivity : FragmentActivity() {
 
 @OptIn(
     ExperimentalLifecycleComposeApi::class,
-    ExperimentalUnitApi::class,
     ExperimentalFoundationApi::class,
 )
 @Composable
@@ -172,96 +171,38 @@ fun SearchView(viewModel: SearchFilmViewModel) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                TopAppBar(
-                    title = {
-                        if (titleVisibility) {
-                            Text("검색")
-                        } else {
-                            TextField(
-                                value = searchText,
-                                onValueChange = { searchText = it },
-                                singleLine = true,
-                                placeholder = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                                keyboardActions = KeyboardActions(onSearch = {
-                                    viewModel.searchKeyword(searchText)
-                                    focusManager.clearFocus()
-                                }),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    backgroundColor = colorResource(R.color.Background),
-                                    focusedIndicatorColor = colorResource(R.color.Background),
-                                    unfocusedIndicatorColor = colorResource(R.color.Background),
-                                ),
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { activity.finish() }) { Icon(Icons.Filled.ArrowBack, null) }
-                    },
-                    actions = {
-                        if (titleVisibility) {
-                            IconButton(
-                                onClick = {
-                                    focusManager.moveFocus(FocusDirection.Next)
-                                    titleVisibility = !titleVisibility
-                                },
-                            ) { Icon(Icons.Filled.Search, null) }
-                        } else {
-                            IconButton(
-                                onClick = {
-                                    titleVisibility = !titleVisibility
-                                    searchText = ""
-                                    viewModel.searchKeyword("")
-                                },
-                            ) { Icon(Icons.Filled.Close, null) }
-                        }
-                    },
-                    backgroundColor = colorResource(R.color.Background),
-                    elevation = 4.dp,
+                SearchAppBar(
+                    titleVisibility = titleVisibility,
+                    searchText = searchText,
+                    viewModel = viewModel,
+                    focusManager = focusManager,
+                    onVisibilityChange = { titleVisibility = it },
+                    onSearchTextChange = { searchText = it },
+                    onNavigationClick = { activity.finish() },
                 )
             },
         ) {
             Column {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .background(lightGray, RoundedCornerShape(4.dp))
-                        .padding(0.dp, 4.dp)
-                        .clickable {
-                            val datePicker = MaterialDatePicker.Builder
-                                .dateRangePicker()
-                                .setTitleText("Select Date Range")
-                                .apply {
-                                    if (viewModel.startAt != null && viewModel.endAt != null) {
-                                        setSelection(Pair(viewModel.startAt, viewModel.endAt))
-                                    }
-                                }
-                                .build()
-
-                            datePicker.apply {
-                                addOnPositiveButtonClickListener { selection ->
-                                    viewModel.searchDateRange(selection.first, selection.second)
-                                    dateRange = "${dottedDateFormat.format(selection.first)} ~ ${
-                                        dottedDateFormat.format(selection.second)
-                                    }"
-                                }
-                                show(activity.supportFragmentManager, SearchFilmActivity.TAG_DATE_PICKER)
+                SearchRangeTextBox(dateRange = dateRange) {
+                    val datePicker = MaterialDatePicker.Builder
+                        .dateRangePicker()
+                        .setTitleText("Select Date Range")
+                        .apply {
+                            if (viewModel.startAt != null && viewModel.endAt != null) {
+                                setSelection(Pair(viewModel.startAt, viewModel.endAt))
                             }
-                        },
-                ) {
-                    Icon(Icons.Filled.DateRange, null, modifier = Modifier.padding(4.dp), tint = Color.Black)
-                    Text(
-                        text = dateRange,
-                        modifier = Modifier.align(Alignment.Center),
-                        color = Color.Black,
-                        maxLines = 1,
-                        style = TextStyle(
-                            textAlign = TextAlign.Center,
-                            fontSize = TextUnit(20F, TextUnitType.Sp),
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
+                        }
+                        .build()
+
+                    datePicker.apply {
+                        addOnPositiveButtonClickListener { selection ->
+                            viewModel.searchDateRange(selection.first, selection.second)
+                            dateRange = "${dottedDateFormat.format(selection.first)} ~ ${
+                                dottedDateFormat.format(selection.second)
+                            }"
+                        }
+                        show(activity.supportFragmentManager, SearchFilmActivity.TAG_DATE_PICKER)
+                    }
                 }
                 LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = it) {
                     itemsIndexed(
@@ -277,6 +218,88 @@ fun SearchView(viewModel: SearchFilmViewModel) {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SearchAppBar(
+    titleVisibility: Boolean,
+    searchText: String,
+    viewModel: SearchFilmViewModel,
+    focusManager: FocusManager,
+    onVisibilityChange: (Boolean) -> Unit,
+    onSearchTextChange: (String) -> Unit,
+    onNavigationClick: () -> Unit,
+) {
+    TopAppBar(
+        title = {
+            if (titleVisibility) {
+                Text("검색")
+            } else {
+                TextField(
+                    value = searchText,
+                    onValueChange = onSearchTextChange,
+                    singleLine = true,
+                    placeholder = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = {
+                        viewModel.searchKeyword(searchText)
+                        focusManager.clearFocus()
+                    }),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = colorResource(R.color.Background),
+                        focusedIndicatorColor = colorResource(R.color.Background),
+                        unfocusedIndicatorColor = colorResource(R.color.Background),
+                    ),
+                )
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigationClick) { Icon(Icons.Filled.ArrowBack, null) }
+        },
+        actions = {
+            if (titleVisibility) {
+                IconButton(
+                    onClick = { onVisibilityChange(false) },
+                ) { Icon(Icons.Filled.Search, null) }
+            } else {
+                IconButton(
+                    onClick = {
+                        onVisibilityChange(true)
+                        onSearchTextChange("")
+                        viewModel.searchKeyword("")
+                    },
+                ) { Icon(Icons.Filled.Close, null) }
+            }
+        },
+        backgroundColor = colorResource(R.color.Background),
+        elevation = 4.dp,
+    )
+}
+
+@OptIn(ExperimentalUnitApi::class)
+@Composable
+fun SearchRangeTextBox(dateRange: String, onClickTextBox: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(lightGray, RoundedCornerShape(4.dp))
+            .padding(0.dp, 4.dp)
+            .clickable { onClickTextBox() },
+    ) {
+        Icon(Icons.Filled.DateRange, null, modifier = Modifier.padding(4.dp), tint = Color.Black)
+        Text(
+            text = dateRange,
+            modifier = Modifier.align(Alignment.Center),
+            color = Color.Black,
+            maxLines = 1,
+            style = TextStyle(
+                textAlign = TextAlign.Center,
+                fontSize = TextUnit(20F, TextUnitType.Sp),
+                fontWeight = FontWeight.Bold,
+            ),
+        )
     }
 }
 
@@ -319,12 +342,9 @@ fun FilmCard(
                 )
             }
             Text(
-                text = "${item.updateDate.substring(0, 4)}년 ${
-                    item.updateDate.substring(
-                        4,
-                        6,
-                    )
-                }월 ${item.updateDate.substring(6)}일",
+                text = "${item.updateDate.substring(0, 4)}년 " +
+                    "${item.updateDate.substring(4, 6)}월 " +
+                    "${item.updateDate.substring(6)}일",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(0.dp, 8.dp, 0.dp, 0.dp),
