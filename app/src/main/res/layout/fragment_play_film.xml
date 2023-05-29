@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="com.boostcamp.dailyfilm.presentation.util.PlayState"/>
+        <import type="com.boostcamp.dailyfilm.presentation.util.network.NetworkState"/>
         <import type="android.view.View" />
 
         <variable
@@ -29,8 +30,7 @@
             android:gravity="center"
             android:background="@color/gray"
             android:textColor="@color/white"
-            networkViewState="@{viewModel.networkState}"
-            playState="@{viewModel.playState}"
+            android:visibility="@{(!(viewModel.playState instanceof PlayState.Playing) &amp;&amp; viewModel.networkState == NetworkState.LOST) ? View.VISIBLE : View.GONE}"
             tools:visibility="visible"
             android:textSize="13sp"
             android:text="@string/connect_network"/>

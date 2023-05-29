@@ -7,15 +7,12 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
 }
-
 def localPropertiesFile = project.rootProject.file('local.properties')
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
-
 android {
     namespace 'com.boostcamp.dailyfilm'
     compileSdk 33
-
     defaultConfig {
         applicationId "com.boostcamp.dailyfilm"
         minSdk 24
@@ -26,7 +23,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "ko-rKR", "ko"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -38,7 +34,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -48,18 +44,17 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion '1.4.7'
     }
 }
 
 dependencies {
-
     def nav_version = "2.5.3"
     def hilt_version = "2.44"
     def room_version = "2.4.3"
     def lifecycle_version = "2.6.0-alpha03"
-    def pagingVersion = "3.1.1"
     def pagingComposeVersion = "1.0.0-alpha19"
+    def pagingVersion = "3.1.1"
     def glide_version = "4.14.2"
     def glide_compose_version = "1.0.0-alpha.1"
 
@@ -67,6 +62,7 @@ dependencies {
     def composeBom = platform('androidx.compose:compose-bom:2023.04.01')
     implementation composeBom
     androidTestImplementation composeBom
+    implementation "androidx.compose.material:material"
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.ui:ui'
     // Android Studio Preview support
@@ -78,38 +74,31 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
     // Optional - Integration with LiveData
     implementation 'androidx.compose.runtime:runtime-livedata'
-
+    // collectAsStateWithLifecycle()
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
-
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.0.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
-
     // Firebase Storage
     implementation 'com.google.firebase:firebase-storage-ktx'
-
     // Firebase Realtime Database
     implementation 'com.google.firebase:firebase-database-ktx'
-
     // Firebase Google Auth
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.google.android.gms:play-services-auth:20.3.0'
-
     // Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
@@ -121,25 +110,18 @@ dependencies {
 
     // Exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
-
     // Coordinator-layout
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-
     // ffmpeg
     implementation 'com.github.TTC1018:android-video-trimmer:0.1.5-async'
     implementation 'com.arthenica:mobile-ffmpeg-min-gpl:4.4'
-
     // lottie
     implementation 'com.airbnb.android:lottie:5.0.2'
-
-
     // dataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore-core:1.0.0")
-
     // keyboard
     implementation 'com.github.yshrsmz:KeyboardVisibilityEvent:v3.0.0-RC3'
-
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
@@ -147,6 +129,9 @@ dependencies {
     // mockito
     testImplementation 'org.mockito:mockito-inline:2.21.0'
     testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }

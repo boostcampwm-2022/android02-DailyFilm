@@ -18,7 +18,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivitySelectVideoBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.FLAG_FROM_VIEW
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_DATE_MODEL
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_STATE
@@ -42,6 +41,11 @@ class SelectVideoActivity :
     override fun initView() {
 
         binding.viewModel = viewModel
+        binding.mediaListCompose.setContent {
+            VideoLists(
+                viewModel = viewModel
+            )
+        }
         checkPermission()
         setObserveUserEvent()
     }

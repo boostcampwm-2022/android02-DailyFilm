@@ -13,9 +13,9 @@ interface GalleryVideoRepository {
 class GalleryVideoRepositoryImpl @Inject constructor(
     private val contentResolver: ContentResolver
 ) : GalleryVideoRepository {
-    override fun loadVideo(): Flow<PagingData<VideoItem>> {
-        return Pager(config = PagingConfig(pageSize = GalleryPagingSource.PAGING_SIZE)) {
-            GalleryPagingSource(contentResolver)
-        }.flow
-    }
+
+    override fun loadVideo(): Flow<PagingData<VideoItem>> = Pager(config = PagingConfig(pageSize = GalleryPagingSource.PAGING_SIZE)) {
+        GalleryPagingSource(contentResolver)
+    }.flow
+
 }
