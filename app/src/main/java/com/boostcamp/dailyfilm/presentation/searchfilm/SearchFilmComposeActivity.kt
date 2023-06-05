@@ -27,6 +27,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -49,7 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -244,9 +244,9 @@ fun SearchAppBar(
                         focusManager.clearFocus()
                     }),
                     colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = colorResource(R.color.Background),
-                        focusedIndicatorColor = colorResource(R.color.Background),
-                        unfocusedIndicatorColor = colorResource(R.color.Background),
+                        backgroundColor = MaterialTheme.colors.background,
+                        focusedIndicatorColor = MaterialTheme.colors.background,
+                        unfocusedIndicatorColor = MaterialTheme.colors.background,
                     ),
                 )
             }
@@ -269,7 +269,7 @@ fun SearchAppBar(
                 ) { Icon(Icons.Filled.Close, null) }
             }
         },
-        backgroundColor = colorResource(R.color.Background),
+        backgroundColor = MaterialTheme.colors.background,
         elevation = 4.dp,
     )
 }
@@ -325,7 +325,7 @@ fun FilmCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(3 / 4F),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.FillBounds,
             ) {
                 it.thumbnail(
                     requestManager
