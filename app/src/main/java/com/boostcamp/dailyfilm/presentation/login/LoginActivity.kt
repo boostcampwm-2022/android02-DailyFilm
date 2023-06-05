@@ -33,7 +33,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
 
     override fun initView() {
         setGoogleLogin()
-        setObserveLoginResult()
+        //setObserveLoginResult()
     }
 
     override fun onStart() {
@@ -52,7 +52,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         }
     }
 
-    private fun setObserveLoginResult() {
+/*    private fun setObserveLoginResult() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
@@ -75,7 +75,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                 }
             }
         }
-    }
+    }*/
 
     private fun showSnackBarMessage(message: String) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
