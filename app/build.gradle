@@ -22,6 +22,9 @@ android {
         buildConfigField "String", "DATABASE_URL", localProperties["database.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "ko-rKR", "ko"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
     buildTypes {
         release {
@@ -46,9 +49,18 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.7'
     }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
 }
 
 dependencies {
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation 'androidx.compose.ui:ui-graphics'
+    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
     def nav_version = "2.5.3"
     def hilt_version = "2.44"
     def room_version = "2.4.3"
@@ -109,7 +121,7 @@ dependencies {
     implementation "androidx.paging:paging-compose:$pagingComposeVersion"
 
     // Exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
     // Coordinator-layout
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     // ffmpeg
