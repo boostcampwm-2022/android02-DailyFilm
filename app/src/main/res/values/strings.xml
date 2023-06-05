@@ -52,4 +52,6 @@
     <string name="delete_user_description">정말 탈퇴 하시겠습니까?</string>
     <string name="account">계정</string>
     <string name="setting_toolbar_title">설정 화면</string>
+    <string name="title_activity_total_compose">TotalComposeActivity</string>
+    <string name="failed_google_login">Failed Google Login</string>
 </resources>
