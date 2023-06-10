@@ -3,7 +3,6 @@ package com.boostcamp.dailyfilm.presentation.selectvideo
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.boostcamp.dailyfilm.data.model.VideoItem

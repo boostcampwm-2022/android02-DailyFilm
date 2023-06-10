@@ -15,7 +15,7 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="350dp"
-            android:src="@mipmap/img_logo"
+            android:src="@mipmap/app_logo"
             app:layout_constraintBottom_toTopOf="@+id/btn_login_google_auth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"

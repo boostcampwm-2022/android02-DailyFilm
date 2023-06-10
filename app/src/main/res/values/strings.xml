@@ -43,10 +43,15 @@
     <string name="select_date_range">검색 범위 선택</string>
     <string name="desc_search_range">검색 범위를 설정하세요.</string>
     <string name="setting">설정</string>
+    <string name="dailyfilm_logo">데일리필름 로고</string>
+    <string name="google_logo">구글 로고</string>
+    <string name="sign_in_with_google">구글계정으로 로그인하기</string>
     <string name="confirm">확인</string>
     <string name="dismiss">취소</string>
     <string name="logOut_description">정말 로그아웃 하시겠습니까?</string>
     <string name="delete_user_description">정말 탈퇴 하시겠습니까?</string>
     <string name="account">계정</string>
     <string name="setting_toolbar_title">설정 화면</string>
+    <string name="title_activity_total_compose">TotalComposeActivity</string>
+    <string name="failed_google_login">Failed Google Login</string>
 </resources>
