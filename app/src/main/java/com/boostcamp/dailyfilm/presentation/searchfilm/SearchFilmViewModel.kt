@@ -2,6 +2,9 @@ package com.boostcamp.dailyfilm.presentation.searchfilm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.filter
 import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.sync.SyncRepository
@@ -13,6 +16,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchFilmViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository,
-    private val syncRepository: SyncRepository
+    private val syncRepository: SyncRepository,
 ) : ViewModel() {
 
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -34,6 +39,9 @@ class SearchFilmViewModel @Inject constructor(
 
     private val _itemListFlow = MutableStateFlow<List<DailyFilmItem?>>(emptyList())
     val itemListFlow: StateFlow<List<DailyFilmItem?>> = _itemListFlow.asStateFlow()
+
+    private val _itemPageFlow = MutableStateFlow<PagingData<DailyFilmItem>>(PagingData.empty())
+    val itemPageFlow: StateFlow<PagingData<DailyFilmItem>> = _itemPageFlow.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<SearchEvent>()
     val eventFlow: SharedFlow<SearchEvent> = _eventFlow.asSharedFlow()
@@ -66,17 +74,20 @@ class SearchFilmViewModel @Inject constructor(
                 }
             }
 
-            _itemListFlow.emit(calendarRepository.loadFilm(start, end))
+            calendarRepository.loadPagedFilm(dateFormat.format(startAt), dateFormat.format(endAt)).cachedIn(viewModelScope)
+                .onEach { pagingData ->
+                    _itemPageFlow.emit(pagingData)
+                }.launchIn(viewModelScope)
         }
     }
 
     fun searchKeyword(query: String) {
         viewModelScope.launch {
             if (startAt != null && endAt != null) {
-                _itemListFlow.emit(
-                    calendarRepository.loadFilm(dateFormat.format(startAt), dateFormat.format(endAt))
-                        .filter { it?.text?.contains(query) ?: false }
-                )
+                calendarRepository.loadPagedFilm(dateFormat.format(startAt), dateFormat.format(endAt)).cachedIn(viewModelScope)
+                    .onEach { pagingData ->
+                        _itemPageFlow.emit(pagingData.filter { it.text.contains(query) })
+                    }.launchIn(viewModelScope)
             }
         }
     }

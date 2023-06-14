@@ -1,5 +1,9 @@
 package com.boostcamp.dailyfilm.data.calendar
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.boostcamp.dailyfilm.data.calendar.CalendarPagingSource.Companion.PAGING_SIZE
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.model.Result
 import kotlinx.coroutines.flow.Flow
@@ -10,11 +14,13 @@ interface CalendarRepository {
 
     suspend fun loadFilm(startAt: String, endAt: String): List<DailyFilmItem?>
 
+    suspend fun loadPagedFilm(startAt: String, endAt: String): Flow<PagingData<DailyFilmItem>>
+
     suspend fun deleteAllData(): Result<Unit>
 }
 
 class CalendarRepositoryImpl(
-    private val calendarLocalDataSource: CalendarDataSource
+    private val calendarLocalDataSource: CalendarDataSource,
 ) : CalendarRepository {
 
     override fun loadFilmInfo(startAt: String, endAt: String): Flow<List<DailyFilmItem?>> =
@@ -28,6 +34,11 @@ class CalendarRepositoryImpl(
         calendarLocalDataSource.loadFilm(startAt.toInt(), endAt.toInt()).map { filmEntity ->
             filmEntity?.mapToDailyFilmItem()
         }
+
+    override suspend fun loadPagedFilm(startAt: String, endAt: String): Flow<PagingData<DailyFilmItem>> =
+        Pager(config = PagingConfig(pageSize = PAGING_SIZE)) {
+            CalendarPagingSource(startAt.toInt(), endAt.toInt(), calendarLocalDataSource)
+        }.flow
 
     override suspend fun deleteAllData(): Result<Unit> =
         calendarLocalDataSource.deleteAllData()
