@@ -179,7 +179,7 @@ fun DialogUI(viewModel: SettingsViewModel) {
             onDismiss = {
                 viewModel.closeDialog()
             },
-            confirm = openDialog.execution,
+            confirm = openDialog.confirm,
         )
     }
 }
