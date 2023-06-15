@@ -30,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -110,6 +110,8 @@ dependencies {
 
     // Exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+    implementation 'androidx.media3:media3-exoplayer:1.1.0-alpha01'
+    implementation "androidx.media3:media3-ui:1.1.0-alpha01"
     // Coordinator-layout
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     // ffmpeg
@@ -117,6 +119,7 @@ dependencies {
     implementation 'com.arthenica:mobile-ffmpeg-min-gpl:4.4'
     // lottie
     implementation 'com.airbnb.android:lottie:5.0.2'
+    implementation "com.airbnb.android:lottie-compose:5.0.2"
     // dataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore-core:1.0.0")
