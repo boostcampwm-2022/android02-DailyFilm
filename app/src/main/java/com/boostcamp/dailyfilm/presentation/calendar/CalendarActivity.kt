@@ -24,7 +24,6 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
 import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
-import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmActivity
 import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.settings.compose.SettingComposeActivity

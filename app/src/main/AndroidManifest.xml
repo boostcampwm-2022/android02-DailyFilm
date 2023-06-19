@@ -30,9 +30,6 @@
             android:name=".presentation.searchfilm.SearchFilmComposeActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.searchfilm.SearchFilmActivity"
-            android:exported="false" />
-        <activity
             android:name=".presentation.settings.SettingsActivity"
             android:exported="false" />
         <activity

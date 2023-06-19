@@ -189,7 +189,7 @@ class SearchFilmComposeActivity : FragmentActivity() {
                                     dottedDateFormat.format(selection.second)
                                 }"
                             }
-                            show(supportFragmentManager, SearchFilmActivity.TAG_DATE_PICKER)
+                            show(supportFragmentManager, TAG_DATE_PICKER)
                         }
                     }
                     LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = it) {
@@ -354,5 +354,9 @@ class SearchFilmComposeActivity : FragmentActivity() {
     @Preview(showBackground = true)
     @Composable
     private fun DefaultPreview() {
+    }
+
+    companion object {
+        const val TAG_DATE_PICKER = "datePicker"
     }
 }

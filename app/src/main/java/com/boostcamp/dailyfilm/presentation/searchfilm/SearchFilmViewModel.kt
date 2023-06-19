@@ -30,7 +30,6 @@ class SearchFilmViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-    private val dottedDateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
     var startAt: Long? = null
         private set
     var endAt: Long? = null
@@ -46,19 +45,10 @@ class SearchFilmViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<SearchEvent>()
     val eventFlow: SharedFlow<SearchEvent> = _eventFlow.asSharedFlow()
 
-    private val _startDateFlow = MutableStateFlow<String?>(null)
-    val startDateFlow: StateFlow<String?> = _startDateFlow.asStateFlow()
-
-    private val _endDateFlow = MutableStateFlow<String?>(null)
-    val endDateFlow: StateFlow<String?> = _endDateFlow.asStateFlow()
-
     fun searchDateRange(startAt: Long, endAt: Long) {
-        this.startAt = startAt
-        this.endAt = endAt
-
         viewModelScope.launch {
-            _startDateFlow.tryEmit(dottedDateFormat.format(startAt))
-            _endDateFlow.tryEmit(dottedDateFormat.format(endAt))
+            this@SearchFilmViewModel.startAt = startAt
+            this@SearchFilmViewModel.endAt = endAt
 
             val start = dateFormat.format(startAt)
             val end = dateFormat.format(endAt)
@@ -74,7 +64,8 @@ class SearchFilmViewModel @Inject constructor(
                 }
             }
 
-            calendarRepository.loadPagedFilm(dateFormat.format(startAt), dateFormat.format(endAt)).cachedIn(viewModelScope)
+            _itemListFlow.emit(calendarRepository.loadFilm(start, end))
+            calendarRepository.loadPagedFilm(start, end).cachedIn(viewModelScope)
                 .onEach { pagingData ->
                     _itemPageFlow.emit(pagingData)
                 }.launchIn(viewModelScope)
@@ -84,7 +75,10 @@ class SearchFilmViewModel @Inject constructor(
     fun searchKeyword(query: String) {
         viewModelScope.launch {
             if (startAt != null && endAt != null) {
-                calendarRepository.loadPagedFilm(dateFormat.format(startAt), dateFormat.format(endAt)).cachedIn(viewModelScope)
+                val start = dateFormat.format(startAt)
+                val end = dateFormat.format(endAt)
+                _itemListFlow.emit(calendarRepository.loadFilm(start, end).filter { it?.text?.contains(query) ?: false })
+                calendarRepository.loadPagedFilm(start, end).cachedIn(viewModelScope)
                     .onEach { pagingData ->
                         _itemPageFlow.emit(pagingData.filter { it.text.contains(query) })
                     }.launchIn(viewModelScope)
