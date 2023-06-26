@@ -30,32 +30,28 @@ class TotalFilmViewModel @Inject constructor(
     private val _downloadedVideoUri = MutableSharedFlow<Uri?>()
     val downloadedVideoUri: SharedFlow<Uri?> = _downloadedVideoUri.asSharedFlow()
 
-    private val _isContentShowed = MutableLiveData(true)
-    val isContentShowed: LiveData<Boolean> get() = _isContentShowed
+    private val _isContentShowed = MutableStateFlow(true)
+    val isContentShowed: StateFlow<Boolean> get() = _isContentShowed
 
-    private val _isMuted = MutableLiveData(false)
-    val isMuted: LiveData<Boolean> get() = _isMuted
+    private val _isMuted = MutableStateFlow(false)
+    val isMuted: StateFlow<Boolean> get() = _isMuted
 
     private val _isEnded = MutableStateFlow(false)
     val isEnded: StateFlow<Boolean> get() = _isEnded.asStateFlow()
 
-    private val _isSpeed = MutableLiveData(SpeedState.values()[speedIndex ?: 2])
-    val isSpeed: LiveData<SpeedState> get() = _isSpeed
+    private val _isSpeed = MutableStateFlow(SpeedState.values()[speedIndex ?: 2])
+    val isSpeed: StateFlow<SpeedState> get() = _isSpeed
 
     fun setCurrentDateItem(dateModel: DateModel) {
         _currentDateItem.value = dateModel
     }
 
-    init {
-        loadVideos()
-    }
-
     fun changeShowState() {
-        _isContentShowed.value = _isContentShowed.value?.not()
+        _isContentShowed.value = _isContentShowed.value.not()
     }
 
     fun changeMuteState() {
-        _isMuted.value = _isMuted.value?.not()
+        _isMuted.value = _isMuted.value.not()
     }
 
     fun changeEndState() {
@@ -74,7 +70,7 @@ class TotalFilmViewModel @Inject constructor(
         }
     }
 
-    private fun loadVideos() {
+    fun loadVideos() {
         viewModelScope.launch {
             filmArray?.forEach { dateModel ->
                 yield()
@@ -103,11 +99,13 @@ class TotalFilmViewModel @Inject constructor(
                                                             }
                                                         }
                                                 }
+
                                                 is Result.Error -> {}
                                             }
                                         }
                                 }
                             }
+
                             is Result.Error -> {}
                         }
                     }
