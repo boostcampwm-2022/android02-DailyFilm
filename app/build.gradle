@@ -140,6 +140,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     // mockito
     testImplementation 'org.mockito:mockito-inline:2.21.0'
+
+    implementation "com.airbnb.android:lottie-compose:5.0.2"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
