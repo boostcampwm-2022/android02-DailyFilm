@@ -19,6 +19,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
+import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.gowtham.library.utils.CompressOption
 import com.gowtham.library.utils.TrimType
@@ -100,7 +101,7 @@ class TrimVideoActivity : BaseActivity<ActivityTrimViedoBinding>(R.layout.activi
 
     private fun moveToUpload(trimAndVideoModel: DateAndVideoModel, startTime: Long) {
         startActivity(
-            Intent(this, UploadFilmActivity::class.java).apply {
+            Intent(this, UploadFilmComposeActivity::class.java).apply {
                 putExtra(DATE_VIDEO_ITEM, trimAndVideoModel)
                 putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
                 putExtra(KEY_INFO_ITEM, viewModel.infoItem)
