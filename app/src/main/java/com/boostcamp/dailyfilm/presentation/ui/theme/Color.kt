@@ -9,7 +9,7 @@ val lightBlack = Color(0xFF202022)
 val lightGray = Color(0xFFE1E1E1)
 
 val primary = lightBlack
-val primaryVariant = white
+val primaryVariant = blackBlur
 val background = white
 val surface = white
 val error = Color(0xFFB00020)
