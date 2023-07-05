@@ -37,6 +37,7 @@ private val DarkColorPalette = darkColors(
 
 @Composable
 fun DailyFilmTheme(
+    activity: Activity = (LocalView.current.context as Activity),
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
@@ -49,7 +50,7 @@ fun DailyFilmTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
+            val window = activity.window
             window.statusBarColor = colors.primaryVariant.toArgb()
             window.navigationBarColor = colors.primaryVariant.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme.not()

@@ -9,6 +9,7 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.boostcamp.dailyfilm.R
@@ -18,6 +19,7 @@ import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivityViewModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmBottomSheetDialog
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmViewModel
+import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,15 +54,18 @@ class PlayFilmComposeFragment :
 
     @SuppressLint("ShowToast")
     override fun initView() {
-        binding.playFilmCompose.setContent {
-//            DailyFilmTheme {
-                PlayFilmUI(
-                    requireActivity(),
-                    startForResult,
-                    activityViewModel = activityViewModel,
-                    viewModel = viewModel
-                )
-//            }
+        binding.playFilmCompose.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                DailyFilmTheme(requireActivity()) {
+                    PlayFilmUI(
+                        requireActivity(),
+                        startForResult,
+                        activityViewModel = activityViewModel,
+                        viewModel = viewModel
+                    )
+                }
+            }
         }
         initBinding()
         initDialog()
