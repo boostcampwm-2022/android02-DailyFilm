@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
@@ -41,10 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.compose.LottieAnimatable
 import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -111,8 +107,8 @@ fun PlayView(
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    val isMuted = viewModel.isMuted.collectAsStateWithLifecycle().value
-    val isContentShowed = viewModel.isContentShowed.collectAsStateWithLifecycle().value
+    val muteState = viewModel.muteState.collectAsStateWithLifecycle().value
+    val contentShowState = viewModel.contentShowState.collectAsStateWithLifecycle().value
     val dateModel = viewModel.dateModel
 
     val soundComposition by rememberLottieComposition(
@@ -125,24 +121,16 @@ fun PlayView(
     val textAnimatable = rememberLottieAnimatable()
 
     // LottieAnimation
-    LaunchedEffect(isMuted) {
+    LaunchedEffect(muteState.state) {
         soundAnimatable.animate(
             composition = soundComposition,
-            clipSpec = if (isMuted) {
-                LottieClipSpec.Progress(0.0f, 0.5f)
-            } else {
-                LottieClipSpec.Progress(0.5f, 1.0f)
-            },
+            clipSpec = muteState.clipSpec,
         )
     }
 
-    LaunchedEffect(isContentShowed) {
+    LaunchedEffect(contentShowState.state) {
         textAnimatable.animate(
-            composition = textComposition, clipSpec = if (isContentShowed) {
-                LottieClipSpec.Progress(0.67f, 0.25f)
-            } else {
-                LottieClipSpec.Progress(0.25f, 0.67f)
-            }
+            composition = textComposition, clipSpec = contentShowState.clipSpec
         )
     }
 
@@ -210,11 +198,11 @@ fun PlayView(
                         .background(blackBlur, RoundedCornerShape(4.dp))
                         .padding(4.dp)
                         .size(dimensionResource(id = R.dimen.normal_175))
-                        .clickable { viewModel.changeMuteState() })
+                        .clickable { muteState.updateState() })
             }
 
             AnimatedVisibility(
-                visible = isContentShowed,
+                visible = contentShowState.state,
                 modifier = Modifier.align(Alignment.Center),
                 enter = fadeIn(),
                 exit = fadeOut()
@@ -243,7 +231,7 @@ fun PlayView(
                     .background(blackBlur, RoundedCornerShape(50.dp))
                     .size(dimensionResource(id = R.dimen.large_200))
                     .padding(4.dp)
-                    .clickable { viewModel.changeShowState() })
+                    .clickable { contentShowState.updateState() })
         }
     }
 

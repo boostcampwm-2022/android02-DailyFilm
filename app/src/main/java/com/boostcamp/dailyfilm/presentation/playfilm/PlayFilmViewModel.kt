@@ -11,6 +11,8 @@ import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.playfilm.PlayFilmRepository
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
+import com.boostcamp.dailyfilm.presentation.playfilm.base.ContentShowState
+import com.boostcamp.dailyfilm.presentation.playfilm.base.MuteState
 import com.boostcamp.dailyfilm.presentation.util.PlayState
 import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
@@ -37,11 +39,11 @@ class PlayFilmViewModel @Inject constructor(
     private val _videoUri = MutableLiveData<Uri?>()
     val videoUri: LiveData<Uri?> get() = _videoUri
 
-    private val _isContentShowed = MutableStateFlow(true)
-    val isContentShowed: StateFlow<Boolean> get() = _isContentShowed
+    private val _contentShowState = MutableStateFlow(ContentShowState(true))
+    val contentShowState: StateFlow<ContentShowState> get() = _contentShowState
 
-    private val _isMuted = MutableStateFlow(false)
-    val isMuted: StateFlow<Boolean> get() = _isMuted
+    private val _muteState = MutableStateFlow(MuteState(false))
+    val muteState: StateFlow<MuteState> get() = _muteState
 
     private val _playState = MutableStateFlow<PlayState>(PlayState.Uninitialized)
     val playState: StateFlow<PlayState> get() = _playState
@@ -75,14 +77,6 @@ class PlayFilmViewModel @Inject constructor(
     fun setDateModel(text: String) {
         dateModel = dateModel.copy(text = text)
         _text.value = text
-    }
-
-    fun changeShowState() {
-        _isContentShowed.value = isContentShowed.value.not()
-    }
-
-    fun changeMuteState() {
-        _isMuted.value = isMuted.value.not()
     }
 
     fun setNetworkState(state: NetworkState) {
