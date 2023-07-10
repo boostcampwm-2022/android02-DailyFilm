@@ -30,11 +30,15 @@ class SearchFilmViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+    private val dottedDateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: error("Unknown User")
     var startAt: Long? = null
         private set
     var endAt: Long? = null
         private set
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: error("Unknown User")
+
+    private val _dateRangeFlow = MutableStateFlow<String>("검색 범위를 설정하세요")
+    val dateRangeFlow: StateFlow<String> = _dateRangeFlow.asStateFlow()
 
     private val _itemListFlow = MutableStateFlow<List<DailyFilmItem?>>(emptyList())
     val itemListFlow: StateFlow<List<DailyFilmItem?>> = _itemListFlow.asStateFlow()
@@ -49,6 +53,7 @@ class SearchFilmViewModel @Inject constructor(
         viewModelScope.launch {
             this@SearchFilmViewModel.startAt = startAt
             this@SearchFilmViewModel.endAt = endAt
+            _dateRangeFlow.emit("${dottedDateFormat.format(startAt)} ~ ${dottedDateFormat.format(endAt)}")
 
             val start = dateFormat.format(startAt)
             val end = dateFormat.format(endAt)
@@ -90,6 +95,14 @@ class SearchFilmViewModel @Inject constructor(
         event(SearchEvent.ItemClickEvent(index))
     }
 
+    fun showDatePicker() {
+        event(SearchEvent.DatePickerEvent)
+    }
+
+    fun onNavigationClick() {
+        event(SearchEvent.FinishEvent)
+    }
+
     private fun event(event: SearchEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)
@@ -99,4 +112,6 @@ class SearchFilmViewModel @Inject constructor(
 
 sealed class SearchEvent {
     data class ItemClickEvent(val index: Int) : SearchEvent()
+    object DatePickerEvent : SearchEvent()
+    object FinishEvent : SearchEvent()
 }
