@@ -63,11 +63,8 @@ class PlayFilmViewModel @Inject constructor(
     init {
         loadVideo()
     }
-    fun openDialog() {
-        _openDialog.value = true
-    }
-    fun closeDialog() {
-        _openDialog.value = false
+    fun setDialog(value: Boolean) {
+        _openDialog.value = value
     }
 
     private fun checkNetwork() {

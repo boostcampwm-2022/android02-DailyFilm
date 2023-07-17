@@ -15,11 +15,19 @@ import androidx.fragment.app.viewModels
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.FragmentPlayFilmComposeBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
+import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity.Companion.KEY_EDIT_STATE
+import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivityViewModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmBottomSheetDialog
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmViewModel
+import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
+import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
+import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
+import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,9 +68,69 @@ class PlayFilmComposeFragment :
                 DailyFilmTheme(requireActivity()) {
                     PlayFilmUI(
                         requireActivity(),
-                        startForResult,
-                        activityViewModel = activityViewModel,
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        setResultCalendar = { state ->
+                            activity?.let {
+                                it.setResult(
+                                    RESULT_OK, Intent(
+                                        it, CalendarActivity::class.java
+                                    ).apply {
+                                        putExtra(
+                                            KEY_CALENDAR_INDEX,
+                                            activityViewModel.calendarIndex
+                                        )
+                                        putExtra(KEY_DATE_MODEL, state.dateModel)
+                                    })
+                                it.finish()
+                            }
+                        },
+                        dialogEvent = { resId ->
+                            when(resId) {
+                                R.string.delete -> {
+                                    viewModel.setDialog(true)
+                                }
+                                R.string.re_upload -> {
+                                    activity?.let {
+                                        it.startActivity(
+                                            Intent(
+                                                it.applicationContext, SelectVideoActivity::class.java
+                                            ).apply {
+                                                putExtra(
+                                                    KEY_CALENDAR_INDEX,
+                                                    activityViewModel.calendarIndex
+                                                )
+                                                putExtra(KEY_DATE_MODEL, viewModel.dateModel)
+                                                putExtra(KEY_EDIT_STATE, EditState.RE_UPLOAD)
+                                                putExtra(
+                                                    DATE_VIDEO_ITEM,
+                                                    DateAndVideoModel(
+                                                        viewModel.videoUri.value ?: return@PlayFilmUI,
+                                                        viewModel.dateModel.getDate()
+                                                    )
+                                                )
+                                            }
+                                        )
+                                        it.finish()
+                                    }
+                                }
+                                R.string.edit_text -> {
+                                    startForResult.launch(
+                                        Intent(activity?.applicationContext, UploadFilmActivity::class.java).apply {
+                                            putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
+                                            putExtra(
+                                                DATE_VIDEO_ITEM,
+                                                DateAndVideoModel(
+                                                    viewModel.videoUri.value ?: return@PlayFilmUI,
+                                                    viewModel.dateModel.getDate()
+                                                )
+                                            )
+                                            putExtra(KEY_EDIT_STATE, EditState.EDIT_CONTENT)
+                                            putExtra(KEY_DATE_MODEL, viewModel.dateModel)
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     )
                 }
             }
@@ -113,7 +181,6 @@ class PlayFilmComposeFragment :
 
     companion object {
         const val KEY_DATE_MODEL = "dateModel"
-        const val BOTTOM_SHEET_TAG = "bottomSheet"
         const val KET_EDIT_TEXT = "editText"
         fun newInstance(dateModel: DateModel) =
             PlayFilmComposeFragment().apply {

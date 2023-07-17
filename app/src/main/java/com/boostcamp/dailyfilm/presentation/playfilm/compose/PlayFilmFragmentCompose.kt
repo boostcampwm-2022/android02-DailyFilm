@@ -1,8 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.playfilm.compose
 
 import android.app.Activity
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,22 +39,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimatable
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.boostcamp.dailyfilm.R
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
-import com.boostcamp.dailyfilm.presentation.calendar.DateFragment
-import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivityViewModel
-import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment
+import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmViewModel
+import com.boostcamp.dailyfilm.presentation.playfilm.base.ContentShowState
 import com.boostcamp.dailyfilm.presentation.playfilm.model.BottomSheetModel
-import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
-import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.ui.theme.blackBlur
-import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
-import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.PlayState
 import com.boostcamp.dailyfilm.presentation.util.dialog.CustomDialog
 import com.google.android.material.snackbar.Snackbar
@@ -70,45 +65,36 @@ val playFilmBottomSheetModelList = listOf(
 @Composable
 fun PlayFilmUI(
     activity: Activity,
-    startForResult: ActivityResultLauncher<Intent>,
-    activityViewModel: PlayFilmActivityViewModel,
-    viewModel: PlayFilmViewModel
+    viewModel: PlayFilmViewModel,
+    setResultCalendar: (PlayState.Deleted) -> Unit,
+    dialogEvent: (Int) -> Unit
 ) {
     val state = viewModel.playState.collectAsStateWithLifecycle().value
 
     DialogUI(viewModel = viewModel)
-
-    PlayView(state, viewModel) { title ->
-        onDialogClick(
-            activity,
-            title,
-            startForResult,
-            activityViewModel,
-            viewModel
-        )
-    }
+    PlayScreen(state, viewModel, dialogEvent)
 
     when (state) {
         is PlayState.Uninitialized -> {}
         is PlayState.Loading -> {}
         is PlayState.Playing -> {}
-        is PlayState.Deleted -> setResultCalendar(state, activity, activityViewModel)
+        is PlayState.Deleted -> setResultCalendar(state)
         is PlayState.Failure -> FailurePlay(activity, state)
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PlayView(
+private fun PlayScreen(
     state: PlayState,
     viewModel: PlayFilmViewModel,
-    menuClick: (Int) -> Unit,
+    dialogEvent: (Int) -> Unit,
 ) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    val muteState = viewModel.muteState.collectAsStateWithLifecycle().value
-    val contentShowState = viewModel.contentShowState.collectAsStateWithLifecycle().value
+    val muteState by viewModel.muteState.collectAsStateWithLifecycle()
+    val contentShowState by viewModel.contentShowState.collectAsStateWithLifecycle()
     val dateModel = viewModel.dateModel
 
     val soundComposition by rememberLottieComposition(
@@ -144,7 +130,7 @@ fun PlayView(
                         .fillMaxWidth()
                         .background(color = colorResource(id = R.color.Background))
                 ) {
-                    BottomSheetView(model, menuClick)
+                    BottomSheetView(model, dialogEvent)
                 }
             }
         }) {
@@ -155,137 +141,136 @@ fun PlayView(
                 .background(Color.Transparent)
                 .padding(dimensionResource(id = R.dimen.normal_100))
         ) {
-
-            Box(
-                modifier = Modifier
-                    .background(blackBlur, RoundedCornerShape(4.dp))
-                    .align(Alignment.TopStart)
-                    .padding(start = 6.dp, end = 6.dp, top = 4.dp, bottom = 4.dp)
-                    .height(dimensionResource(id = R.dimen.normal_175))
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(
-                        R.string.date, dateModel.year, dateModel.month, dateModel.day
-                    ),
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-            }
+            DateText(dateModel)
 
             Row(
                 modifier = Modifier.align(Alignment.TopEnd),
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.normal_100))
             ) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.ic_menu),
-                    contentDescription = "Menu",
-                    modifier = Modifier
-                        .background(blackBlur, RoundedCornerShape(4.dp))
-                        .padding(4.dp)
-                        .size(dimensionResource(id = R.dimen.normal_175))
-                        .clickable {
-                            scope.launch {
-                                bottomState.show()
-                            }
-                        })
+                MenuImage(onClick = {
+                    scope.launch {
+                        bottomState.show()
+                    }
+                })
 
-                LottieAnimation(
-                    composition = soundComposition,
-                    progress = soundAnimatable.progress,
-                    modifier = Modifier
-                        .background(blackBlur, RoundedCornerShape(4.dp))
-                        .padding(4.dp)
-                        .size(dimensionResource(id = R.dimen.normal_175))
-                        .clickable { muteState.updateState() })
-            }
-
-            AnimatedVisibility(
-                visible = contentShowState.state,
-                modifier = Modifier.align(Alignment.Center),
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Text(
-                    text = dateModel.text ?: "테스트",
-                    modifier = Modifier
-                        .background(
-                            Color.Black.copy(alpha = 0.5f), RoundedCornerShape(4.dp)
-                        )
-                        .padding(4.dp),
-                    color = Color.White,
-                    fontSize = 16.sp
+                SoundAnimation(
+                    soundComposition = soundComposition,
+                    soundAnimatable = soundAnimatable,
+                    onClick = { muteState.updateState() }
                 )
             }
+
+            ContentText(
+                contentShowState = contentShowState,
+                dateModel = dateModel
+            )
 
             if (state != PlayState.Playing) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            LottieAnimation(
-                composition = textComposition,
-                progress = textAnimatable.progress,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .background(blackBlur, RoundedCornerShape(50.dp))
-                    .size(dimensionResource(id = R.dimen.large_200))
-                    .padding(4.dp)
-                    .clickable { contentShowState.updateState() })
+            TextLottieAnimation(
+                textComposition = textComposition,
+                textAnimatable = textAnimatable,
+                onClick = { contentShowState.updateState() }
+            )
         }
     }
 
 }
 
-fun onDialogClick(
-    activity: Activity,
-    resId: Int,
-    startForResult: ActivityResultLauncher<Intent>,
-    activityViewModel: PlayFilmActivityViewModel,
-    viewModel: PlayFilmViewModel
+@Composable
+private fun SoundAnimation(
+    soundComposition: LottieComposition?,
+    soundAnimatable: LottieAnimatable,
+    onClick: () -> Unit
 ) {
+    LottieAnimation(
+        composition = soundComposition,
+        progress = soundAnimatable.progress,
+        modifier = Modifier
+            .background(blackBlur, RoundedCornerShape(4.dp))
+            .padding(4.dp)
+            .size(dimensionResource(id = R.dimen.normal_175))
+            .clickable(onClick = onClick)
+    )
+}
 
-    when (resId) {
-        R.string.delete -> {
-            viewModel.openDialog()
-        }
+@Composable
+private fun MenuImage(
+    onClick: () -> Unit
+) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_menu),
+        contentDescription = "Menu",
+        modifier = Modifier
+            .background(blackBlur, RoundedCornerShape(4.dp))
+            .padding(4.dp)
+            .size(dimensionResource(id = R.dimen.normal_175))
+            .clickable(onClick = onClick)
+    )
+}
 
-        R.string.re_upload -> {
-            activity.startActivity(
-                Intent(
-                    activity.applicationContext, SelectVideoActivity::class.java
-                ).apply {
-                    putExtra(DateFragment.KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
-                    putExtra(PlayFilmFragment.KEY_DATE_MODEL, viewModel.dateModel)
-                    putExtra(CalendarActivity.KEY_EDIT_STATE, EditState.RE_UPLOAD)
-                    putExtra(
-                        SelectVideoActivity.DATE_VIDEO_ITEM,
-                        DateAndVideoModel(
-                            viewModel.videoUri.value ?: return,
-                            viewModel.dateModel.getDate()
-                        )
-                    )
-                }
-            )
-            activity.finish()
-        }
+@Composable
+private fun BoxScope.ContentText(
+    contentShowState: ContentShowState,
+    dateModel: DateModel
+) {
+    AnimatedVisibility(
+        visible = contentShowState.state,
+        modifier = Modifier.align(Alignment.Center),
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Text(
+            text = dateModel.text ?: "테스트",
+            modifier = Modifier
+                .background(
+                    Color.Black.copy(alpha = 0.5f), RoundedCornerShape(4.dp)
+                )
+                .padding(4.dp),
+            color = Color.White,
+            fontSize = 16.sp
+        )
+    }
+}
 
-        R.string.edit_text -> {
-            startForResult.launch(
-                Intent(activity.applicationContext, UploadFilmActivity::class.java).apply {
-                    putExtra(DateFragment.KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
-                    putExtra(
-                        SelectVideoActivity.DATE_VIDEO_ITEM,
-                        DateAndVideoModel(
-                            viewModel.videoUri.value ?: return,
-                            viewModel.dateModel.getDate()
-                        )
-                    )
-                    putExtra(CalendarActivity.KEY_EDIT_STATE, EditState.EDIT_CONTENT)
-                    putExtra(PlayFilmFragment.KEY_DATE_MODEL, viewModel.dateModel)
-                }
-            )
-        }
+@Composable
+private fun BoxScope.TextLottieAnimation(
+    textComposition: LottieComposition?,
+    textAnimatable: LottieAnimatable,
+    onClick: () -> Unit
+) {
+    LottieAnimation(
+        composition = textComposition,
+        progress = textAnimatable.progress,
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .background(blackBlur, RoundedCornerShape(50.dp))
+            .size(dimensionResource(id = R.dimen.large_200))
+            .padding(4.dp)
+            .clickable(onClick = onClick)
+    )
+}
+
+@Composable
+private fun BoxScope.DateText(dateModel: DateModel) {
+    Box(
+        modifier = Modifier
+            .background(blackBlur, RoundedCornerShape(4.dp))
+            .align(Alignment.TopStart)
+            .padding(start = 6.dp, end = 6.dp, top = 4.dp, bottom = 4.dp)
+            .height(dimensionResource(id = R.dimen.normal_175))
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = stringResource(
+                R.string.date, dateModel.year, dateModel.month, dateModel.day
+            ),
+            color = Color.White,
+            fontSize = 16.sp
+        )
     }
 }
 
@@ -296,12 +281,12 @@ fun BottomSheetPreView() {
 }
 
 @Composable
-fun BottomSheetView(model: BottomSheetModel, onClick: (Int) -> Unit) {
+private fun BottomSheetView(model: BottomSheetModel, dialogEvent: (Int) -> Unit) {
 
     Row(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.normal_100))
-            .clickable { onClick(model.title) },
+            .clickable { dialogEvent(model.title) },
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.normal_125)),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -320,7 +305,7 @@ fun BottomSheetView(model: BottomSheetModel, onClick: (Int) -> Unit) {
 }
 
 @Composable
-fun FailurePlay(activity: Activity, state: PlayState.Failure) {
+private fun FailurePlay(activity: Activity, state: PlayState.Failure) {
     state.throwable.message?.let {
         Snackbar.make(
             activity.findViewById(android.R.id.content), it, Snackbar.LENGTH_SHORT
@@ -329,27 +314,15 @@ fun FailurePlay(activity: Activity, state: PlayState.Failure) {
 }
 
 @Composable
-fun DialogUI(viewModel: PlayFilmViewModel) {
-    val openDialog = viewModel.openDialog.collectAsStateWithLifecycle().value
+private fun DialogUI(viewModel: PlayFilmViewModel) {
+    val openDialog by viewModel.openDialog.collectAsStateWithLifecycle()
 
     // CustomDialog
     if (openDialog) {
         CustomDialog(
             stringResource(id = R.string.delete_dialog),
-            { viewModel.closeDialog() },
+            { viewModel.setDialog(false) },
             { viewModel.deleteVideo() }
         )
     }
-}
-
-fun setResultCalendar(
-    state: PlayState.Deleted, activity: Activity, activityViewModel: PlayFilmActivityViewModel
-) {
-    activity.setResult(Activity.RESULT_OK, Intent(
-        activity, CalendarActivity::class.java
-    ).apply {
-        putExtra(DateFragment.KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
-        putExtra(PlayFilmComposeFragment.KEY_DATE_MODEL, state.dateModel)
-    })
-    activity.finish()
 }
