@@ -45,6 +45,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
 import com.boostcamp.dailyfilm.presentation.ui.theme.lightGray
@@ -213,6 +215,8 @@ private fun FilmCard(
     item: DailyFilmItem,
     onClickItem: () -> Unit,
 ) {
+    item.updateDate.take(4)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,9 +235,14 @@ private fun FilmCard(
                 contentScale = ContentScale.FillBounds,
             )
             Text(
-                text = "${item.updateDate.substring(0, 4)}년 " +
-                    "${item.updateDate.substring(4, 6)}월 " +
-                    "${item.updateDate.substring(6)}일",
+                text = item.updateDate.let {
+                    stringResource(
+                        R.string.card_date_format,
+                        it.substring(0, 4),
+                        it.substring(4, 6),
+                        it.substring(6),
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(0.dp, 8.dp, 0.dp, 0.dp),
