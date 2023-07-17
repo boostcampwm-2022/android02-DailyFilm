@@ -54,4 +54,5 @@
     <string name="setting_toolbar_title">설정 화면</string>
     <string name="title_activity_total_compose">TotalComposeActivity</string>
     <string name="failed_google_login">Failed Google Login</string>
+    <string name="card_date_format">%s년 %s월 %s일</string>
 </resources>
