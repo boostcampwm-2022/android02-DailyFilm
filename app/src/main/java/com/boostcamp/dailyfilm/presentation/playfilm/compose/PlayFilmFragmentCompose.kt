@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
@@ -26,6 +27,7 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +37,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +62,12 @@ import com.boostcamp.dailyfilm.presentation.util.PlayState
 import com.boostcamp.dailyfilm.presentation.util.dialog.CustomDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import me.saket.extendedspans.ExtendedSpans
+import me.saket.extendedspans.RoundedCornerSpanPainter
+import me.saket.extendedspans.SquigglyUnderlineSpanPainter
+import me.saket.extendedspans.drawBehind
+import me.saket.extendedspans.rememberSquigglyUnderlineAnimator
+import kotlin.time.Duration
 
 val playFilmBottomSheetModelList = listOf(
     BottomSheetModel(R.drawable.ic_delete, R.string.delete),
@@ -105,6 +118,18 @@ private fun PlayScreen(
     )
     val soundAnimatable = rememberLottieAnimatable()
     val textAnimatable = rememberLottieAnimatable()
+
+    val squigglyAniamtor = rememberSquigglyUnderlineAnimator(duration = Duration.parse("3s"))
+    val extendedSpans = remember {
+        ExtendedSpans(
+            RoundedCornerSpanPainter(
+                padding = RoundedCornerSpanPainter.TextPaddingValues(6.sp, 6.sp),
+                topMargin = 2.sp,
+                bottomMargin = 2.sp
+            ),
+            SquigglyUnderlineSpanPainter(wavelength = 20.sp, animator = squigglyAniamtor)
+        )
+    }
 
     // LottieAnimation
     LaunchedEffect(muteState.state) {
@@ -162,6 +187,7 @@ private fun PlayScreen(
             }
 
             ContentText(
+                extendedSpans = extendedSpans,
                 contentShowState = contentShowState,
                 dateModel = dateModel
             )
@@ -214,6 +240,7 @@ private fun MenuImage(
 
 @Composable
 private fun BoxScope.ContentText(
+    extendedSpans: ExtendedSpans,
     contentShowState: ContentShowState,
     dateModel: DateModel
 ) {
@@ -224,12 +251,31 @@ private fun BoxScope.ContentText(
         exit = fadeOut()
     ) {
         Text(
-            text = dateModel.text ?: "테스트",
+            text = buildAnnotatedString {
+                (dateModel.text ?: "").split("\n").also { texts ->
+                    texts.forEachIndexed { i, text ->
+                        append(
+                            extendedSpans.extend(
+                                AnnotatedString(
+                                    text,
+                                    spanStyle = SpanStyle(
+                                        textDecoration = TextDecoration.Underline,
+                                        color = MaterialTheme.colors.surface,
+                                        background = MaterialTheme.colors.primary
+                                    ),
+                                )
+                            )
+                        )
+                        if (i < texts.size) {
+                            appendLine()
+                        }
+                    }
+                }
+            },
             modifier = Modifier
-                .background(
-                    Color.Black.copy(alpha = 0.5f), RoundedCornerShape(4.dp)
-                )
-                .padding(4.dp),
+                .drawBehind(extendedSpans)
+                .align(Alignment.Center),
+            textAlign = TextAlign.Center,
             color = Color.White,
             fontSize = 16.sp
         )
