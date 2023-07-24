@@ -14,13 +14,9 @@ import androidx.fragment.app.viewModels
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.FragmentPlayFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseFragment
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
-import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
-import com.boostcamp.dailyfilm.presentation.util.PlayState
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -97,7 +93,7 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
             }
         }*/
 
-        viewModel.playState.observe(viewLifecycleOwner) {
+        /*viewModel.playState.observe(viewLifecycleOwner) {
             when(it) {
                 is PlayState.Uninitialized -> {}
                 is PlayState.Loading -> {}
@@ -121,7 +117,7 @@ class PlayFilmFragment : BaseFragment<FragmentPlayFilmBinding>(R.layout.fragment
                     }
                 }
             }
-        }
+        }*/
     }
 
     private fun initListener() {

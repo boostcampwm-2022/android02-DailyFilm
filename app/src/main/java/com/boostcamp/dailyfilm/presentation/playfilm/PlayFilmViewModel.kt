@@ -2,16 +2,24 @@ package com.boostcamp.dailyfilm.presentation.playfilm
 
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.boostcamp.dailyfilm.data.delete.DeleteFilmRepository
 import com.boostcamp.dailyfilm.data.model.Result
 import com.boostcamp.dailyfilm.data.playfilm.PlayFilmRepository
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
-import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
-import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
+import com.boostcamp.dailyfilm.presentation.playfilm.base.ContentShowState
+import com.boostcamp.dailyfilm.presentation.playfilm.base.MuteState
 import com.boostcamp.dailyfilm.presentation.util.PlayState
 import com.boostcamp.dailyfilm.presentation.util.UiState
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
+import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,14 +39,14 @@ class PlayFilmViewModel @Inject constructor(
     private val _videoUri = MutableLiveData<Uri?>()
     val videoUri: LiveData<Uri?> get() = _videoUri
 
-    private val _isContentShowed = MutableLiveData(true)
-    val isContentShowed: LiveData<Boolean> get() = _isContentShowed
+    private val _contentShowState = MutableStateFlow(ContentShowState(true))
+    val contentShowState: StateFlow<ContentShowState> get() = _contentShowState
 
-    private val _isMuted = MutableLiveData(false)
-    val isMuted: LiveData<Boolean> get() = _isMuted
+    private val _muteState = MutableStateFlow(MuteState(false))
+    val muteState: StateFlow<MuteState> get() = _muteState
 
-    private val _playState = MutableLiveData<PlayState>(PlayState.Uninitialized)
-    val playState: LiveData<PlayState> get() = _playState
+    private val _playState = MutableStateFlow<PlayState>(PlayState.Uninitialized)
+    val playState: StateFlow<PlayState> get() = _playState
 
     private val _networkState = MutableLiveData(NetworkManager.checkNetwork())
     val networkState: LiveData<NetworkState> get() = _networkState
@@ -46,11 +54,17 @@ class PlayFilmViewModel @Inject constructor(
     private val _isNetworkConnectShowed = MutableLiveData(true)
     val isNetworkConnectShowed: LiveData<Boolean> get() = _isNetworkConnectShowed
 
-    private val _isProgressed = MutableLiveData(false)
-    val isProgressed: LiveData<Boolean> get() = _isProgressed
+    private val _isProgressed = MutableStateFlow(false)
+    val isProgressed: StateFlow<Boolean> get() = _isProgressed
+
+    private val _openDialog = MutableStateFlow(false)
+    val openDialog : StateFlow<Boolean> get() = _openDialog
 
     init {
         loadVideo()
+    }
+    fun setDialog(value: Boolean) {
+        _openDialog.value = value
     }
 
     private fun checkNetwork() {
@@ -60,14 +74,6 @@ class PlayFilmViewModel @Inject constructor(
     fun setDateModel(text: String) {
         dateModel = dateModel.copy(text = text)
         _text.value = text
-    }
-
-    fun changeShowState() {
-        _isContentShowed.value = _isContentShowed.value?.not()
-    }
-
-    fun changeMuteState() {
-        _isMuted.value = _isMuted.value?.not()
     }
 
     fun setNetworkState(state: NetworkState) {

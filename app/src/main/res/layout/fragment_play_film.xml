@@ -39,7 +39,7 @@
             android:id="@+id/backgroundPlayer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:changeVolume="@{viewModel.isMuted()}"
+            app:changeVolume="@{viewModel.muteState.state}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,7 @@
             android:layout_marginEnd="@dimen/normal_100"
             android:alpha="0.5"
             android:background="@drawable/background_rounded"
-            android:onClick="@{() -> viewModel.changeMuteState()}"
+            android:onClick="@{() -> viewModel.muteState.updateState()}"
             android:padding="@dimen/small_100"
             android:scaleType="fitStart"
             app:layout_constraintBottom_toBottomOf="@+id/tv_date"
@@ -87,7 +87,7 @@
             app:lottie_autoPlay="false"
             app:lottie_fileName="sound_lottie.json"
             app:lottie_loop="false"
-            app:syncMuteIcon="@{viewModel.isMuted()}" />
+            app:syncMuteIcon="@{viewModel.muteState.state}" />
 
         <ImageButton
             android:id="@+id/ib_menu"
@@ -120,7 +120,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_date"
             app:spannableText='@{viewModel.text ?? ""}'
-            app:visibilityAnimation="@{viewModel.isContentShowed()}" />
+            app:visibilityAnimation="@{viewModel.contentShowState.state}" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progressbar"
@@ -141,7 +141,7 @@
             android:alpha="0.5"
             android:background="@drawable/ic_back_button"
             android:elevation="1dp"
-            android:onClick="@{() -> viewModel.changeShowState()}"
+            android:onClick="@{() -> viewModel.contentShowState.updateState()}"
             android:padding="8dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -151,7 +151,7 @@
             app:lottie_loop="false"
             app:lottie_progress="0.67"
             app:lottie_rawRes="@raw/lottie_textstate"
-            app:syncViewState="@{viewModel.isContentShowed()}" />
+            app:syncViewState="@{viewModel.contentShowState.state}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
