@@ -42,6 +42,9 @@
         <activity
             android:name=".presentation.totalfilm.TotalFilmActivity"
             android:exported="false" />
+        <activity android:name=".presentation.uploadfilm.UploadFilmComposeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DailyFilm"/>
         <activity
             android:name=".presentation.uploadfilm.UploadFilmActivity"
             android:exported="false" />
