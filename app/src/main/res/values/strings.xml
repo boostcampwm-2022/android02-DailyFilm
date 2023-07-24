@@ -55,4 +55,6 @@
     <string name="title_activity_total_compose">TotalComposeActivity</string>
     <string name="failed_google_login">Failed Google Login</string>
     <string name="card_date_format">%s년 %s월 %s일</string>
+    <string name="lottie_sound">sound_lottie.json</string>
+    <string name="control_speed">속도 조절</string>
 </resources>

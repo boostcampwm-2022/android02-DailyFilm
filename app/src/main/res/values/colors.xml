@@ -20,7 +20,7 @@
     <color name="Error">#B00020</color>
     <color name="OnPrimary">#FFFFFF</color>
     <color name="OnSecondary">#000000</color>
-    <color name="OnBackground">#FFFFFF</color>
+    <color name="OnBackground">#000000</color>
     <color name="OnSurface">#000000</color>
     <color name="OnError">#FFFFFF</color>
 </resources>

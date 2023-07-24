@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,14 +29,14 @@ fun CustomDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .clip(RoundedCornerShape(12.dp))
-                .background(color = Color.White),
+                .background(color = colorResource(id = R.color.Background)),
         ) {
             Text(
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .padding(horizontal = 24.dp),
                 text = text,
-                color = Color.Black,
+                color = colorResource(id = R.color.OnBackground),
             )
             Row(
                 modifier = Modifier
@@ -49,13 +49,13 @@ fun CustomDialog(text: String, onDismiss: () -> Unit, confirm: () -> Unit) {
                     modifier = Modifier
                         .padding(end = 20.dp)
                         .clickable(onClick = onDismiss),
-                    color = Color.Black,
+                    color = colorResource(id = R.color.OnBackground),
                 )
                 Text(
                     text = stringResource(id = R.string.confirm),
                     modifier = Modifier
                         .clickable(onClick = confirm),
-                    color = Color.Black,
+                    color = colorResource(id = R.color.OnBackground),
                 )
             }
         }

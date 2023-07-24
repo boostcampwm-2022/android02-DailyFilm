@@ -22,20 +22,17 @@ class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val syncRepository: SyncRepository
 ) : ViewModel() {
-
     private val _settingsEventFlow = MutableStateFlow<SettingsEvent>(SettingsEvent.Initialized)
     val settingsEventFlow: StateFlow<SettingsEvent> = _settingsEventFlow.asStateFlow()
 
-    private val _openDialog = MutableStateFlow(DialogState(false, "") {})
-    val openDialog: StateFlow<DialogState> get() = _openDialog
-
-    fun openDialog(content: String, execution: () -> Unit) {
-        _openDialog.value =
-            openDialog.value.copy(openDialog = true, content = content, execution = execution)
-    }
+    private val _openDialog = MutableStateFlow(DialogState(false, "", {}))
+    val openDialog : StateFlow<DialogState> get() = _openDialog
 
     fun closeDialog() {
-        _openDialog.value = openDialog.value.copy(openDialog = false)
+        _openDialog.value = _openDialog.value.copy(openDialog = false)
+    }
+    fun openDialog(content: String, confirm: () -> Unit) {
+        _openDialog.value = _openDialog.value.copy(content = content, confirm = confirm)
     }
 
     fun backToPrevious() = event(SettingsEvent.Back)
@@ -82,7 +79,7 @@ class SettingsViewModel @Inject constructor(
 data class DialogState(
     val openDialog: Boolean,
     val content: String,
-    val execution: () -> Unit,
+    val confirm: () -> Unit,
 )
 
 sealed class SettingsEvent {

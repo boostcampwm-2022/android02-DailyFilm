@@ -27,7 +27,7 @@ import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.searchfilm.SearchFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.settings.compose.SettingComposeActivity
-import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmActivity
+import com.boostcamp.dailyfilm.presentation.totalfilm.TotalFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
@@ -144,7 +144,7 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                             return@setOnMenuItemClickListener true
                         }
                         startActivity(
-                            Intent(this@CalendarActivity, TotalFilmActivity::class.java).apply {
+                            Intent(this@CalendarActivity, TotalFilmComposeActivity::class.java).apply {
                                 putParcelableArrayListExtra(
                                     KEY_FILM_ARRAY,
                                     ArrayList(viewModel.filmFlow.value)
