@@ -14,6 +14,8 @@ interface CalendarDataSource {
 
     suspend fun loadFilm(startAt: Int, endAt: Int): List<FilmEntity?>
 
+    suspend fun loadPagedFilm(startAt: Int, endAt: Int, page: Int): List<FilmEntity?>
+
     suspend fun insertFilm(film: FilmEntity)
 
     suspend fun insertAllFilm(filmList: List<FilmEntity>)
@@ -22,7 +24,7 @@ interface CalendarDataSource {
 }
 
 class CalendarLocalDataSource(
-    private val calendarDao: CalendarDao
+    private val calendarDao: CalendarDao,
 ) : CalendarDataSource {
 
     override fun loadFilmFlow(startAt: Int, endAt: Int): Flow<List<FilmEntity?>> =
@@ -30,6 +32,9 @@ class CalendarLocalDataSource(
 
     override suspend fun loadFilm(startAt: Int, endAt: Int): List<FilmEntity?> =
         calendarDao.loadFilm(startAt, endAt)
+
+    override suspend fun loadPagedFilm(startAt: Int, endAt: Int, page: Int): List<FilmEntity?> =
+        calendarDao.loadPagedFilm(startAt, endAt, page)
 
     override suspend fun insertFilm(film: FilmEntity) {
         calendarDao.insert(film)
