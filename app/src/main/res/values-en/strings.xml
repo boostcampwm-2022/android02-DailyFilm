@@ -38,4 +38,6 @@
     <string name="dailyfilm_logo">DailyFilm Logo</string>
     <string name="google_logo">Google logo</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="lottie_sound">sound_lottie.json</string>
+    <string name="control_speed">control speed</string>
 </resources>
