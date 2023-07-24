@@ -27,6 +27,12 @@
         android:theme="@style/Theme.DailyFilm"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.totalfilm.TotalFilmComposeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_total_compose"
+            android:theme="@style/Theme.DailyFilm">
+        </activity>
+        <activity
             android:name=".presentation.searchfilm.SearchFilmComposeActivity"
             android:exported="false"
             android:theme="@style/Theme.DailyFilm" />
@@ -42,11 +48,14 @@
         <activity
             android:name=".presentation.totalfilm.TotalFilmActivity"
             android:exported="false" />
+        <activity android:name=".presentation.uploadfilm.UploadFilmComposeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DailyFilm"/>
         <activity
             android:name=".presentation.uploadfilm.UploadFilmActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.login.LoginActivity"
+            android:name=".presentation.login.LoginComposeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,7 +73,8 @@
         <activity
             android:name=".presentation.trimvideo.TrimVideoActivity"
             android:exported="false" />
-        <activity android:name=".presentation.settings.compose.SettingComposeActivity"
+        <activity
+            android:name=".presentation.settings.compose.SettingComposeActivity"
             android:exported="false" />
     </application>
 

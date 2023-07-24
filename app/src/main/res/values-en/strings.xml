@@ -35,4 +35,9 @@
     <string name="guide_check_date">Please select a date</string>
     <string name="guide_not_exisxt_video">Video does not exist</string>
     <string name="guide_camera_error">Your current device does not have a camera function</string>
+    <string name="dailyfilm_logo">DailyFilm Logo</string>
+    <string name="google_logo">Google logo</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="lottie_sound">sound_lottie.json</string>
+    <string name="control_speed">control speed</string>
 </resources>

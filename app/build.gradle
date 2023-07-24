@@ -22,6 +22,9 @@ android {
         buildConfigField "String", "DATABASE_URL", localProperties["database.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "ko-rKR", "ko"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
     buildTypes {
         release {
@@ -46,9 +49,18 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.7'
     }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
 }
 
 dependencies {
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation 'androidx.compose.ui:ui-graphics'
+    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
     def nav_version = "2.5.3"
     def hilt_version = "2.44"
     def room_version = "2.4.3"
@@ -57,6 +69,7 @@ dependencies {
     def pagingVersion = "3.1.1"
     def glide_version = "4.14.2"
     def glide_compose_version = "1.0.0-alpha.1"
+    def lottieComposeVersion = "6.0.0"
 
     // Compose
     def composeBom = platform('androidx.compose:compose-bom:2023.04.01')
@@ -111,9 +124,9 @@ dependencies {
     implementation "androidx.paging:paging-compose:$pagingComposeVersion"
 
     // Exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
     implementation 'androidx.media3:media3-exoplayer:1.1.0-alpha01'
     implementation "androidx.media3:media3-ui:1.1.0-alpha01"
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
     // Coordinator-layout
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     // ffmpeg
@@ -121,7 +134,7 @@ dependencies {
     implementation 'com.arthenica:mobile-ffmpeg-min-gpl:4.4'
     // lottie
     implementation 'com.airbnb.android:lottie:5.0.2'
-    implementation "com.airbnb.android:lottie-compose:5.0.2"
+    implementation "com.airbnb.android:lottie-compose:$lottieComposeVersion"
     // dataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore-core:1.0.0")
@@ -133,6 +146,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     // mockito
     testImplementation 'org.mockito:mockito-inline:2.21.0'
+
+    implementation "com.airbnb.android:lottie-compose:5.0.2"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
