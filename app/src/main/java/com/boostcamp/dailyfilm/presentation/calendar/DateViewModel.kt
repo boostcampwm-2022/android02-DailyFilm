@@ -7,6 +7,7 @@ import com.boostcamp.dailyfilm.data.calendar.CalendarRepository
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.data.sync.SyncRepository
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR
+import com.boostcamp.dailyfilm.presentation.calendar.compose.DateState
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,12 @@ class DateViewModel @Inject constructor(
 
     val calendar = savedStateHandle.get<Calendar>(KEY_CALENDAR)
         ?: throw IllegalStateException("CalendarViewModel - calendar is null")
+
+    val todayCalendar =  createCalendar(Locale.getDefault()).apply {
+        set(Calendar.HOUR_OF_DAY, 24)
+    }
+    private val _dateState = MutableStateFlow(DateState())
+    val dateState : StateFlow<DateState> get() = _dateState
 
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
     private val dayOfWeek = createCalendar(calendar, day = 1).dayOfWeek()
