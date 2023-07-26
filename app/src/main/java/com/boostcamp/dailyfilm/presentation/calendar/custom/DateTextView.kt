@@ -4,12 +4,5 @@ import android.content.Context
 import androidx.appcompat.widget.AppCompatTextView
 
 class DateTextView constructor(
-    context: Context,
-    private val staticWidth: Int,
-    private val staticHeight: Int,
-) : AppCompatTextView(context) {
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(staticWidth, staticHeight)
-    }
-}
+    context: Context
+) : AppCompatTextView(context)
