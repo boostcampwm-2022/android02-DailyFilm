@@ -79,10 +79,11 @@ class CalendarView(
         }
     }
 
-    override fun dispatchDraw(canvas: Canvas?) {
+
+    override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
         repeat(WEEK_SIZE - 1) {
-            canvas?.drawLine(
+            canvas.drawLine(
                 0f,
                 ((it + 1) * tmpVertical).toFloat(),
                 width.toFloat(),

@@ -3,7 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { setUrl("https://jitpack.io") }
     }
 }
 dependencyResolutionManagement {
@@ -11,8 +11,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { setUrl("https://jitpack.io") }
     }
 }
+
 rootProject.name = "DailyFilm"
-include ':app'
+include(":app")

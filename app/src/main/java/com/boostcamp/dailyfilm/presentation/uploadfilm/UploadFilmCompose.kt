@@ -308,7 +308,6 @@ fun UploadFilmMainArea(
             keyboardActions = KeyboardActions(onDone = { onKeyboardHide() }),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
-                placeholderColor = Color.Transparent,
                 cursorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
