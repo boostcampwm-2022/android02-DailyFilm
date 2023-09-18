@@ -13,17 +13,10 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 class DateImgView constructor(
     context: Context,
     var dateModel: DateModel,
-    private val requestManager: RequestManager,
-    private val staticWidth: Int,
-    private val staticHeight: Int
+    private val requestManager: RequestManager
 ) : AppCompatImageView(context) {
 
     private val factory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(staticWidth, staticHeight)
-    }
-
     fun setVideoUrl(dateModel: DateModel) {
         this.dateModel = dateModel
         load(dateModel.videoUrl)

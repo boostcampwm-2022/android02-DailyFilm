@@ -33,8 +33,8 @@ class PlayFilmViewModel @Inject constructor(
     var dateModel = savedStateHandle.get<DateModel>(PlayFilmFragment.KEY_DATE_MODEL)
         ?: throw IllegalStateException("PlayFilmViewModel - DateModel is null")
 
-    private val _text = MutableLiveData<String>(dateModel.text)
-    val text: LiveData<String> get() = _text
+    private val _text = MutableStateFlow(dateModel.text)
+    val text: StateFlow<String?> get() = _text
 
     private val _videoUri = MutableLiveData<Uri?>()
     val videoUri: LiveData<Uri?> get() = _videoUri

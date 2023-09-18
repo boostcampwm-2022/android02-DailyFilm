@@ -109,6 +109,7 @@ private fun PlayScreen(
     val muteState by viewModel.muteState.collectAsStateWithLifecycle()
     val contentShowState by viewModel.contentShowState.collectAsStateWithLifecycle()
     val dateModel = viewModel.dateModel
+    val contentText by viewModel.text.collectAsStateWithLifecycle()
 
     val soundComposition by rememberLottieComposition(
         LottieCompositionSpec.Asset(stringResource(R.string.lottie_sound))
@@ -189,7 +190,7 @@ private fun PlayScreen(
             ContentText(
                 extendedSpans = extendedSpans,
                 contentShowState = contentShowState,
-                dateModel = dateModel
+                text = contentText
             )
 
             if (state != PlayState.Playing) {
@@ -242,7 +243,7 @@ private fun MenuImage(
 private fun BoxScope.ContentText(
     extendedSpans: ExtendedSpans,
     contentShowState: ContentShowState,
-    dateModel: DateModel
+    text: String?
 ) {
     AnimatedVisibility(
         visible = contentShowState.state,
@@ -251,8 +252,11 @@ private fun BoxScope.ContentText(
         exit = fadeOut()
     ) {
         Text(
+            modifier = Modifier
+                .drawBehind(extendedSpans)
+                .align(Alignment.Center),
             text = buildAnnotatedString {
-                (dateModel.text ?: "").split("\n").also { texts ->
+                (text ?: "").split("\n").also { texts ->
                     texts.forEachIndexed { i, text ->
                         append(
                             extendedSpans.extend(
@@ -272,12 +276,8 @@ private fun BoxScope.ContentText(
                     }
                 }
             },
-            modifier = Modifier
-                .drawBehind(extendedSpans)
-                .align(Alignment.Center),
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            fontSize = 16.sp
+            fontSize = 22.sp,
+            textAlign = TextAlign.Center
         )
     }
 }

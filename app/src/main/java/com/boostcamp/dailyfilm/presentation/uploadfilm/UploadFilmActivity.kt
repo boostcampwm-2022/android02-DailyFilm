@@ -1,6 +1,5 @@
 package com.boostcamp.dailyfilm.presentation.uploadfilm
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -15,18 +14,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.databinding.ActivityUploadFilmBinding
 import com.boostcamp.dailyfilm.presentation.BaseActivity
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarActivity
 import com.boostcamp.dailyfilm.presentation.calendar.DateFragment.Companion.KEY_CALENDAR_INDEX
-import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmActivity
-import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KET_EDIT_TEXT
-import com.boostcamp.dailyfilm.presentation.playfilm.PlayFilmFragment.Companion.KEY_DATE_MODEL
-import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.trimvideo.TrimVideoActivity
 import com.boostcamp.dailyfilm.presentation.util.LottieDialogFragment
+import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
-import com.boostcamp.dailyfilm.presentation.util.UiState
 import com.boostcamp.dailyfilm.presentation.util.network.networkAlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -72,7 +66,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                     when (state) {
                         is UiState.Success -> {
                             loadingDialogFragment.hideProgressDialog()
-                            when (viewModel.editState) {
+                            /*when (viewModel.editState) {
                                 EditState.EDIT_CONTENT -> {
                                     setResult(
                                         RESULT_OK,
@@ -96,7 +90,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                                         }
                                     )
                                 }
-                            }
+                            }*/
                             finish()
                         }
                         is UiState.Loading -> {
@@ -159,7 +153,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                                     putExtra(SelectVideoActivity.DATE_VIDEO_ITEM, viewModel.beforeItem)
                                     putExtra(TrimVideoActivity.KEY_DATE_MODEL, viewModel.dateModel)
                                     putExtra(KEY_CALENDAR_INDEX, viewModel.calendarIndex)
-                                    putExtra(CalendarActivity.KEY_EDIT_STATE, viewModel.editState)
+//                                    putExtra(CalendarActivity.KEY_EDIT_STATE, viewModel.editState)
                                 }
                             )
                         }
@@ -173,7 +167,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
     private fun soundControl() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.clickSound.collect { check ->
+                /*viewModel.clickSound.collect { check ->
                     if (check) {
                         binding.backgroundPlayer.player?.volume = 0.5f
                         val animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500)
@@ -191,7 +185,7 @@ class UploadFilmActivity : BaseActivity<ActivityUploadFilmBinding>(R.layout.acti
                         }
                         animator.start()
                     }
-                }
+                }*/
             }
         }
     }

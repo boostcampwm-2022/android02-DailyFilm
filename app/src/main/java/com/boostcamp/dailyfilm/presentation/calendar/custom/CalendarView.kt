@@ -137,9 +137,7 @@ class CalendarView(
     }
 
     private fun createDateTextView(dateModel: DateModel) = DateTextView(
-        context,
-        tmpHorizontal,
-        textHeight
+        context
     ).apply {
         text = dateModel.day
         setTextColor(ContextCompat.getColor(this.context, R.color.OnSurface))
@@ -151,9 +149,7 @@ class CalendarView(
     private fun createDateImgView(dateModel: DateModel) = DateImgView(
         context,
         dateModel,
-        requestManager,
-        tmpHorizontal,
-        tmpVertical - textHeight
+        requestManager
     ).apply {
         setPadding(IMG_PADDING)
     }
