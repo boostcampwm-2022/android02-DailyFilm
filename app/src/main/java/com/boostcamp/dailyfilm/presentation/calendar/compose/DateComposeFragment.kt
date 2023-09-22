@@ -66,7 +66,10 @@ class DateComposeFragment :
                             activityViewModel.emitFilm(it)
                         },
                         imgClick = { idx, dateModel ->
-                            Log.d("CalendarView", "${ArrayList(activityViewModel.filmFlow.value)}")
+                            println("idx: $idx dateModel: $dateModel")
+                            activityViewModel.changeSelectedItem(idx, dateModel)
+                        },
+                        onMovePlayFilm = { idx, dateModel ->
                             startForResult.launch(
                                 Intent(requireContext(), PlayFilmActivity::class.java).apply {
                                     putExtra(

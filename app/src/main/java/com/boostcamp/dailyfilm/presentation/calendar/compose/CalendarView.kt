@@ -1,8 +1,12 @@
 package com.boostcamp.dailyfilm.presentation.calendar.compose
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,8 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
@@ -25,6 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
 import com.boostcamp.dailyfilm.presentation.calendar.DateViewModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
@@ -41,6 +52,7 @@ fun CalendarView(
     viewModel: DateViewModel,
     resetFilm: (List<DateModel>) -> Unit,
     imgClick: (Int, DateModel) -> Unit,
+    onMovePlayFilm: (Int, DateModel) -> Unit,
 ) {
     val lifecycleEvent = rememberLifecycleEvent()
     val itemList by viewModel.itemFlow.collectAsStateWithLifecycle(initialValue = null)
@@ -58,7 +70,8 @@ fun CalendarView(
             viewModel.reloadCalendar(it)
         },
         resetFilm = resetFilm,
-        imgClick = imgClick
+        imgClick = imgClick,
+        onMovePlayFilm = onMovePlayFilm
     )
 }
 
@@ -73,6 +86,7 @@ fun CalendarView(
     reloadCalendar: (List<DailyFilmItem?>) -> Unit,
     resetFilm: (List<DateModel>) -> Unit,
     imgClick: (Int, DateModel) -> Unit,
+    onMovePlayFilm: (Int, DateModel) -> Unit,
 ) {
 
     val textSize = 12.sp
@@ -85,15 +99,6 @@ fun CalendarView(
             Lifecycle.Event.ON_PAUSE -> {
                 dateState.selectedDay = null
             }
-
-            Lifecycle.Event.ON_RESUME -> {
-                // onResume 에서 가 아닌 repeatOnLifecycle 의 RESUMED 상태로 받아도 됐었음.
-                // LaunchedEffect(key1 = reloadList) 가 안됨
-                resetFilm(
-                    reloadList.filter { dateModel -> dateModel.videoUrl != null }
-                )
-            }
-
             else -> {}
         }
     }
@@ -114,13 +119,31 @@ fun CalendarView(
         currentCalendar = currentCalendar,
         todayCalendar = todayCalendar,
         dateState = dateState,
-        imgClick = imgClick
+        imgClick = imgClick,
+        onMovePlayFilm = onMovePlayFilm
     )
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun DateImage(background: Color, alpha: Float, url: String?, onClick: () -> Unit) {
+    /*val painter = rememberAsyncImagePainter(url)
+    val state = painter.state
+
+    val transition by animateFloatAsState(
+        targetValue = if (state is AsyncImagePainter.State.Success) 1f else 0f, label = ""
+    )
+    Image(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(background)
+            .alpha(transition)
+            .padding(2.dp)
+            .clip(RoundedCornerShape(5.dp))
+            .noRippleClickable(onClick = onClick),
+        painter = painter,
+        contentDescription = "custom transition based on painter state",
+    )*/
 
     GlideImage(
         modifier = Modifier
@@ -145,13 +168,13 @@ private fun CustomCalendarView(
     todayCalendar: Calendar,
     dateState: DateState,
     imgClick: (Int, DateModel) -> Unit,
+    onMovePlayFilm: (Int, DateModel) -> Unit,
 ) {
-
     CustomCalendarView(
         textHeight = textHeight
     ) {
         reloadList.forEachIndexed { index, dateModel ->
-
+            println("dateModel: $dateModel")
             val isNotCurrentMonth = isNotCurrentMonth(
                 dateModel,
                 currentCalendar.month(),
@@ -173,13 +196,16 @@ private fun CustomCalendarView(
                 alpha = dateState.alpha,
                 url = dateModel.videoUrl
             ) {
+                println("DateImage: onCLick")
                 if (!isNotCurrentMonth) {
+                    println("isNotCurrentMonth: $isNotCurrentMonth")
                     dateState.apply {
-                        if (dateModel.videoUrl != null) {
-                            selectedDay = null
-                            imgClick(index, dateModel)
+                        imgClick(index, dateModel)
+                        selectedDay = if (dateModel.videoUrl != null) {
+                            onMovePlayFilm(index, dateModel)
+                            null
                         } else {
-                            selectedDay = index
+                            index
                         }
                     }
                 }

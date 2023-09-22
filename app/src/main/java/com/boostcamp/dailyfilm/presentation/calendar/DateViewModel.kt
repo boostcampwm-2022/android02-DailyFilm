@@ -1,5 +1,8 @@
 package com.boostcamp.dailyfilm.presentation.calendar
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -95,7 +98,7 @@ class DateViewModel @Inject constructor(
 
     fun reloadCalendar(itemList: List<DailyFilmItem?>) {
         val tempCalendar = createCalendar(prevCalendar, day = prevMaxDay - (dayOfWeek - 2))
-        val dateModelList = _dateFlow.value.toMutableList()
+        val dateModelList = _dateFlow.value.toMutableStateList()
         val prevDay = tempCalendar.day()
         val prevCnt = if (dayOfWeek == 1) {
             -1
@@ -152,14 +155,14 @@ class DateViewModel @Inject constructor(
     }
 
     fun setVideo(index: Int, dateModel: DateModel) {
-        val tmpList = _dateFlow.value.toMutableList()
+        val tmpList = _dateFlow.value.toMutableStateList()
         tmpList[index] = dateModel
         _dateFlow.value = tmpList
     }
 
-    fun initialDateList(): List<DateModel> {
+    fun initialDateList(): SnapshotStateList<DateModel> {
         val tempCalendar = createCalendar(prevCalendar, day = prevMaxDay - (dayOfWeek - 2))
-        val dateModelList = mutableListOf<DateModel>()
+        val dateModelList = mutableStateListOf<DateModel>()
 
         for (i in 0 until 42) {
             val year = tempCalendar.year()
