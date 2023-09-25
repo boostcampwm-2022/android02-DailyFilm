@@ -26,7 +26,7 @@ import com.boostcamp.dailyfilm.presentation.playfilm.model.EditState
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity
 import com.boostcamp.dailyfilm.presentation.selectvideo.SelectVideoActivity.Companion.DATE_VIDEO_ITEM
 import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
-import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmActivity
+import com.boostcamp.dailyfilm.presentation.uploadfilm.UploadFilmComposeActivity
 import com.boostcamp.dailyfilm.presentation.uploadfilm.model.DateAndVideoModel
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkManager
 import com.boostcamp.dailyfilm.presentation.util.network.NetworkState
@@ -115,7 +115,7 @@ class PlayFilmComposeFragment :
                                 }
                                 R.string.edit_text -> {
                                     startForResult.launch(
-                                        Intent(activity?.applicationContext, UploadFilmActivity::class.java).apply {
+                                        Intent(activity?.applicationContext, UploadFilmComposeActivity::class.java).apply {
                                             putExtra(KEY_CALENDAR_INDEX, activityViewModel.calendarIndex)
                                             putExtra(
                                                 DATE_VIDEO_ITEM,
