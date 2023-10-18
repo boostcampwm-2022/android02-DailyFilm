@@ -161,7 +161,9 @@ class CalendarActivity : BaseActivity<ActivityCalendarBinding>(R.layout.activity
                         true
                     }
                     R.id.item_search -> {
-                        startActivity(Intent(this@CalendarActivity, SearchFilmComposeActivity::class.java))
+                        startActivity(Intent(this@CalendarActivity, MainTestActivity::class.java))
+
+                        // startActivity(Intent(this@CalendarActivity, SearchFilmComposeActivity::class.java))
                         true
                     }
                     else -> false
