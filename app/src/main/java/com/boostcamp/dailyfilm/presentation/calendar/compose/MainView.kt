@@ -1,6 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar.compose
 
-import android.os.Bundle
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -39,18 +39,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel
+import com.boostcamp.dailyfilm.presentation.calendar.DateComposeViewModel
+import com.boostcamp.dailyfilm.presentation.calendar.MainTestActivity
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.util.compose.noRippleClickable
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -60,15 +65,14 @@ import java.util.Locale
 @Composable
 fun MainView(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    viewModel: CalendarViewModel = hiltViewModel(),
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
 ) {
-    val calendarTitle: String by viewModel.calendarFlow.collectAsStateWithLifecycle()
+    val calendarTitle: String by calendarViewModel.calendarFlow.collectAsStateWithLifecycle()
     val pagerState: PagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     val lottieFAB by rememberLottieComposition(LottieCompositionSpec.Asset("calendar_floating_button.json"))
 
     val cameraPainter = painterResource(id = R.drawable.baseline_photo_camera_24)
     val galleryPainter = painterResource(id = R.drawable.baseline_picture_in_picture_24)
-    val plusPainter = painterResource(id = R.drawable.ic_add)
 
     var visible by rememberSaveable { mutableStateOf(false) }
     var dateState by rememberSaveable { mutableStateOf(DateState.TODAY) }
@@ -76,7 +80,7 @@ fun MainView(
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            viewModel.getViewPagerPosition(page)
+            calendarViewModel.getViewPagerPosition(page)
             dateState = when {
                 page > pagerState.initialPage -> {
                     DateState.AFTER
@@ -112,7 +116,7 @@ fun MainView(
     ) { paddingValues ->
         HorizontalPager(
             state = pagerState,
-            beyondBoundsPageCount = 2,
+            beyondBoundsPageCount = 1,
             modifier = Modifier.padding(paddingValues),
         ) { page ->
             val position = page - Int.MAX_VALUE / 2
@@ -124,14 +128,18 @@ fun MainView(
             }
 
             // Calendar 객체 확인용 임시 Screen
-            DateScreen(calendar = currentCalendar)
+            // DateScreen(calendar = currentCalendar)
 
             /*  TODO: CalendarView 사용
                 hiltViewModel을 이용하여 calendar 객체를 보내는 것이 필요함 (arguments 전달 -> SavedStateHandle)
+                -> 하나의 dateViewModel만 만들어 사용하는 문제 발생
+                -> page position을 key로 사용해 해결
+                    단순 Int 값으로도 문제 없이 제대로 작동하지만 key를 만드는 기준? 문법? 이 있으면 좋을듯
+            */
 
             CalendarView(
-                resetFilm = {
-                    viewModel.emitFilm(it)
+                resetFilm = { dateModelList ->
+                    calendarViewModel.emitFilm(dateModelList)
                 },
                 imgClick = { idx, dateModel ->
                     /* TODO: Navigate to PlayFilm
@@ -154,8 +162,8 @@ fun MainView(
                     )
                      */
                 },
+                viewModel = dateComposeViewModel(position.toString(), currentCalendar),
             )
-             */
         }
 
         Column(
@@ -172,7 +180,7 @@ fun MainView(
                     exit = fadeOut(animationSpec = tween(durationMillis = 300)),
                 ) {
                     CircleFloatingButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { /* TODO: 영상 촬영 화면 이동 */ },
                         icon = { cameraPainter },
                     )
                 }
@@ -183,7 +191,7 @@ fun MainView(
                     exit = fadeOut(animationSpec = tween(durationMillis = 600)),
                 ) {
                     CircleFloatingButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { /* TODO: 영상 선택 화면(갤러리) 이동 */ },
                         icon = { galleryPainter },
                     )
                 }
@@ -200,6 +208,17 @@ fun MainView(
     }
 }
 
+// Factory를 이용해 savedStateHandle에 Calnedar를 저장하여 ViewModel 생성
+@Composable
+fun dateComposeViewModel(key: String, calendar: Calendar): DateComposeViewModel {
+    val factory = EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity,
+        MainTestActivity.ViewModelFactoryProvider::class.java,
+    ).provideDateViewModelFactory()
+
+    return viewModel(key = key, factory = DateComposeViewModel.provideFactory(factory, calendar))
+}
+
 @Composable
 private fun CalendarTopBar(
     calendarTitle: () -> String,
@@ -212,7 +231,7 @@ private fun CalendarTopBar(
     TopAppBar(
         title = { Text(calendarTitle()) },
         navigationIcon = {
-            IconButton(onClick = { /*TODO: Navigate to DatePickerDialog*/ }) {
+            IconButton(onClick = { /* TODO: Navigate to DatePickerDialog */ }) {
                 Icon(painterResource(id = R.drawable.ic_datepicker_month), null)
             }
         },
@@ -238,11 +257,13 @@ private fun CalendarTopBarActions(
                 Icon(painterResource(id = R.drawable.ic_double_arrow_right), null)
             }
         }
+
         DateState.AFTER -> {
             IconButton(onClick = { onMoveToday() }) {
                 Icon(painterResource(id = R.drawable.ic_double_arrow_left), null)
             }
         }
+
         DateState.TODAY -> {
             onDismissMenu()
         }

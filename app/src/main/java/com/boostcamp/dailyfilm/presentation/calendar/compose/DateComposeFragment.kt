@@ -60,6 +60,7 @@ class DateComposeFragment :
                 DailyFilmTheme(
                     requireActivity()
                 ) {
+                    /*
                     CalendarView(
                         viewModel = viewModel,
                         resetFilm = {
@@ -85,6 +86,8 @@ class DateComposeFragment :
                             )
                         }
                     )
+
+                     */
                 }
             }
         }
