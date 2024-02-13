@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -25,16 +25,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyFilm"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
-            android:name=".presentation.calendar.MainTestActivity"
-            android:exported="false" />
+            android:name=".presentation.DailyFilmActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".presentation.totalfilm.TotalFilmComposeActivity"
             android:exported="false"
             android:label="@string/title_activity_total_compose"
-            android:theme="@style/Theme.DailyFilm" >
-        </activity>
+            android:theme="@style/Theme.DailyFilm" />
         <activity
             android:name=".presentation.searchfilm.SearchFilmComposeActivity"
             android:exported="false" />
@@ -51,18 +56,6 @@
             android:name=".presentation.uploadfilm.UploadFilmComposeActivity"
             android:exported="false"
             android:theme="@style/Theme.DailyFilm" />
-        <activity
-            android:name=".presentation.uploadfilm.UploadFilmActivity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.login.LoginComposeActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".presentation.calendar.CalendarActivity"
             android:exported="false"
