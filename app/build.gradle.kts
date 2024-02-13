@@ -99,12 +99,13 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.androidx.hilt.common)
-    implementation(libs.androidx.hilt.navigation)
-    ksp(libs.androidx.hilt.compiler)
+//    implementation(libs.androidx.hilt.common)
+//    ksp(libs.androidx.hilt.compiler)
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
