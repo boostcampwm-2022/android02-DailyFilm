@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.dailyfilm.R
 import com.boostcamp.dailyfilm.presentation.login.LoginActivity
-import com.boostcamp.dailyfilm.presentation.login.LoginComposeActivity
 import com.boostcamp.dailyfilm.presentation.settings.SettingsEvent
 import com.boostcamp.dailyfilm.presentation.settings.SettingsViewModel
 import com.boostcamp.dailyfilm.presentation.ui.theme.DailyFilmTheme
@@ -210,6 +209,7 @@ fun Logout(activity: Activity) {
 }
 
 fun navigateToLogin(context: Context) {
+    /*
     context.startActivity(
         Intent(
             context,
@@ -218,4 +218,5 @@ fun navigateToLogin(context: Context) {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         },
     )
+     */
 }
