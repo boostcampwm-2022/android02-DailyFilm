@@ -1,4 +1,4 @@
-package com.boostcamp.dailyfilm.presentation.calendar.compose
+package com.boostcamp.dailyfilm.presentation.calendar
 
 import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -28,13 +28,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,82 +35,58 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.boostcamp.dailyfilm.R
-import com.boostcamp.dailyfilm.presentation.calendar.CalendarViewModel
-import com.boostcamp.dailyfilm.presentation.calendar.DateComposeViewModel
-import com.boostcamp.dailyfilm.presentation.calendar.MainTestActivity
+import com.boostcamp.dailyfilm.presentation.DailyFilmActivity
+import com.boostcamp.dailyfilm.presentation.calendar.compose.CalendarView
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateState
 import com.boostcamp.dailyfilm.presentation.util.compose.noRippleClickable
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainView(
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    calendarViewModel: CalendarViewModel = hiltViewModel(),
+fun CalendarScreen(
+    calendarTitle: () -> String,
+    pagerState: () -> PagerState,
+    lottieFAB: () -> LottieComposition?,
+    lottieVisibility: () -> Boolean,
+    cameraPainter: () -> Painter,
+    galleryPainter: () -> Painter,
+    dateState: () -> DateState,
+    menuState: () -> Boolean,
+
+    onExpendMenu: () -> Unit,
+    onDismissMenu: () -> Unit,
+    onMoveToday: () -> Unit,
+    onClickUpload: () -> Unit,
+
+    calendarViewModel: CalendarViewModel,
+    coroutineScope: CoroutineScope,
+    modifier: Modifier = Modifier
 ) {
-    val calendarTitle: String by calendarViewModel.calendarFlow.collectAsStateWithLifecycle()
-    val pagerState: PagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
-    val lottieFAB by rememberLottieComposition(LottieCompositionSpec.Asset("calendar_floating_button.json"))
-
-    val cameraPainter = painterResource(id = R.drawable.baseline_photo_camera_24)
-    val galleryPainter = painterResource(id = R.drawable.baseline_picture_in_picture_24)
-
-    var visible by rememberSaveable { mutableStateOf(false) }
-    var dateState by rememberSaveable { mutableStateOf(DateState.TODAY) }
-    var menuState by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            calendarViewModel.getViewPagerPosition(page)
-            dateState = when {
-                page > pagerState.initialPage -> {
-                    DateState.AFTER
-                }
-
-                page < pagerState.initialPage -> {
-                    DateState.BEFORE
-                }
-
-                else -> {
-                    DateState.TODAY
-                }
-            }
-        }
-    }
-
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             CalendarTopBar(
-                calendarTitle = { calendarTitle },
-                dateState = { dateState },
-                menuState = { menuState },
-                onExpendMenu = { menuState = true },
-                onDismissMenu = { menuState = false },
-                onMoveToday = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(pagerState.initialPage)
-                    }
-                },
+                calendarTitle = calendarTitle,
+                dateState = dateState,
+                menuState = menuState,
+                onExpendMenu = onExpendMenu,
+                onDismissMenu = onDismissMenu,
+                onMoveToday = onMoveToday
             )
         },
     ) { paddingValues ->
         HorizontalPager(
-            state = pagerState,
+            state = pagerState(),
             beyondBoundsPageCount = 1,
-            modifier = Modifier.padding(paddingValues),
+            modifier = modifier.padding(paddingValues),
         ) { page ->
             val position = page - Int.MAX_VALUE / 2
             val currentCalendar = Calendar.getInstance(Locale.getDefault()).apply {
@@ -127,14 +96,9 @@ fun MainView(
                 }
             }
 
-            // Calendar 객체 확인용 임시 Screen
-            // DateScreen(calendar = currentCalendar)
-
-            /*  TODO: CalendarView 사용
-                hiltViewModel을 이용하여 calendar 객체를 보내는 것이 필요함 (arguments 전달 -> SavedStateHandle)
-                -> 하나의 dateViewModel만 만들어 사용하는 문제 발생
-                -> page position을 key로 사용해 해결
-                    단순 Int 값으로도 문제 없이 제대로 작동하지만 key를 만드는 기준? 문법? 이 있으면 좋을듯
+            /*
+                page position을 ViewModel의 key로 사용해 ViewModel을 만들고, Factory를 이용해 Calendar 객체를 전달
+                -> 단순 Int 값으로도 문제 없이 제대로 작동하지만 key를 만드는 문법? 이 있어도 좋을듯
             */
 
             CalendarView(
@@ -142,32 +106,24 @@ fun MainView(
                     calendarViewModel.emitFilm(dateModelList)
                 },
                 imgClick = { idx, dateModel ->
-                    /* TODO: Navigate to PlayFilm
-                    Log.d("CalendarView", "${ArrayList(viewModel.filmFlow.value)}")
-                    startForResult.launch(
-                        Intent(requireContext(), PlayFilmActivity::class.java).apply {
-                            putExtra(
-                                DateComposeFragment.KEY_CALENDAR_INDEX,
-                                idx
-                            )
-                            putExtra(
-                                DateComposeFragment.KEY_DATE_MODEL_INDEX,
-                                viewModel.filmFlow.value.indexOf(dateModel)
-                            )
-                            putParcelableArrayListExtra(
-                                CalendarActivity.KEY_FILM_ARRAY,
-                                ArrayList(viewModel.filmFlow.value)
-                            )
-                        }
-                    )
-                     */
+                    /* TODO: Navigate to PlayFilm */
                 },
                 viewModel = dateComposeViewModel(position.toString(), currentCalendar),
             )
+
+
+            // 테스트용 빈 박스
+            /*
+            Box(
+                modifier = modifier.fillMaxSize()
+            ) {  }
+             */
         }
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Bottom,
         ) {
@@ -175,33 +131,33 @@ fun MainView(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 AnimatedVisibility(
-                    visible = visible,
-                    enter = fadeIn(animationSpec = tween(durationMillis = 600)),
-                    exit = fadeOut(animationSpec = tween(durationMillis = 300)),
+                    visible = lottieVisibility(),
+                    enter = fadeIn(animationSpec = tween(durationMillis = 800)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 400)),
                 ) {
                     CircleFloatingButton(
                         onClick = { /* TODO: 영상 촬영 화면 이동 */ },
-                        icon = { cameraPainter },
+                        icon = cameraPainter,
                     )
                 }
 
                 AnimatedVisibility(
-                    visible = visible,
-                    enter = fadeIn(animationSpec = tween(durationMillis = 300)),
-                    exit = fadeOut(animationSpec = tween(durationMillis = 600)),
+                    visible = lottieVisibility(),
+                    enter = fadeIn(animationSpec = tween(durationMillis = 400)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 800)),
                 ) {
                     CircleFloatingButton(
                         onClick = { /* TODO: 영상 선택 화면(갤러리) 이동 */ },
-                        icon = { galleryPainter },
+                        icon = galleryPainter,
                     )
                 }
 
                 LottieAnimation(
-                    composition = lottieFAB,
+                    composition = lottieFAB(),
                     iterations = LottieConstants.IterateForever,
                     modifier = Modifier
                         .padding(4.dp, 8.dp)
-                        .noRippleClickable { visible = !visible },
+                        .noRippleClickable { onClickUpload() }
                 )
             }
         }
@@ -213,7 +169,7 @@ fun MainView(
 fun dateComposeViewModel(key: String, calendar: Calendar): DateComposeViewModel {
     val factory = EntryPointAccessors.fromActivity(
         LocalContext.current as Activity,
-        MainTestActivity.ViewModelFactoryProvider::class.java,
+        DailyFilmActivity.ViewModelFactoryProvider::class.java,
     ).provideDateViewModelFactory()
 
     return viewModel(key = key, factory = DateComposeViewModel.provideFactory(factory, calendar))
