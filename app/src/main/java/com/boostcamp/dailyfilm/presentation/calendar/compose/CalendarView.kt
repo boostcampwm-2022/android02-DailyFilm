@@ -1,5 +1,6 @@
 package com.boostcamp.dailyfilm.presentation.calendar.compose
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.boostcamp.dailyfilm.data.model.DailyFilmItem
-import com.boostcamp.dailyfilm.presentation.calendar.DateViewModel
+import com.boostcamp.dailyfilm.presentation.calendar.DateComposeViewModel
 import com.boostcamp.dailyfilm.presentation.calendar.model.DateModel
 import com.boostcamp.dailyfilm.presentation.util.compose.noRippleClickable
 import com.boostcamp.dailyfilm.presentation.util.compose.rememberLifecycleEvent
@@ -38,9 +39,9 @@ import java.util.Calendar
 
 @Composable
 fun CalendarView(
-    viewModel: DateViewModel,
     resetFilm: (List<DateModel>) -> Unit,
     imgClick: (Int, DateModel) -> Unit,
+    viewModel: DateComposeViewModel,
 ) {
     val lifecycleEvent = rememberLifecycleEvent()
     val itemList by viewModel.itemFlow.collectAsStateWithLifecycle(initialValue = null)
@@ -58,7 +59,7 @@ fun CalendarView(
             viewModel.reloadCalendar(it)
         },
         resetFilm = resetFilm,
-        imgClick = imgClick
+        imgClick = imgClick,
     )
 }
 
@@ -74,11 +75,12 @@ fun CalendarView(
     resetFilm: (List<DateModel>) -> Unit,
     imgClick: (Int, DateModel) -> Unit,
 ) {
-
     val textSize = 12.sp
     val textHeight = with(LocalDensity.current) {
         textSize.toPx() + 10
     }.toInt()
+
+    Log.d("DateCalendar", currentCalendar.month().toString())
 
     LaunchedEffect(lifecycleEvent) {
         when (lifecycleEvent) {
@@ -90,7 +92,7 @@ fun CalendarView(
                 // onResume 에서 가 아닌 repeatOnLifecycle 의 RESUMED 상태로 받아도 됐었음.
                 // LaunchedEffect(key1 = reloadList) 가 안됨
                 resetFilm(
-                    reloadList.filter { dateModel -> dateModel.videoUrl != null }
+                    reloadList.filter { dateModel -> dateModel.videoUrl != null },
                 )
             }
 
@@ -99,7 +101,7 @@ fun CalendarView(
     }
     LaunchedEffect(key1 = reloadList) {
         resetFilm(
-            reloadList.filter { dateModel -> dateModel.videoUrl != null }
+            reloadList.filter { dateModel -> dateModel.videoUrl != null },
         )
     }
 
@@ -114,14 +116,13 @@ fun CalendarView(
         currentCalendar = currentCalendar,
         todayCalendar = todayCalendar,
         dateState = dateState,
-        imgClick = imgClick
+        imgClick = imgClick,
     )
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun DateImage(background: Color, alpha: Float, url: String?, onClick: () -> Unit) {
-
     GlideImage(
         modifier = Modifier
             .fillMaxSize()
@@ -132,7 +133,7 @@ private fun DateImage(background: Color, alpha: Float, url: String?, onClick: ()
             .noRippleClickable(onClick = onClick),
         contentScale = ContentScale.Crop,
         model = url,
-        contentDescription = ""
+        contentDescription = "",
     )
 }
 
@@ -146,16 +147,15 @@ private fun CustomCalendarView(
     dateState: DateState,
     imgClick: (Int, DateModel) -> Unit,
 ) {
-
     CustomCalendarView(
-        textHeight = textHeight
+        textHeight = textHeight,
     ) {
         reloadList.forEachIndexed { index, dateModel ->
 
             val isNotCurrentMonth = isNotCurrentMonth(
                 dateModel,
                 currentCalendar.month(),
-                todayCalendar
+                todayCalendar,
             )
             dateState.isCurrentMonth = isNotCurrentMonth
 
@@ -166,12 +166,12 @@ private fun CustomCalendarView(
                 text = dateModel.day,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.primary,
-                fontSize = textSize
+                fontSize = textSize,
             )
             DateImage(
                 background = dateState.isSelected(index),
                 alpha = dateState.alpha,
-                url = dateModel.videoUrl
+                url = dateModel.videoUrl,
             ) {
                 if (!isNotCurrentMonth) {
                     dateState.apply {
@@ -188,10 +188,8 @@ private fun CustomCalendarView(
     }
 }
 
-
 @Composable
 private fun CustomCalendarView(textHeight: Int, content: @Composable () -> Unit) {
-
     val lineColor = MaterialTheme.colors.primary
 
     Layout(
@@ -206,7 +204,7 @@ private fun CustomCalendarView(textHeight: Int, content: @Composable () -> Unit)
                             color = lineColor,
                             start = Offset(0f, y),
                             end = Offset(size.width, y),
-                            strokeWidth = 2f
+                            strokeWidth = 2f,
                         )
                     }
                 }
@@ -223,16 +221,15 @@ private fun CustomCalendarView(textHeight: Int, content: @Composable () -> Unit)
                     0 -> constraints.fixConstraints(width = dayWidth, height = textHeight)
                     1 -> constraints.fixConstraints(
                         width = dayWidth,
-                        height = dayHeight - textHeight
+                        height = dayHeight - textHeight,
                     )
 
                     else -> constraints
-                }
+                },
             )
         }
 
         layout(constraints.maxWidth, constraints.maxHeight) {
-
             placeables.forEachIndexed { index, placeable ->
                 val idx = index / 2
 
@@ -254,18 +251,18 @@ private fun CustomCalendarView(textHeight: Int, content: @Composable () -> Unit)
 private fun isNotCurrentMonth(
     dateModel: DateModel,
     currentMonth: Int,
-    todayCalendar: Calendar
+    todayCalendar: Calendar,
 ): Boolean {
     val itemCalendar = with(dateModel) {
         createCalendar(year.toInt(), month.toInt() - 1, day.toInt())
     }
     return dateModel.month.toInt() != currentMonth ||
-            itemCalendar.timeInMillis > todayCalendar.timeInMillis
+        itemCalendar.timeInMillis > todayCalendar.timeInMillis
 }
 
 private fun Constraints.fixConstraints(width: Int = maxWidth, height: Int = maxHeight) = copy(
     minWidth = width,
     maxWidth = width,
     minHeight = height,
-    maxHeight = height
+    maxHeight = height,
 )

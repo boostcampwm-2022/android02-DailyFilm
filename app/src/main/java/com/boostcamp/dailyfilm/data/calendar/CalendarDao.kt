@@ -29,7 +29,7 @@ interface CalendarDao {
     suspend fun loadPagedFilm(startAt: Int, endAt: Int, page: Int, count: Int = 10): List<FilmEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(filmEntityList: List<FilmEntity?>)
+    suspend fun insertAll(filmEntityList: List<FilmEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(filmEntity: FilmEntity)
