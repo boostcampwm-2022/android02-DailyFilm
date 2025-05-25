@@ -30,9 +30,29 @@ kotlin {
 }
 
 dependencies {
-
+    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.compose.gradlePlugin)
 }
 
 gradlePlugin {
-
+    val path = "com.dailyfilm.buildlogic"
+    plugins {
+        register("androidApplication") {
+            id = "dailyfilm.android.application"
+            implementationClass = "$path.primitive.AndroidApplicationPlugin"
+        }
+        register("androidKotlin") {
+            id = "dailyfilm.android.kotlin"
+            implementationClass = "$path.primitive.AndroidKotlinPlugin"
+        }
+        register("androidLibrary") {
+            id = "dailyfilm.android.library"
+            implementationClass = "$path.primitive.AndroidLibraryPlugin"
+        }
+        register("jvmLibrary") {
+            id = "dailyfilm.jvm.library"
+            implementationClass = "$path.primitive.JvmLibraryPlugin"
+        }
+    }
 }
