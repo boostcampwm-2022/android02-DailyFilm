@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.konan.properties.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.dailyfilm.android.application)
+    alias(libs.plugins.dailyfilm.android.kotlin)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.google.services)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
@@ -14,12 +14,9 @@ plugins {
 
 android {
     namespace = "com.boostcamp.dailyfilm"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.boostcamp.dailyfilm"
-        minSdk = 24
-        targetSdk = 34
         versionCode = 4
         versionName = "1.0"
 
@@ -45,15 +42,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     testOptions {
         unitTests.apply {
             isReturnDefaultValues = true
@@ -63,10 +51,6 @@ android {
     buildFeatures {
         dataBinding = true
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     packaging {
