@@ -1,4 +1,5 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.konan.properties.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)
@@ -22,7 +23,10 @@ android {
         versionCode = 4
         versionName = "1.0"
 
-        val key = gradleLocalProperties(rootDir).getProperty("database.url") ?: ""
+        val localProperties = Properties().apply {
+            load(rootProject.file("local.properties").inputStream())
+        }
+        val key = localProperties["database.url"] as String
         buildConfigField("String", "DATABASE_URL", key)
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations.addAll(listOf("ko-rKR", "ko"))
