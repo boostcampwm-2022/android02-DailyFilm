@@ -33,6 +33,8 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.hilt.gradlePlugin)
+    compileOnly(libs.ksp.gradlePlugin)
 }
 
 gradlePlugin {
@@ -41,6 +43,10 @@ gradlePlugin {
         register("androidApplication") {
             id = "dailyfilm.android.application"
             implementationClass = "$path.primitive.AndroidApplicationPlugin"
+        }
+        register("androidCompose") {
+            id = "dailyfilm.android.compose"
+            implementationClass = "$path.primitive.AndroidComposePlugin"
         }
         register("androidKotlin") {
             id = "dailyfilm.android.kotlin"

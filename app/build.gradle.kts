@@ -3,6 +3,7 @@ import kotlin.apply
 
 plugins {
     alias(libs.plugins.dailyfilm.android.application)
+    alias(libs.plugins.dailyfilm.android.compose)
     alias(libs.plugins.dailyfilm.android.kotlin)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.google.services)
@@ -50,7 +51,6 @@ android {
 
     buildFeatures {
         dataBinding = true
-        compose = true
     }
 
     packaging {
@@ -61,17 +61,7 @@ android {
 }
 
 dependencies {
-    // Compose
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
     implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material3)
-    // Android Studio Preview support
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    // Optional - Integration with activities
-    implementation(libs.androidx.activity.compose)
     // Optional - Integration with ViewModels
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Optional - Integration with LiveData
@@ -124,8 +114,10 @@ dependencies {
     // Coordinator-layout
     implementation(libs.androidx.coordinatorlayout)
     // ffmpeg
-    implementation(libs.android.video.trimmer)
-    implementation(libs.mobile.ffmpeg.min.gpl)
+    implementation(libs.android.video.trimmer) {
+        exclude("com.arthenica", "mobile-ffmpeg-min-gpl")
+    }
+    implementation(files("libs/mobile-ffmpeg-min-gpl.aar"))
     // lottie
     implementation(libs.android.lottie)
     implementation(libs.android.lottie.compose)

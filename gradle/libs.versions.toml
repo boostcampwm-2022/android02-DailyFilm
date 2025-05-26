@@ -27,13 +27,12 @@ lifecycleRuntimeKtx = "2.6.2"
 lifecycleViewmodelCompose = "2.6.2"
 lifecycleViewmodelKtx = "2.7.0-alpha02"
 lottie = "6.1.0"
-hilt = "2.48"
+hilt = "2.56.2"
 androidxComposeBom = "2023.09.00"
 androidxComposeMaterial = "1.6.0-alpha05"
 androidxComposeMaterial3 = "1.2.0-alpha07"
 material = "1.9.0"
 media3 = "1.2.0-alpha01"
-mobileFfmpegMinGpl = "4.4"
 mockito = "2.21.0"
 navigationKtx = "2.7.2"
 navigationSafeArgsGradlePlugin = "2.7.2"
@@ -95,7 +94,6 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 keyboard-visibility-event = { group = "com.github.yshrsmz", name = "KeyboardVisibilityEvent", version.ref = "keyboard-visibility-event" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-mobile-ffmpeg-min-gpl = { group = "com.arthenica", name = "mobile-ffmpeg-min-gpl", version.ref = "mobileFfmpegMinGpl" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 androidx-navigation-safe-args-gradle-plugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
@@ -105,9 +103,13 @@ desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", ver
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+hilt-GradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 androidx-navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "navigationSafeArgsGradlePlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices"}
@@ -119,6 +121,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 dailyfilm-android-application = { id = "dailyfilm.android.application", version = "unspecified" }
+dailyfilm-android-compose = { id = "dailyfilm.android.compose", version = "unspecified" }
 dailyfilm-android-kotlin = { id = "dailyfilm.android.kotlin", version = "unspecified" }
 dailyfilm-android-library = { id = "dailyfilm.android.library", version = "unspecified" }
 dailyfilm-jvm-library = { id = "dailyfilm.jvm.library", version = "unspecified" }
