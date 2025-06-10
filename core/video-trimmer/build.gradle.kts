@@ -1,12 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
-    `maven-publish`
+    alias(libs.plugins.ksp)
 }
 
 android {
     compileSdk = 36
-    buildToolsVersion = "31.0.0"
-
     namespace = "com.gowtham.library"
 
     packagingOptions {
@@ -43,13 +41,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
 }
 
 dependencies {
@@ -59,7 +50,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.exoplayer)
     implementation(libs.glide)
-    annotationProcessor(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     implementation(libs.localization)
     implementation(libs.gson)
     implementation(libs.android.lottie)
