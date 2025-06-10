@@ -85,7 +85,7 @@ fun CalendarScreen(
     ) { paddingValues ->
         HorizontalPager(
             state = pagerState(),
-            beyondBoundsPageCount = 1,
+            beyondViewportPageCount = 1,
             modifier = modifier.padding(paddingValues),
         ) { page ->
             val position = page - Int.MAX_VALUE / 2

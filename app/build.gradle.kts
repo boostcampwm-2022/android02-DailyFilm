@@ -116,10 +116,7 @@ dependencies {
     // Coordinator-layout
     implementation(libs.androidx.coordinatorlayout)
     // ffmpeg
-    implementation(libs.android.video.trimmer) {
-        exclude("com.arthenica", "mobile-ffmpeg-min-gpl")
-    }
-    implementation(files("libs/mobile-ffmpeg-min-gpl.aar"))
+    implementation(projects.core.videoTrimmer)
     // lottie
     implementation(libs.android.lottie)
     implementation(libs.android.lottie.compose)
