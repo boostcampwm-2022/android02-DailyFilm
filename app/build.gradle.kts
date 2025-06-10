@@ -1,11 +1,13 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.konan.properties.Properties
+import kotlin.apply
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.dailyfilm.android.application)
+    alias(libs.plugins.dailyfilm.android.compose)
+    alias(libs.plugins.dailyfilm.android.kotlin)
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.google.services)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
@@ -13,16 +15,16 @@ plugins {
 
 android {
     namespace = "com.boostcamp.dailyfilm"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.boostcamp.dailyfilm"
-        minSdk = 24
-        targetSdk = 34
         versionCode = 4
         versionName = "1.0"
 
-        val key = gradleLocalProperties(rootDir).getProperty("database.url") ?: ""
+        val localProperties = Properties().apply {
+            load(rootProject.file("local.properties").inputStream())
+        }
+        val key = localProperties["database.url"] as String
         buildConfigField("String", "DATABASE_URL", key)
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations.addAll(listOf("ko-rKR", "ko"))
@@ -41,15 +43,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     testOptions {
         unitTests.apply {
             isReturnDefaultValues = true
@@ -58,11 +51,6 @@ android {
 
     buildFeatures {
         dataBinding = true
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     packaging {
@@ -73,17 +61,7 @@ android {
 }
 
 dependencies {
-    // Compose
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
     implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material3)
-    // Android Studio Preview support
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    // Optional - Integration with activities
-    implementation(libs.androidx.activity.compose)
     // Optional - Integration with ViewModels
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Optional - Integration with LiveData
@@ -138,8 +116,10 @@ dependencies {
     // Coordinator-layout
     implementation(libs.androidx.coordinatorlayout)
     // ffmpeg
-    implementation(libs.android.video.trimmer)
-    implementation(libs.mobile.ffmpeg.min.gpl)
+    implementation(libs.android.video.trimmer) {
+        exclude("com.arthenica", "mobile-ffmpeg-min-gpl")
+    }
+    implementation(files("libs/mobile-ffmpeg-min-gpl.aar"))
     // lottie
     implementation(libs.android.lottie)
     implementation(libs.android.lottie.compose)

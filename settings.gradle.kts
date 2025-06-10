@@ -1,5 +1,7 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
+        includeBuild("build-logic")
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -12,6 +14,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { setUrl("https://jitpack.io") }
+        flatDir {
+            dirs("app/libs")
+        }
     }
 }
 

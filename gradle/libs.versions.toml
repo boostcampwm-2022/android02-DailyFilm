@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.7.2"
-androidGradlePlugin = "8.1.1"
+androidGradlePlugin = "8.9.3"
 androidVideoTrimmer = "0.1.5-async"
 appcompat = "1.6.1"
 composeUiVersion = "1.6.0-alpha05"
@@ -20,21 +20,19 @@ hiltCompose = "1.1.0"
 junitExt = "1.1.5"
 junit = "4.13.2"
 keyboard-visibility-event = "v3.0.0-RC3"
-kotlin = "1.9.10"
-kotlinGradlePlugin = "1.9.10"
-ksp = "1.9.10-1.0.13"
+kotlin = "2.1.20"
+ksp = "2.1.20-1.0.32"
 lifecycleRuntimeCompose = "2.6.2"
 lifecycleRuntimeKtx = "2.6.2"
 lifecycleViewmodelCompose = "2.6.2"
 lifecycleViewmodelKtx = "2.7.0-alpha02"
 lottie = "6.1.0"
-hilt = "2.48"
+hilt = "2.56.2"
 androidxComposeBom = "2023.09.00"
 androidxComposeMaterial = "1.6.0-alpha05"
 androidxComposeMaterial3 = "1.2.0-alpha07"
 material = "1.9.0"
 media3 = "1.2.0-alpha01"
-mobileFfmpegMinGpl = "4.4"
 mockito = "2.21.0"
 navigationCompose = "2.7.7"
 navigationKtx = "2.7.2"
@@ -42,6 +40,7 @@ navigationSafeArgsGradlePlugin = "2.7.2"
 paging = "3.2.1"
 playServicesAuth = "20.7.0"
 room = "2.5.2"
+desugar-jdk-libs = "2.1.5"
 
 [libraries]
 android-video-trimmer = { group = "com.github.TTC1018", name = "android-video-trimmer", version.ref = "androidVideoTrimmer" }
@@ -97,15 +96,23 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 keyboard-visibility-event = { group = "com.github.yshrsmz", name = "KeyboardVisibilityEvent", version.ref = "keyboard-visibility-event" }
-kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-mobile-ffmpeg-min-gpl = { group = "com.arthenica", name = "mobile-ffmpeg-min-gpl", version.ref = "mobileFfmpegMinGpl" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 androidx-navigation-safe-args-gradle-plugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
+
+# for build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+hilt-GradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 androidx-navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "navigationSafeArgsGradlePlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices"}
@@ -114,6 +121,13 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+dailyfilm-android-application = { id = "dailyfilm.android.application", version = "unspecified" }
+dailyfilm-android-compose = { id = "dailyfilm.android.compose", version = "unspecified" }
+dailyfilm-android-kotlin = { id = "dailyfilm.android.kotlin", version = "unspecified" }
+dailyfilm-android-library = { id = "dailyfilm.android.library", version = "unspecified" }
+dailyfilm-jvm-library = { id = "dailyfilm.jvm.library", version = "unspecified" }
 
 [bundles]
 
