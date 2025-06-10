@@ -1,7 +1,6 @@
 [versions]
 activityCompose = "1.7.2"
 androidGradlePlugin = "8.9.3"
-androidVideoTrimmer = "0.1.5-async"
 appcompat = "1.6.1"
 composeUiVersion = "1.6.0-alpha05"
 constraintlayout = "2.1.4"
@@ -16,6 +15,7 @@ firebaseAuth = "22.1.1"
 glide = "4.15.1"
 glideCompose = "1.0.0-alpha.1"
 googleServices = "4.3.15"
+gson = "2.13.1"
 hiltCompose = "1.1.0"
 junitExt = "1.1.5"
 junit = "4.13.2"
@@ -26,6 +26,7 @@ lifecycleRuntimeCompose = "2.6.2"
 lifecycleRuntimeKtx = "2.6.2"
 lifecycleViewmodelCompose = "2.6.2"
 lifecycleViewmodelKtx = "2.7.0-alpha02"
+localization = "1.2.9"
 lottie = "6.1.0"
 hilt = "2.56.2"
 androidxComposeBom = "2023.09.00"
@@ -39,11 +40,10 @@ navigationKtx = "2.7.2"
 navigationSafeArgsGradlePlugin = "2.7.2"
 paging = "3.2.1"
 playServicesAuth = "20.7.0"
-room = "2.5.2"
+room = "2.7.1"
 desugar-jdk-libs = "2.1.5"
 
 [libraries]
-android-video-trimmer = { group = "com.github.TTC1018", name = "android-video-trimmer", version.ref = "androidVideoTrimmer" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
@@ -92,10 +92,12 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide-compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
 glide-compose = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideCompose" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 keyboard-visibility-event = { group = "com.github.yshrsmz", name = "KeyboardVisibilityEvent", version.ref = "keyboard-visibility-event" }
+localization = { module = "com.akexorcist:localization", version.ref = "localization" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
