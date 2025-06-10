@@ -102,7 +102,7 @@ fun SearchScreen(
                         key = { i -> lazyPagingItems[i]?.videoUrl ?: i },
                     ) { index ->
                         lazyPagingItems[index]?.let {
-                            Row(modifier = Modifier.animateItemPlacement()) {
+                            Row(modifier = Modifier.animateItem()) {
                                 FilmCard(it) { viewModel.onClickItem(index) }
                             }
                         }

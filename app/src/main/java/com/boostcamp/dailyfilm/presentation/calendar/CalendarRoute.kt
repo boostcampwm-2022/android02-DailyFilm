@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -29,7 +30,8 @@ fun CalendarRoute(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
 ) {
     val calendarTitle: String by calendarViewModel.calendarFlow.collectAsStateWithLifecycle()
-    val pagerState: PagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
+    val initialPage = remember { Int.MAX_VALUE / 2 }
+    val pagerState: PagerState = rememberPagerState(initialPage = initialPage) { Int.MAX_VALUE }
     val lottieFAB by rememberLottieComposition(LottieCompositionSpec.Asset("calendar_floating_button.json"))
 
     val cameraPainter = painterResource(id = R.drawable.baseline_photo_camera_24)
@@ -43,11 +45,11 @@ fun CalendarRoute(
         snapshotFlow { pagerState.currentPage }.collect { page ->
             calendarViewModel.getViewPagerPosition(page)
             dateState = when {
-                page > pagerState.initialPage -> {
+                page > initialPage -> {
                     DateState.AFTER
                 }
 
-                page < pagerState.initialPage -> {
+                page < initialPage -> {
                     DateState.BEFORE
                 }
 
@@ -71,7 +73,7 @@ fun CalendarRoute(
         onDismissMenu = { menuState = false },
         onMoveToday = {
             coroutineScope.launch {
-                pagerState.animateScrollToPage(pagerState.initialPage)
+                pagerState.animateScrollToPage(initialPage)
             }
         },
         onClickUpload = { lottieVisibility = !lottieVisibility },
